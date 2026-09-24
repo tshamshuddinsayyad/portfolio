@@ -460,3 +460,39 @@ body{background:radial-gradient(circle at 25% 15%,rgba(135,92,255,.11),transpare
  background:radial-gradient(75px circle at var(--glow-x,50%) 0%,rgba(221,195,255,.95),transparent 72%),radial-gradient(75px circle at 100% var(--glow-y,50%),rgba(135,92,255,.86),transparent 72%),radial-gradient(75px circle at var(--glow-x,50%) 100%,rgba(201,167,255,.74),transparent 72%),radial-gradient(75px circle at 0% var(--glow-y,50%),rgba(165,125,255,.62),transparent 72%);
 }
 .project-card:hover,.skill-group:hover,.learning-cards article:hover,.contact-box:hover,.language-bar:hover,.mini-stats > div:hover{border-color:rgba(201,167,255,.38)!important;box-shadow:0 18px 55px rgba(35,20,75,.22),0 0 30px rgba(135,92,255,.15),inset 0 0 26px rgba(201,167,255,.04)!important}
+
+/* Remove every decorative vertical separator */
+.vertical-line,.vertical-divider,.v-line,.timeline-line,
+[class*="vertical-line"],[class*="vertical-divider"],
+[class*="timeline-line"]{display:none!important}
+
+/* Signature AI / Data Science pattern */
+body{
+  background-color:#05040a!important;
+  background-image:
+    radial-gradient(circle at 15% 20%,rgba(135,92,255,.10) 0 1px,transparent 1.5px),
+    radial-gradient(circle at 85% 75%,rgba(201,167,255,.08) 0 1px,transparent 1.5px),
+    linear-gradient(rgba(201,167,255,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(201,167,255,.035) 1px,transparent 1px)!important;
+  background-size:180px 180px,240px 240px,72px 72px,72px 72px!important;
+  background-position:0 0,80px 120px,0 0,0 0!important;
+}
+
+/* Subtle data-flow pattern behind sections */
+.section{
+  position:relative;
+  isolation:isolate;
+}
+.section:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  opacity:.28;
+  background:
+    radial-gradient(circle at 20% 30%,rgba(135,92,255,.10) 0 2px,transparent 2.5px),
+    radial-gradient(circle at 75% 65%,rgba(201,167,255,.08) 0 2px,transparent 2.5px);
+  background-size:140px 140px,190px 190px;
+  mask-image:linear-gradient(to bottom,transparent,black 18%,black 82%,transparent);
+}
