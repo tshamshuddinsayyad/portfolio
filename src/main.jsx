@@ -73,6 +73,8 @@ function InteractiveField({ dark }) {
     }));
     group.add(points);
 
+    // The hero object is intentionally NOT auto-rotating.
+    // It behaves like a movable 3D object that follows the visitor's cursor.
     const core = new THREE.Group();
     core.position.set(0, 0.2, -3.5);
     scene.add(core);
@@ -114,24 +116,36 @@ function InteractiveField({ dark }) {
       pointer.current.x = (e.clientX / innerWidth - 0.5) * 2;
       pointer.current.y = (e.clientY / innerHeight - 0.5) * 2;
     };
+    const pointerDown = e => {
+      if (e.button === 0) {
+        drag.current.active = true;
+        drag.current.x = e.clientX;
+        drag.current.y = e.clientY;
+      }
+    };
+    const pointerUp = () => { drag.current.active = false; };
     addEventListener("pointermove", mouseMove);
+    addEventListener("pointerdown", pointerDown);
+    addEventListener("pointerup", pointerUp);
 
     let frame;
     const animate = time => {
       frame = requestAnimationFrame(animate);
       const t = time * 0.001;
-      camera.position.x += (pointer.current.x * 0.65 - camera.position.x) * 0.025;
-      camera.position.y += (-pointer.current.y * 0.38 - camera.position.y) * 0.025;
+      camera.position.x += (pointer.current.x * 0.35 - camera.position.x) * 0.02;
+      camera.position.y += (-pointer.current.y * 0.22 - camera.position.y) * 0.02;
       camera.lookAt(0, 0, -3);
 
-      points.rotation.y = t * 0.006;
-      points.position.x = Math.sin(t * 0.08) * 0.18;
-      core.rotation.y = t * 0.24 + pointer.current.x * 0.18;
-      core.rotation.x = Math.sin(t * 0.5) * 0.08 + pointer.current.y * 0.08;
-      shell.rotation.z = t * 0.17;
-      ring1.rotation.z = t * 0.25;
-      ring2.rotation.x = t * -0.2;
-      inner.scale.setScalar(1 + Math.sin(t * 2.2) * 0.06);
+      // No continuous spinning. The object is moved by the visitor.
+      const targetX = pointer.current.x * 3.0;
+      const targetY = -pointer.current.y * 1.8;
+      core.position.x += (targetX - core.position.x) * 0.045;
+      core.position.y += (0.2 + targetY - core.position.y) * 0.045;
+
+      // Small breathing effect only — position changes, not rotation.
+      const pulse = 1 + Math.sin(t * 1.7) * 0.045;
+      shell.scale.setScalar(pulse);
+      inner.scale.setScalar(1 + Math.sin(t * 2.0) * 0.06);
       renderer.render(scene, camera);
     };
     animate(0);
@@ -146,6 +160,8 @@ function InteractiveField({ dark }) {
     return () => {
       cancelAnimationFrame(frame);
       removeEventListener("pointermove", mouseMove);
+      removeEventListener("pointerdown", pointerDown);
+      removeEventListener("pointerup", pointerUp);
       removeEventListener("resize", resize);
       geometry.dispose();
       points.material.dispose();
@@ -237,10 +253,10 @@ function App() {
           <h1>I build <em>intelligent</em><br/>digital systems.</h1>
           <p>{profile.tagline} Explore my work, interact with my AI assistant, and see how I turn ideas into working products.</p>
           <div className="hero-actions"><a className="primary" href="#work">Explore my work <ArrowUpRight size={17}/></a><a className="secondary" href="#contact">Let's connect <MessageCircle size={17}/></a></div>
-          <div className="scroll-hint"><MousePointer2 size={14}/> Move your cursor across the page</div>
+          <div className="scroll-hint"><MousePointer2 size={14}/> Move the 3D core with your cursor — no automatic spinning</div>
         </div>
         <div className="hero-object">
-          <div className="object-label"><span>INTERACTIVE CORE</span><i>LIVE</i></div>
+          <div className="object-label"><span>MOVABLE AI CORE</span><i>DRAG / MOVE</i></div>
           <div className="object-copy"><Sparkles size={16}/><span>THINK</span><b>BUILD</b><span>EXPLORE</span></div>
         </div>
       </section>
