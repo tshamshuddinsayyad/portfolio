@@ -249,20 +249,33 @@ function App() {
     <main>
       <section className="hero" id="about">
         <div className="hero-copy">
-          <div className="eyebrow"><span className="status-dot"/> AI / ML / FULL STACK / DATA</div>
-          <h1>I build <em>intelligent</em><br/>digital systems.</h1>
+          <div className="eyebrow"><span className="status-dot"/> ARTIFICIAL INTELLIGENCE / DATA SCIENCE</div>
+          <h1>I turn <em>data</em><br/>into intelligence.</h1>
           <p>{profile.tagline} Explore my work, interact with my AI assistant, and see how I turn ideas into working products.</p>
           <div className="hero-actions"><a className="primary" href="#work">Explore my work <ArrowUpRight size={17}/></a><a className="secondary" href="#contact">Let's connect <MessageCircle size={17}/></a></div>
-          <div className="scroll-hint"><MousePointer2 size={14}/> Move the 3D core with your cursor — no automatic spinning</div>
+          <div className="scroll-hint"><MousePointer2 size={14}/> Explore the model, data and systems I build</div>
         </div>
-        <div className="hero-object">
-          <div className="object-label"><span>MOVABLE AI CORE</span><i>DRAG / MOVE</i></div>
-          <div className="object-copy"><Sparkles size={16}/><span>THINK</span><b>BUILD</b><span>EXPLORE</span></div>
+        <div className="ai-lab">
+          <div className="lab-top"><span>AI / DATA SCIENCE LAB</span><i>MODEL ONLINE</i></div>
+          <div className="lab-grid"/>
+          <div className="model-card">
+            <div className="model-head"><div><small>ACTIVE MODEL</small><b>INTELLIGENCE ENGINE</b></div><span>v2.6</span></div>
+            <div className="model-orb"><div className="orb-core"><BrainCircuit size={30}/></div><i className="pulse p1"/><i className="pulse p2"/><i className="pulse p3"/></div>
+            <div className="model-metrics">
+              <div><span>ACCURACY</span><b>94.8%</b><u><i style={{width:"94.8%"}}/></u></div>
+              <div><span>DATA</span><b>12.4K</b><u><i style={{width:"78%"}}/></u></div>
+              <div><span>LATENCY</span><b>42ms</b><u><i style={{width:"42%"}}/></u></div>
+            </div>
+          </div>
+          <div className="data-card data-a"><span>FEATURES</span><b>128</b><i>↗</i></div>
+          <div className="data-card data-b"><span>PIPELINE</span><b>RAG → LLM</b><i>LIVE</i></div>
+          <div className="signal-line s1"/><div className="signal-line s2"/>
+          <div className="lab-bottom"><span>PYTHON</span><span>PANDAS</span><span>LANGCHAIN</span><span>SQL</span></div>
         </div>
       </section>
 
       <section className="section intro">
-        <div className="section-label">01 — THINK</div>
+        <div className="section-label">01 — UNDERSTAND</div>
         <div className="intro-grid">
           <h2>Ideas are easy.<br/><em>Building them is the craft.</em></h2>
           <div><p>I’m a developer focused on practical AI, data and full-stack systems. I like turning complex ideas into interfaces people can actually use.</p><div className="mini-stats"><div><b>AI / ML</b><span>Intelligent systems</span></div><div><b>DATA</b><span>Analytics & statistics</span></div><div><b>WEB</b><span>Modern products</span></div></div></div>
@@ -270,7 +283,7 @@ function App() {
       </section>
 
       <section className="section work" id="work">
-        <div className="section-label">02 — BUILD</div>
+        <div className="section-label">02 — ENGINEER</div>
         <div className="section-heading"><h2>Selected <em>missions.</em></h2><span>Hover a project</span></div>
         <div className="project-grid">{projects.map((p,i) => { const Icon=p.icon; return <article className="project-card" key={p.title}>
           <div className="project-number">0{i+1}</div><div className="project-icon"><Icon size={22}/></div><span className="project-type">CASE STUDY / 0{i+1}</span>
@@ -281,18 +294,18 @@ function App() {
       </section>
 
       <section className="section systems">
-        <div className="section-label">03 — EXPLORE</div>
+        <div className="section-label">03 — MODEL</div>
         <h2>A toolkit for <em>building intelligence.</em></h2>
         <div className="skill-grid">{skillGroups.map(g => <div className="skill-group" key={g.title}><span className="group-title">{g.title}</span>{g.items.map((s,i)=><div className="skill-row" key={s}><small>0{i+1}</small><b>{s}</b><span>↗</span></div>)}</div>)}</div>
       </section>
 
       <section className="section language-section" id="skills">
-        <div className="section-label">04 — FLUENCY</div>
+        <div className="section-label">04 — DATA STACK</div>
         <div className="language-layout"><div><h2>Code is a <em>language.</em></h2><p>From Python and SQL to JavaScript and React, I use technology as a medium for solving problems.</p></div><div className="language-bars">{[["Python","AI • Data • Automation","92%"],["JavaScript","Web • React • UI","84%"],["SQL","Database • Analytics","78%"],["C / Java","Core programming","65%"]].map(x=><div className="language-bar" key={x[0]}><div><b>{x[0]}</b><span>{x[1]}</span><i>{x[2]}</i></div><u><span style={{width:x[2]}}/></u></div>)}</div></div>
       </section>
 
       <section className="section learning">
-        <div className="section-label">05 — KEEP LEARNING</div>
+        <div className="section-label">05 — RESEARCH / LEARN</div>
         <div className="learning-grid"><div><h2>Always <em>evolving.</em></h2><p>Currently exploring AI engineering, LLM applications, data science and emerging computing.</p></div><div className="learning-cards"><article><Atom/><b>AI & ML</b><span>LLMs, RAG and intelligent systems</span></article><article><Database/><b>Data Science</b><span>Statistics, Python and analytics</span></article><article><Code2/><b>Full Stack</b><span>React, APIs and databases</span></article></div></div>
       </section>
 
@@ -301,7 +314,7 @@ function App() {
       </section>
     </main>
 
-    <footer><span>© {new Date().getFullYear()} {profile.name}</span><span>THINK • BUILD • EXPLORE</span></footer>
+    <footer><span>© {new Date().getFullYear()} {profile.name}</span><span>DATA → MODELS → INTELLIGENCE</span></footer>
     <Chatbot/>
   </div>;
 }
