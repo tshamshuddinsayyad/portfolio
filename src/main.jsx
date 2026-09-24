@@ -98,29 +98,124 @@ function Chatbot() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
-  const [messages, setMessages] = useState([{ role: "assistant", content: "Hi! I’m Tayyab’s AI assistant. Ask me anything — general knowledge, coding, AI/ML, science, study questions, or questions about Tayyab’s portfolio." }]);
-  const prompts = ["What projects has Tayyab built?", "What is the University AI Chatbot?", "Which AI technologies does he use?"];
+  const [webSearch, setWebSearch] = useState(true);
+  const [messages, setMessages] = useState([
+    {
+      role: "assistant",
+      content: "Hi! I’m Tayyab’s Universal AI Assistant. Ask me anything — current information, coding, AI/ML, science, study questions, or questions about Tayyab’s portfolio."
+    }
+  ]);
+
+  const prompts = [
+    "Who is the Prime Minister of India?",
+    "Explain machine learning simply",
+    "Write a Python program for Fibonacci",
+    "What projects has Tayyab built?"
+  ];
 
   async function send(text = input) {
-    const q = text.trim(); if (!q || busy) return;
-    setMessages(m => [...m, { role: "user", content: q }]); setInput(""); setBusy(true);
+    const q = text.trim();
+    if (!q || busy) return;
+
+    const history = messages.slice(-8).map(m => ({
+      role: m.role,
+      content: m.content
+    }));
+
+    setMessages(m => [...m, { role: "user", content: q }]);
+    setInput("");
+    setBusy(true);
+
     try {
-      const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: q }) });
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: q,
+          history,
+          useWebSearch: webSearch
+        })
+      });
+
       const data = await res.json();
       if (!res.ok) throw new Error(data.answer || "Request failed");
-      setMessages(m => [...m, { role: "assistant", content: data.answer || "I couldn't answer that right now." }]);
+
+      setMessages(m => [
+        ...m,
+        {
+          role: "assistant",
+          content: data.answer || "I couldn't answer that right now.",
+          sources: data.sources || []
+        }
+      ]);
     } catch (error) {
-      setMessages(m => [...m, { role: "assistant", content: error.message || "The AI service is unavailable. Check the deployment environment." }]);
-    } finally { setBusy(false); }
+      setMessages(m => [
+        ...m,
+        {
+          role: "assistant",
+          content: error.message || "The AI service is unavailable. Check the deployment environment."
+        }
+      ]);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function clearChat() {
+    setMessages([{
+      role: "assistant",
+      content: "New conversation started. Ask me anything."
+    }]);
   }
 
   return <>
-    <button className="chat-fab" onClick={() => setOpen(v => !v)} aria-label="Open AI assistant"><Bot size={21}/><span>Ask AI</span><i/></button>
+    <button className="chat-fab" onClick={() => setOpen(v => !v)} aria-label="Open AI assistant">
+      <Bot size={21}/><span>Ask AI</span><i/>
+    </button>
+
     {open && <section className="chat-panel">
-      <div className="chat-head"><div><b><Sparkles size={15}/> Universal AI Assistant</b><small>General AI • Portfolio Knowledge</small></div><button onClick={() => setOpen(false)}>×</button></div>
-      <div className="quick-prompts">{prompts.map(p => <button key={p} onClick={() => send(p)}>{p}</button>)}</div>
-      <div className="chat-body">{messages.map((m,i)=><div key={i} className={"bubble "+m.role}>{m.content}</div>)}{busy&&<div className="bubble assistant typing">Thinking<span>•••</span></div>}</div>
-      <div className="chat-input"><input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&send()} placeholder="Ask me anything…"/><button onClick={() => send()} disabled={busy}><Send size={17}/></button></div>
+      <div className="chat-head">
+        <div>
+          <b><Sparkles size={15}/> Universal AI Assistant</b>
+          <small>General AI • Web • Portfolio Knowledge</small>
+        </div>
+        <div className="chat-head-actions">
+          <button className={webSearch ? "search-toggle active" : "search-toggle"} onClick={() => setWebSearch(v => !v)} title="Toggle web search">
+            {webSearch ? "WEB ON" : "WEB OFF"}
+          </button>
+          <button onClick={clearChat} title="New chat">↻</button>
+          <button onClick={() => setOpen(false)} title="Close">×</button>
+        </div>
+      </div>
+
+      <div className="quick-prompts">
+        {prompts.map(p => <button key={p} onClick={() => send(p)}>{p}</button>)}
+      </div>
+
+      <div className="chat-body">
+        {messages.map((m, i) => <div key={i} className={"chat-message " + m.role}>
+          <div className={"bubble " + m.role}>{m.content}</div>
+          {m.sources?.length > 0 && <div className="sources">
+            <span>Sources</span>
+            {m.sources.map((source, index) =>
+              <a key={source.url + index} href={source.url} target="_blank" rel="noreferrer">
+                {index + 1}. {source.title}
+              </a>
+            )}
+          </div>}
+        </div>)}
+        {busy && <div className="bubble assistant typing">Thinking<span>•••</span></div>}
+      </div>
+
+      <div className="chat-input">
+        <input
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && send()}
+          placeholder="Ask anything…"
+        />
+        <button onClick={() => send()} disabled={busy}><Send size={17}/></button>
+      </div>
     </section>}
   </>;
 }
