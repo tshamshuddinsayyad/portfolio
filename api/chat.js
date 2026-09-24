@@ -1,5 +1,3 @@
-import { HumanMessage, SystemMessage } from "@langchain/core/messages";
-
 const knowledge = [
   "Tayyab Sayyad is an MSc AIDS student building an AI/full-stack portfolio focused on practical software, data and AI projects.",
   "Tayyab works with Python, JavaScript, React, PostgreSQL, HTML/CSS, Git, Three.js, LangChain, RAG and OpenAI concepts.",
@@ -10,7 +8,7 @@ const knowledge = [
 
 function tokenize(text) {
   return new Set(
-    text.toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(Boolean)
+    text.toLowerCase().replace(/[^a-z0-9\\s]/g, " ").split(/\\s+/).filter(Boolean)
   );
 }
 
@@ -26,12 +24,22 @@ function retrieve(query) {
     .sort((a, b) => b.score - a.score)
     .slice(0, 3)
     .map(x => x.text)
-    .join("\n");
+    .join("\\n");
 }
 
 async function askGemini(message, context) {
   const apiKey = process.env.GEMINI_API_KEY;
-  const model = process.env.GEMINI_MODEL || "gemini-3.8-flash";
+  const model = process.env.GEMINI_MODEL || "gemini-3.5-flash-lite";
+
+  const systemPrompt =
+    "You are the general-purpose AI assistant embedded in Tayyab Sayyad's developer portfolio. " +
+    "Answer general questions normally: programming, mathematics, science, writing, study help, explanations, brainstorming and everyday knowledge. " +
+    "When a question is about Tayyab, his portfolio, projects, skills, education or experience, use the supplied portfolio context and never invent personal facts. " +
+    "For missing personal details, say the portfolio does not contain that detail. " +
+    "For general questions, do not force the answer to be about Tayyab. " +
+    "Do not claim to have live web access or current real-time information unless it is supplied by a tool. " +
+    "Keep answers clear, useful and appropriately detailed. " +
+    "\\n\\nPortfolio context:\\n" + (context || "No relevant portfolio context.");
 
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
@@ -43,25 +51,14 @@ async function askGemini(message, context) {
       },
       body: JSON.stringify({
         systemInstruction: {
-          parts: [{
-            text:
-              "You are the AI assistant embedded in Tayyab Sayyad's developer portfolio. " +
-              "Use the supplied portfolio context as your primary personal knowledge. " +
-              "Never invent personal facts, contact details, education history, employment, achievements or project metrics. " +
-              "For missing personal details, say the portfolio does not contain that detail. " +
-              "You may explain general technical concepts when relevant. Keep answers concise, useful and factual.\n\n" +
-              "Portfolio context:\n" + context
-          }]
+          parts: [{ text: systemPrompt }]
         },
         contents: [
           {
             role: "user",
             parts: [{ text: message }]
           }
-        ],
-        generationConfig: {
-          temperature: 0.3
-        }
+        ]
       })
     }
   );
@@ -103,13 +100,8 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error("Portfolio Gemini AI error:", error);
 
-    const detail =
-      process.env.NODE_ENV === "development"
-        ? String(error?.message || error)
-        : "Check the Gemini API key, model name, free-tier limits and deployment logs.";
-
     return res.status(500).json({
-      answer: "The AI request failed. " + detail
+      answer: "The AI request failed: " + String(error?.message || error)
     });
   }
 }
