@@ -313,3 +313,26 @@ footer{max-width:1280px;margin:auto;padding:25px 28px 45px;border-top:1px solid 
   background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(236,247,249,.08) 55%,rgba(236,247,249,.25));
 }
 .section::before,.section::after{opacity:.28}
+
+/* Sky-themed hero visual — replaces the old Q-BIT/quantum box */
+.sky-console{position:relative;overflow:hidden}
+.sky-visual{position:absolute;inset:42px 0 76px;overflow:hidden}
+.sky-orb{position:absolute;border-radius:50%;filter:blur(.2px);border:1px solid var(--line);box-shadow:0 0 45px rgba(98,246,223,.08)}
+.orb-a{width:190px;height:190px;right:16%;top:12%;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.18),transparent 42%,rgba(98,246,223,.05));animation:skyFloatA 7s ease-in-out infinite}
+.orb-b{width:85px;height:85px;left:15%;top:18%;background:rgba(154,131,255,.035);animation:skyFloatB 5.5s ease-in-out infinite}
+.sky-cloud{position:absolute;border-radius:999px;border:1px solid rgba(98,246,223,.13);filter:blur(.1px)}
+.cloud-a{width:210px;height:58px;left:13%;bottom:18%;background:linear-gradient(90deg,rgba(98,246,223,.025),rgba(84,169,255,.07),transparent);transform:skewX(-10deg);animation:cloudDrift 9s ease-in-out infinite}
+.cloud-b{width:150px;height:42px;right:9%;bottom:29%;opacity:.65;transform:skewX(-8deg);animation:cloudDrift 11s ease-in-out infinite reverse}
+.sky-cloud span{position:absolute;border:1px solid rgba(98,246,223,.11);border-radius:50%;width:35px;height:35px;top:-19px;background:rgba(98,246,223,.018)}
+.sky-cloud span:nth-child(1){left:25px}.sky-cloud span:nth-child(2){left:58px;top:-28px;width:48px;height:48px}.sky-cloud span:nth-child(3){left:102px}
+.sky-signal{position:absolute;left:50%;top:50%;width:280px;height:90px;transform:translate(-50%,-50%) rotate(-7deg);display:flex;gap:8px;align-items:center;justify-content:center}
+.sky-signal span{display:block;width:2px;border-radius:2px;background:linear-gradient(var(--cyan),var(--violet));box-shadow:0 0 10px rgba(98,246,223,.2);animation:signalPulse 2.8s ease-in-out infinite}
+.sky-signal span:nth-child(1){height:24px}.sky-signal span:nth-child(2){height:52px;animation-delay:.2s}.sky-signal span:nth-child(3){height:78px;animation-delay:.4s}.sky-signal span:nth-child(4){height:40px;animation-delay:.6s}
+.sky-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;color:var(--text);text-shadow:0 0 20px rgba(98,246,223,.14)}
+.sky-center svg{color:var(--cyan);filter:drop-shadow(0 0 12px rgba(98,246,223,.25))}
+.sky-center b{font:700 13px "DM Mono";letter-spacing:2px}
+.sky-center small{font:8px "DM Mono";color:var(--muted);letter-spacing:1.2px}
+@keyframes skyFloatA{50%{transform:translate(-12px,9px) scale(1.035)}}
+@keyframes skyFloatB{50%{transform:translate(10px,-8px) scale(.94)}}
+@keyframes cloudDrift{50%{transform:translateX(20px) skewX(-10deg)}}
+@keyframes signalPulse{50%{transform:scaleY(.55);opacity:.55}}
