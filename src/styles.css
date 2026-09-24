@@ -442,51 +442,21 @@ body{
   .hero-meta{justify-content:center!important}
 }
 
-/* Signature portfolio palette: lavender + orchid + warm amber */
+
+/* Refined attractive lavender / orchid palette */
 :root{
-  --text:#f8f3ff;
-  --muted:#b6abc5;
-  --line:rgba(220,190,255,.15);
-  --accent:#d8b4ff;
-  --accent2:#a66cff;
-  --panel:rgba(25,15,37,.76);
-  --glow:rgba(216,180,255,.19);
+  --text:#f7f2ff;--muted:#b7adc9;--line:rgba(205,177,255,.15);
+  --accent:#c9a7ff;--accent2:#875cff;--panel:rgba(21,15,42,.76);--glow:rgba(201,167,255,.20)
 }
 [data-theme="light"]{
-  --text:#24182d;
-  --muted:#76677e;
-  --line:rgba(122,76,145,.15);
-  --accent:#9153bd;
-  --accent2:#6f3c9d;
-  --panel:rgba(255,250,255,.88);
-  --glow:rgba(145,83,189,.14);
+  --text:#21172f;--muted:#71657d;--line:rgba(115,82,157,.15);
+  --accent:#8550c9;--accent2:#6334ad;--panel:rgba(255,252,255,.88);--glow:rgba(133,80,201,.15)
 }
-body{
-  background:
-    radial-gradient(circle at 18% 18%,rgba(208,151,255,.10),transparent 27%),
-    radial-gradient(circle at 82% 72%,rgba(255,190,117,.07),transparent 25%),
-    var(--bg,#09060d)!important;
-}
-/* Warm highlight makes the lavender palette less generic */
-.ai-lab .model-metrics u i{
-  background:linear-gradient(90deg,#d8b4ff,#a66cff 72%,#ffc778)!important;
-}
-.ai-lab .float-3d b{color:#e4c8ff!important}
-.ai-lab .lab-top i{color:#f1dfff!important;border-color:rgba(216,180,255,.30)!important}
+body{background:radial-gradient(circle at 25% 15%,rgba(135,92,255,.11),transparent 30%),radial-gradient(circle at 80% 80%,rgba(201,167,255,.08),transparent 28%),var(--bg,#05040a)!important}
+.ai-lab .model-metrics u i{background:linear-gradient(90deg,#c9a7ff,#875cff)!important}
+.ai-lab .float-3d b{color:#d9c5ff!important}
+.ai-lab .lab-top i{color:#e4d6ff!important;background:rgba(135,92,255,.13)!important;border-color:rgba(201,167,255,.30)!important}
 .project-card:after,.skill-group:after,.learning-cards article:after,.contact-box:after,.language-bar:after,.mini-stats > div:after{
-  background:
-    radial-gradient(75px circle at var(--glow-x,50%) 0%,rgba(226,190,255,.94),transparent 72%),
-    radial-gradient(75px circle at 100% var(--glow-y,50%),rgba(255,199,120,.72),transparent 72%),
-    radial-gradient(75px circle at var(--glow-x,50%) 100%,rgba(180,124,255,.72),transparent 72%),
-    radial-gradient(75px circle at 0% var(--glow-y,50%),rgba(255,210,145,.55),transparent 72%);
+ background:radial-gradient(75px circle at var(--glow-x,50%) 0%,rgba(221,195,255,.95),transparent 72%),radial-gradient(75px circle at 100% var(--glow-y,50%),rgba(135,92,255,.86),transparent 72%),radial-gradient(75px circle at var(--glow-x,50%) 100%,rgba(201,167,255,.74),transparent 72%),radial-gradient(75px circle at 0% var(--glow-y,50%),rgba(165,125,255,.62),transparent 72%);
 }
-.project-card:hover,.skill-group:hover,.learning-cards article:hover,.contact-box:hover,.language-bar:hover,.mini-stats > div:hover{
-  border-color:rgba(216,180,255,.36)!important;
-  box-shadow:0 18px 55px rgba(40,18,55,.22),0 0 30px rgba(182,123,255,.13),inset 0 0 25px rgba(216,180,255,.035)!important;
-}
-/* Remove decorative vertical separators/lines */
-.section:before,.section:after,.hero:before,.hero:after,
-.page:before,.page:after,.main:before,.main:after,
-.vertical-line,.vertical-divider,.v-line,.timeline-line{
-  display:none!important;
-}
+.project-card:hover,.skill-group:hover,.learning-cards article:hover,.contact-box:hover,.language-bar:hover,.mini-stats > div:hover{border-color:rgba(201,167,255,.38)!important;box-shadow:0 18px 55px rgba(35,20,75,.22),0 0 30px rgba(135,92,255,.15),inset 0 0 26px rgba(201,167,255,.04)!important}
