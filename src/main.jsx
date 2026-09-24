@@ -59,14 +59,14 @@ function InteractiveField({ dark }) {
       positions[i * 3] = Math.cos(a) * r;
       positions[i * 3 + 1] = (Math.random() - 0.5) * 11;
       positions[i * 3 + 2] = -2 - Math.random() * 18;
-      sizes[i] = 0.02 + Math.random() * 0.035;
+      sizes[i] = 0.045 + Math.random() * 0.07;
     }
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
     const points = new THREE.Points(geometry, new THREE.PointsMaterial({
       color: dark ? 0xa7e9ff : 0x397b91,
-      size: dark ? 0.035 : 0.045,
+      size: dark ? 0.065 : 0.075,
       transparent: true,
       opacity: dark ? 0.48 : 0.25,
       sizeAttenuation: true
