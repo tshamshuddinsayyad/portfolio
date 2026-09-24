@@ -20,8 +20,8 @@ a{color:inherit;text-decoration:none}
 button,input{font:inherit}
 button{cursor:pointer}
 .app{min-height:100vh;position:relative;overflow:hidden;background:transparent}
-.field{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.92}
-.field:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 35%,rgba(97,231,255,.055),transparent 38%),radial-gradient(circle at 75% 70%,rgba(139,124,255,.045),transparent 32%)}
+.field{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;opacity:.96;overflow:hidden}
+.field:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgba(88,218,255,.055),transparent 42%),radial-gradient(circle at 72% 68%,rgba(167,137,255,.05),transparent 38%)}
 .field canvas{display:block;width:100%!important;height:100%!important}
 .app:after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(5,8,13,.02),rgba(5,8,13,.12) 60%,rgba(5,8,13,.35))}
 [data-theme="light"] .app:after{background:linear-gradient(180deg,rgba(244,247,247,.02),rgba(244,247,247,.12) 60%,rgba(244,247,247,.28))}
