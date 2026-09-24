@@ -1,6 +1,6 @@
-# Tayyab Sayyad — AI Portfolio
+# Tayyab Sayyad — AI / ML Portfolio
 
-A production-oriented React + Vite portfolio with a Three.js background and a LangChain-powered personal AI assistant.
+A responsive React + Vite portfolio with a Three.js galaxy, AI/ML focus sections, interactive project cards, dark/light mode and a LangChain + OpenAI portfolio assistant.
 
 ## Stack
 - React + Vite
@@ -11,20 +11,31 @@ A production-oriented React + Vite portfolio with a Three.js background and a La
 - Responsive CSS
 
 ## Run locally
+
+```bash
 npm install
+cp .env.example .env
+# Edit .env and add your OpenAI API key
 npm run dev
+```
 
-## AI assistant
-Copy .env.example to .env and add your OpenAI API key:
+## AI assistant configuration
 
-OPENAI_API_KEY=...
+The API key is server-side only. Never put it in React code or commit a real key to GitHub.
 
-The API key must never be placed in React client code.
+For Vercel:
+1. Open the project.
+2. Go to **Project Settings → Environment Variables**.
+3. Add `OPENAI_API_KEY`.
+4. Optionally add `OPENAI_MODEL` (defaults to `gpt-5.6-luna`).
+5. Redeploy after saving the variable.
 
-## Personal details to update
-Edit the `profile` object in `src/main.jsx` and replace the placeholder WhatsApp, email and LinkedIn values.
+The current OpenAI model catalog documents GPT-5.6 Luna as a cost-sensitive model. 
 
-## Deploy
-Vercel supports Vite/React deployments and Git-based continuous deployment. Import this GitHub repository into Vercel, add OPENAI_API_KEY under Project Settings → Environment Variables, and deploy.
+## Important personal links
 
-GitHub: https://github.com/tshamshuddinsayyad/portfolio
+The WhatsApp, email and LinkedIn values in `src/main.jsx` are placeholders until the real details are supplied. Replace them before publishing.
+
+## GitHub
+
+https://github.com/tshamshuddinsayyad/portfolio
