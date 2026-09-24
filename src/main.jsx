@@ -30,6 +30,7 @@ function Space({ dark }) {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(52, innerWidth / innerHeight, 0.1, 1000);
     camera.position.set(0, 0, 12);
+
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(devicePixelRatio, 1.8));
     renderer.setSize(innerWidth, innerHeight);
@@ -39,78 +40,127 @@ function Space({ dark }) {
       ? { a: 0x61f4df, b: 0x987cff, c: 0x54a9ff }
       : { a: 0x087f86, b: 0x6b50c9, c: 0x1677c8 };
 
-    // A quantum processor + robotic sensor scene, intentionally different from a neural-network background.
-    const lab = new THREE.Group();
-    scene.add(lab);
+    // New background: no rotating rings/orbits.
+    // A calm holographic field made from particles, vertical data columns and a central crystal.
+    const group = new THREE.Group();
+    scene.add(group);
 
-    const chip = new THREE.Mesh(
-      new THREE.BoxGeometry(3.8, 0.55, 3.8),
-      new THREE.MeshBasicMaterial({ color: palette.c, wireframe: true, transparent: true, opacity: dark ? .38 : .2 })
+    const crystal = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(1.35, 1),
+      new THREE.MeshBasicMaterial({
+        color: palette.a,
+        wireframe: true,
+        transparent: true,
+        opacity: dark ? .30 : .16
+      })
     );
-    chip.rotation.x = -.55;
-    chip.rotation.z = .12;
-    lab.add(chip);
+    crystal.position.set(2.8, -0.4, -1.5);
+    group.add(crystal);
 
-    const qubits = [];
-    for (let i=0;i<16;i++){
-      const x=(i%4-1.5)*.82, z=(Math.floor(i/4)-1.5)*.82;
-      const q=new THREE.Mesh(
-        new THREE.SphereGeometry(.16,16,16),
-        new THREE.MeshBasicMaterial({color:i%3===0?palette.a:palette.b,transparent:true,opacity:.9})
+    const innerCrystal = new THREE.Mesh(
+      new THREE.OctahedronGeometry(.72, 0),
+      new THREE.MeshBasicMaterial({
+        color: palette.b,
+        wireframe: true,
+        transparent: true,
+        opacity: dark ? .24 : .13
+      })
+    );
+    innerCrystal.position.copy(crystal.position);
+    group.add(innerCrystal);
+
+    // Static vertical "data towers" instead of spinning objects.
+    const towers = [];
+    for (let i = 0; i < 18; i++) {
+      const h = .5 + Math.random() * 3.8;
+      const tower = new THREE.Mesh(
+        new THREE.BoxGeometry(.025, h, .025),
+        new THREE.MeshBasicMaterial({
+          color: i % 2 ? palette.c : palette.a,
+          transparent: true,
+          opacity: dark ? .22 : .12
+        })
       );
-      q.position.set(x,.42,z);
-      lab.add(q); qubits.push({q,phase:i*.4});
+      tower.position.set((Math.random() - .5) * 15, -3.5 + h / 2, (Math.random() - .5) * 7);
+      group.add(tower);
+      towers.push({ tower, phase: Math.random() * 6.28, base: h });
     }
 
-    const rings=[];
-    [2.2,2.65,3.1].forEach((r,i)=>{
-      const ring=new THREE.Mesh(
-        new THREE.TorusGeometry(r,.018,8,120),
-        new THREE.MeshBasicMaterial({color:i===1?palette.b:palette.a,transparent:true,opacity:dark?.32:.17})
-      );
-      ring.rotation.set(i*.7,.2+i*.5,i*.4); lab.add(ring); rings.push(ring);
-    });
+    // Floating particles: drifting, not rotating.
+    const particleGeometry = new THREE.BufferGeometry();
+    const pts = new Float32Array(1100 * 3);
+    for (let i = 0; i < 1100; i++) {
+      pts[i * 3] = (Math.random() - .5) * 22;
+      pts[i * 3 + 1] = (Math.random() - .5) * 13;
+      pts[i * 3 + 2] = (Math.random() - .5) * 12 - 2;
+    }
+    particleGeometry.setAttribute("position", new THREE.BufferAttribute(pts, 3));
+    const particles = new THREE.Points(
+      particleGeometry,
+      new THREE.PointsMaterial({
+        color: palette.c,
+        size: dark ? .035 : .045,
+        transparent: true,
+        opacity: dark ? .34 : .18
+      })
+    );
+    scene.add(particles);
 
-    // Robotic arm silhouette around the processor.
-    const armMat=new THREE.MeshBasicMaterial({color:palette.a,wireframe:true,transparent:true,opacity:dark?.46:.25});
-    const arm1=new THREE.Mesh(new THREE.CylinderGeometry(.14,.18,2.6,12),armMat);
-    const arm2=new THREE.Mesh(new THREE.CylinderGeometry(.12,.16,2.1,12),armMat);
-    const joint1=new THREE.Mesh(new THREE.SphereGeometry(.28,16,16),armMat);
-    const joint2=new THREE.Mesh(new THREE.SphereGeometry(.23,16,16),armMat);
-    arm1.position.set(-3.2,1.1,0); arm1.rotation.z=-.48;
-    joint1.position.set(-2.35,2.05,0);
-    arm2.position.set(-1.55,2.55,0); arm2.rotation.z=.72;
-    joint2.position.set(-.78,3.25,0);
-    lab.add(arm1,arm2,joint1,joint2);
-
-    const dataGeometry=new THREE.BufferGeometry();
-    const pts=new Float32Array(900*3);
-    for(let i=0;i<900;i++){const a=Math.random()*Math.PI*2,r=4+Math.random()*9;pts[i*3]=Math.cos(a)*r;pts[i*3+1]=(Math.random()-.5)*8;pts[i*3+2]=Math.sin(a)*r-4;}
-    dataGeometry.setAttribute("position",new THREE.BufferAttribute(pts,3));
-    const data=new THREE.Points(dataGeometry,new THREE.PointsMaterial({color:palette.c,size:dark?.035:.045,transparent:true,opacity:dark?.4:.22}));
-    scene.add(data);
-
-    const mouseMove=e=>{pointer.current.x=(e.clientX/innerWidth-.5)*2;pointer.current.y=(e.clientY/innerHeight-.5)*2};
-    addEventListener("pointermove",mouseMove);
-    let frame;
-    const animate=time=>{
-      frame=requestAnimationFrame(animate); const t=time*.001;
-      camera.position.x+=(pointer.current.x*.8-camera.position.x)*.02;
-      camera.position.y+=(-pointer.current.y*.45-camera.position.y)*.02; camera.lookAt(0,0,0);
-      lab.rotation.y+=dark?.0012:-.0008;
-      chip.rotation.y+=.001;
-      rings.forEach((r,i)=>{r.rotation.x+=.001*(i+1);r.rotation.y+=.0015*(i+1)});
-      qubits.forEach(({q,phase})=>{q.position.y=.42+Math.sin(t*2+phase)*.13;q.scale.setScalar(1+Math.sin(t*2+phase)*.25)});
-      joint1.position.y=2.05+Math.sin(t)*.08;
-      data.rotation.y+=.00025;
-      renderer.render(scene,camera);
+    const mouseMove = e => {
+      pointer.current.x = (e.clientX / innerWidth - .5) * 2;
+      pointer.current.y = (e.clientY / innerHeight - .5) * 2;
     };
+    addEventListener("pointermove", mouseMove);
+
+    let frame;
+    const animate = time => {
+      frame = requestAnimationFrame(animate);
+      const t = time * .001;
+
+      camera.position.x += (pointer.current.x * .65 - camera.position.x) * .018;
+      camera.position.y += (-pointer.current.y * .35 - camera.position.y) * .018;
+      camera.lookAt(0, 0, 0);
+
+      // Gentle breathing only — no rotation.
+      const breathe = 1 + Math.sin(t * .7) * .035;
+      crystal.scale.setScalar(breathe);
+      innerCrystal.scale.setScalar(1 + Math.sin(t * .9 + 1) * .05);
+
+      towers.forEach(({ tower, phase, base }) => {
+        const h = base * (.78 + (Math.sin(t * .8 + phase) + 1) * .11);
+        tower.scale.y = h / base;
+        tower.position.y = -3.5 + h / 2;
+      });
+
+      particles.position.y = Math.sin(t * .08) * .12;
+      renderer.render(scene, camera);
+    };
+
     animate(0);
-    const resize=()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)};
-    addEventListener("resize",resize);
-    return()=>{cancelAnimationFrame(frame);removeEventListener("resize",resize);removeEventListener("pointermove",mouseMove);renderer.dispose();dataGeometry.dispose();data.material.dispose();lab.traverse(o=>{o.geometry?.dispose();o.material?.dispose()});ref.current?.contains(renderer.domElement)&&ref.current.removeChild(renderer.domElement)};
-  },[dark]);
-  return <div className={dark?"space space-dark":"space space-light"} ref={ref}/>;
+
+    const resize = () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    };
+    addEventListener("resize", resize);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      removeEventListener("resize", resize);
+      removeEventListener("pointermove", mouseMove);
+      renderer.dispose();
+      particleGeometry.dispose();
+      particles.material.dispose();
+      group.traverse(o => {
+        o.geometry?.dispose();
+        o.material?.dispose();
+      });
+      if (ref.current?.contains(renderer.domElement)) ref.current.removeChild(renderer.domElement);
+    };
+  }, [dark]);
+
+  return <div className={dark ? "space space-dark" : "space space-light"} ref={ref} />;
 }
 function Chatbot() {
   const [open, setOpen] = useState(false);
