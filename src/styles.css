@@ -224,3 +224,71 @@ footer{max-width:1280px;margin:auto;padding:25px 28px 45px;border-top:1px solid 
 @keyframes signalWave{50%{transform:rotate(3deg) skewX(12deg) scaleY(1.12)}}
 @keyframes quantumPulseRing{50%{transform:rotateX(62deg) scale(1.06);opacity:.65}}
 @keyframes quantumPulse{50%{transform:scale(1.8);opacity:.55}}
+
+
+/* =========================================================
+   NEW BACKGROUND SYSTEM — AEROSPACE DATA GARDEN
+   The 3D scene is now the hero background; section layers are
+   deliberately restrained so the moving geometry remains visible.
+   ========================================================= */
+.space{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  opacity:.72;
+  pointer-events:none;
+}
+.space canvas{
+  display:block;
+  width:100%!important;
+  height:100%!important;
+}
+.app:after{
+  background:
+    radial-gradient(circle at 50% 20%,rgba(98,246,223,.035),transparent 35%),
+    linear-gradient(180deg,rgba(2,6,17,.04),rgba(2,6,17,.24) 55%,rgba(2,6,17,.58));
+  pointer-events:none;
+}
+[data-theme="light"] .app:after{
+  background:
+    radial-gradient(circle at 50% 20%,rgba(8,127,134,.055),transparent 38%),
+    linear-gradient(180deg,rgba(239,249,250,.04),rgba(239,249,250,.20) 55%,rgba(239,249,250,.48));
+}
+.section{
+  background:transparent!important;
+}
+.section::before,
+.section::after{
+  opacity:.55;
+}
+.theme-intelligence::before{
+  background:radial-gradient(circle at 15% 35%,rgba(98,246,223,.07),transparent 30%);
+}
+.theme-projects{
+  background-image:
+    linear-gradient(rgba(85,168,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(85,168,255,.025) 1px,transparent 1px)!important;
+  background-size:56px 56px!important;
+}
+.theme-data::before{
+  background:linear-gradient(180deg,transparent,rgba(85,168,255,.025));
+}
+.theme-code::before{
+  background-image:linear-gradient(rgba(98,246,223,.025) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(98,246,223,.025) 1px,transparent 1px);
+}
+.theme-signal::before{
+  border-top:1px solid rgba(154,131,255,.07);
+  border-bottom:1px solid rgba(98,246,223,.05);
+}
+.theme-quantum::before{
+  border:1px solid rgba(98,246,223,.06);
+  box-shadow:0 0 0 45px rgba(98,246,223,.012),0 0 0 110px rgba(154,131,255,.01);
+  animation:none;
+}
+.theme-contact::after{
+  opacity:.35;
+}
+@media(max-width:700px){
+  .space{opacity:.58}
+}
