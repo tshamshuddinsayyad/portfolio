@@ -185,7 +185,7 @@ footer{max-width:1280px;margin:auto;padding:25px 28px 45px;border-top:1px solid 
   inset:12% 28%;border:1px solid rgba(98,246,223,.11);border-radius:50%;
   box-shadow:0 0 0 35px rgba(98,246,223,.025),0 0 0 90px rgba(154,131,255,.018);
   transform:rotateX(62deg);
-  animation:quantumOrbit 13s linear infinite;
+  animation:quantumPulseRing 5s ease-in-out infinite;
 }
 .theme-quantum::after{
   width:8px;height:8px;inset:45% auto auto 50%;border-radius:50%;
@@ -222,5 +222,5 @@ footer{max-width:1280px;margin:auto;padding:25px 28px 45px;border-top:1px solid 
 @keyframes dataFloor{to{background-position:0 40px,0 40px}}
 @keyframes scanline{to{transform:translateY(38px)}}
 @keyframes signalWave{50%{transform:rotate(3deg) skewX(12deg) scaleY(1.12)}}
-@keyframes quantumOrbit{to{transform:rotateX(62deg) rotateZ(360deg)}}
+@keyframes quantumPulseRing{50%{transform:rotateX(62deg) scale(1.06);opacity:.65}}
 @keyframes quantumPulse{50%{transform:scale(1.8);opacity:.55}}
