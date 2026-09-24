@@ -98,7 +98,7 @@ function Chatbot() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
-  const [messages, setMessages] = useState([{ role: "assistant", content: "Hi! I’m Tayyab’s portfolio AI. Ask about projects, skills, AI/ML, LangChain, RAG or the tech behind this site." }]);
+  const [messages, setMessages] = useState([{ role: "assistant", content: "Hi! I’m Tayyab’s AI assistant. Ask me anything — general knowledge, coding, AI/ML, science, study questions, or questions about Tayyab’s portfolio." }]);
   const prompts = ["What projects has Tayyab built?", "What is the University AI Chatbot?", "Which AI technologies does he use?"];
 
   async function send(text = input) {
@@ -117,10 +117,10 @@ function Chatbot() {
   return <>
     <button className="chat-fab" onClick={() => setOpen(v => !v)} aria-label="Open AI assistant"><Bot size={21}/><span>Ask AI</span><i/></button>
     {open && <section className="chat-panel">
-      <div className="chat-head"><div><b><Sparkles size={15}/> Portfolio AI</b><small>LangChain • RAG • OpenAI</small></div><button onClick={() => setOpen(false)}>×</button></div>
+      <div className="chat-head"><div><b><Sparkles size={15}/> Universal AI Assistant</b><small>General AI • Portfolio Knowledge</small></div><button onClick={() => setOpen(false)}>×</button></div>
       <div className="quick-prompts">{prompts.map(p => <button key={p} onClick={() => send(p)}>{p}</button>)}</div>
       <div className="chat-body">{messages.map((m,i)=><div key={i} className={"bubble "+m.role}>{m.content}</div>)}{busy&&<div className="bubble assistant typing">Thinking<span>•••</span></div>}</div>
-      <div className="chat-input"><input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&send()} placeholder="Ask anything about my portfolio…"/><button onClick={() => send()} disabled={busy}><Send size={17}/></button></div>
+      <div className="chat-input"><input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&send()} placeholder="Ask me anything…"/><button onClick={() => send()} disabled={busy}><Send size={17}/></button></div>
     </section>}
   </>;
 }
