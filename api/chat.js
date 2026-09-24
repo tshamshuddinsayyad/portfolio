@@ -1,4 +1,3 @@
-import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 
 const knowledge = [
@@ -9,47 +8,108 @@ const knowledge = [
   "The portfolio includes a University AI Chatbot, an interactive 3D AI portfolio and student analytics work."
 ];
 
-let embeddingCache = null;
-function dot(a,b){let s=0,aa=0,bb=0;for(let i=0;i<a.length;i++){s+=a[i]*b[i];aa+=a[i]*a[i];bb+=b[i]*b[i]}return s/(Math.sqrt(aa)*Math.sqrt(bb)||1)}
-
-async function retrieve(query){
-  const embeddings=new OpenAIEmbeddings({model:"text-embedding-3-small"});
-  if(!embeddingCache){
-    embeddingCache=await Promise.all(knowledge.map(async text=>({text,vector:await embeddings.embedQuery(text)})));
-  }
-  const q=await embeddings.embedQuery(query);
-  return embeddingCache.map(x=>({text:x.text,score:dot(q,x.vector)})).sort((a,b)=>b.score-a.score).slice(0,3).map(x=>x.text).join("\n");
+function tokenize(text) {
+  return new Set(
+    text.toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(Boolean)
+  );
 }
 
-export default async function handler(req,res){
-  if(req.method!=="POST") return res.status(405).json({answer:"Method not allowed"});
-  const {message}=req.body||{};
-  if(!message?.trim()) return res.status(400).json({answer:"Please ask a question."});
+function retrieve(query) {
+  const q = tokenize(query);
+  return knowledge
+    .map(text => {
+      const words = tokenize(text);
+      let score = 0;
+      for (const word of q) if (words.has(word)) score++;
+      return { text, score };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map(x => x.text)
+    .join("\n");
+}
 
-  if(!process.env.OPENAI_API_KEY){
-    return res.status(503).json({answer:"The portfolio AI is not configured on this deployment yet. Add OPENAI_API_KEY in Vercel → Project Settings → Environment Variables, then redeploy."});
+async function askGemini(message, context) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  const model = process.env.GEMINI_MODEL || "gemini-3.8-flash";
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": apiKey
+      },
+      body: JSON.stringify({
+        systemInstruction: {
+          parts: [{
+            text:
+              "You are the AI assistant embedded in Tayyab Sayyad's developer portfolio. " +
+              "Use the supplied portfolio context as your primary personal knowledge. " +
+              "Never invent personal facts, contact details, education history, employment, achievements or project metrics. " +
+              "For missing personal details, say the portfolio does not contain that detail. " +
+              "You may explain general technical concepts when relevant. Keep answers concise, useful and factual.\n\n" +
+              "Portfolio context:\n" + context
+          }]
+        },
+        contents: [
+          {
+            role: "user",
+            parts: [{ text: message }]
+          }
+        ],
+        generationConfig: {
+          temperature: 0.3
+        }
+      })
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    const detail = data?.error?.message || `Gemini API returned HTTP ${response.status}`;
+    throw new Error(detail);
   }
 
-  try{
-    const context=await retrieve(message);
-    const model=new ChatOpenAI({
-      apiKey:process.env.OPENAI_API_KEY,
-      model:process.env.OPENAI_MODEL || "gpt-5.6-luna",
-      temperature:0.3
+  return data?.candidates?.[0]?.content?.parts?.map(p => p.text || "").join("") ||
+    "I couldn't generate a response.";
+}
+
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ answer: "Method not allowed" });
+  }
+
+  const { message } = req.body || {};
+
+  if (!message?.trim()) {
+    return res.status(400).json({ answer: "Please ask a question." });
+  }
+
+  if (!process.env.GEMINI_API_KEY) {
+    return res.status(503).json({
+      answer:
+        "The portfolio AI is not configured yet. Add GEMINI_API_KEY in Vercel → Project Settings → Environment Variables, then redeploy."
     });
-    const out=await model.invoke([
-      new SystemMessage(
-        "You are the AI assistant embedded in Tayyab Sayyad's developer portfolio. " +
-        "Use the supplied portfolio context as your primary personal knowledge. Never invent personal facts, contact details, education history, employment, achievements or project metrics. " +
-        "For missing personal details, say the portfolio does not contain that detail. " +
-        "You may explain general technical concepts when relevant. Keep answers concise, useful and factual.\n\nPortfolio context:\n"+context
-      ),
-      new HumanMessage(message.trim())
-    ]);
-    return res.status(200).json({answer:typeof out.content==="string"?out.content:JSON.stringify(out.content)});
-  }catch(error){
-    console.error("Portfolio AI error:",error);
-    const detail=process.env.NODE_ENV==="development" ? String(error?.message||error) : "Check the API key, model name and deployment logs.";
-    return res.status(500).json({answer:"The AI request failed. "+detail});
+  }
+
+  try {
+    const context = retrieve(message.trim());
+    const answer = await askGemini(message.trim(), context);
+
+    return res.status(200).json({ answer });
+  } catch (error) {
+    console.error("Portfolio Gemini AI error:", error);
+
+    const detail =
+      process.env.NODE_ENV === "development"
+        ? String(error?.message || error)
+        : "Check the Gemini API key, model name, free-tier limits and deployment logs.";
+
+    return res.status(500).json({
+      answer: "The AI request failed. " + detail
+    });
   }
 }
