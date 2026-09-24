@@ -245,3 +245,46 @@ footer{position:relative;z-index:5;max-width:1180px;margin:auto;padding:28px;col
   .learning-cards article{min-height:170px;padding:22px}
   .contact-box{padding:38px 26px}
 }
+
+/* Final typography normalization */
+body{font-size:15px;line-height:1.65}
+h1{font-size:clamp(52px,7vw,86px)!important;line-height:.98!important;letter-spacing:-3.5px!important}
+h2,.section h2{font-size:clamp(38px,5vw,58px)!important;line-height:1.05!important;letter-spacing:-2px!important}
+h3,.project-card h3{font-size:22px!important;line-height:1.25!important}
+p,.section p,.project-card p,.contact-box p{font-size:15px!important;line-height:1.75!important}
+.eyebrow,.section-label,.lab-top,.lab-bottom{font-size:10px!important;line-height:1.4}
+.navlinks{font-size:11px!important}
+.primary,.secondary,.nav-cta{font-size:11px!important}
+.skill-row b{font-size:15px!important}
+.skill-row span,.language-bar span{font-size:12px!important}
+.language-bar i{font-size:11px!important}
+.learning-cards article span{font-size:12px!important}
+.learning-cards article h3{font-size:20px!important}
+.model-head b{font-size:10px!important}
+.model-head small,.model-head>span,.model-metrics span,.model-metrics b{font-size:9px!important}
+.float-3d span{font-size:7px!important}
+.float-3d b{font-size:13px!important}
+.lab-bottom span{font-size:7px!important}
+@media(max-width:760px){
+  h1{font-size:clamp(42px,12vw,64px)!important;letter-spacing:-2.5px!important}
+  h2,.section h2{font-size:clamp(34px,9vw,48px)!important}
+  h3,.project-card h3{font-size:20px!important}
+  p,.section p,.project-card p,.contact-box p{font-size:14px!important}
+}
+
+/* Visible cursor-reactive colored border reflection */
+.project-card:after,.skill-group:after,.learning-cards article:after,.contact-box:after,.language-bar:after,.mini-stats > div:after{
+  opacity:0;
+  transition:opacity .18s ease,filter .18s ease;
+  filter:blur(.2px);
+}
+.project-card:hover:after,.skill-group:hover:after,.learning-cards article:hover:after,.contact-box:hover:after,.language-bar:hover:after,.mini-stats > div:hover:after{
+  opacity:1;
+}
+.project-card:hover,.skill-group:hover,.learning-cards article:hover,.contact-box:hover,.language-bar:hover,.mini-stats > div:hover{
+  box-shadow:
+    0 18px 55px rgba(0,0,0,.18),
+    0 0 0 1px rgba(88,218,255,.22),
+    0 0 24px rgba(88,218,255,.10),
+    inset 0 0 24px rgba(167,137,255,.035);
+}
