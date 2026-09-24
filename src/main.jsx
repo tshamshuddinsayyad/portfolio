@@ -118,18 +118,6 @@ function InteractiveField({ dark }) {
     const galaxy = new THREE.Points(geometry, material);
     scene.add(galaxy);
 
-    const coreGeometry = new THREE.BufferGeometry();
-    coreGeometry.setAttribute("position", new THREE.Float32BufferAttribute([0, 0, 0], 3));
-    const core = new THREE.Points(coreGeometry, new THREE.PointsMaterial({
-      color: dark ? 0xe0dcff : 0x8279df,
-      size: 1.35,
-      transparent: true,
-      opacity: dark ? 0.18 : 0.10,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
-    }));
-    scene.add(core);
-
     const onMove = e => {
       pointer.current.x = (e.clientX / innerWidth - 0.5) * 2;
       pointer.current.y = (e.clientY / innerHeight - 0.5) * 2;
@@ -154,7 +142,6 @@ function InteractiveField({ dark }) {
       galaxy.position.x += (pointer.current.x * 0.32 - galaxy.position.x) * 0.018;
       galaxy.position.y += (-pointer.current.y * 0.20 - galaxy.position.y) * 0.018;
 
-      core.scale.setScalar(1 + Math.sin(t * 1.25) * 0.13);
       renderer.render(scene, camera);
       frame = requestAnimationFrame(animate);
     };
@@ -166,8 +153,6 @@ function InteractiveField({ dark }) {
       removeEventListener("resize", onResize);
       geometry.dispose();
       material.dispose();
-      coreGeometry.dispose();
-      core.material.dispose();
       renderer.dispose();
       host.removeChild(renderer.domElement);
     };
