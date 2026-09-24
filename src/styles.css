@@ -288,3 +288,77 @@ p,.section p,.project-card p,.contact-box p{font-size:15px!important;line-height
     0 0 24px rgba(88,218,255,.10),
     inset 0 0 24px rgba(167,137,255,.035);
 }
+
+/* AI / DATA SCIENCE LAB readability */
+.ai-lab{
+  background:rgba(5,9,24,.78)!important;
+  border:1px solid rgba(135,166,225,.24)!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.035)!important;
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+.ai-lab .lab-top,
+.ai-lab .lab-bottom{
+  color:#dce8ff!important;
+  text-shadow:0 1px 12px rgba(0,0,0,.55);
+}
+.ai-lab .lab-top i{
+  color:#83e7ff!important;
+  background:rgba(58,190,220,.09)!important;
+  border-color:rgba(95,220,255,.25)!important;
+}
+.ai-lab .model-card{
+  background:rgba(9,15,34,.94)!important;
+  border:1px solid rgba(146,177,232,.25)!important;
+  box-shadow:0 20px 55px rgba(0,0,0,.30)!important;
+}
+.ai-lab .model-head small,
+.ai-lab .model-metrics span{
+  color:#9eafd0!important;
+  opacity:1!important;
+}
+.ai-lab .model-head b,
+.ai-lab .model-metrics b{
+  color:#f1f6ff!important;
+  text-shadow:0 1px 10px rgba(0,0,0,.45);
+}
+.ai-lab .model-head>span{
+  color:#9fcaff!important;
+}
+.ai-lab .model-metrics u{
+  background:rgba(148,169,210,.16)!important;
+}
+.ai-lab .model-metrics u i{
+  background:linear-gradient(90deg,#56dfff,#8e7dff)!important;
+  box-shadow:0 0 10px rgba(86,223,255,.25);
+}
+.ai-lab .data-card{
+  background:rgba(9,15,34,.92)!important;
+  border:1px solid rgba(146,177,232,.22)!important;
+  box-shadow:0 14px 38px rgba(0,0,0,.24)!important;
+}
+.ai-lab .data-card span{
+  color:#a9b8d5!important;
+}
+.ai-lab .data-card b,
+.ai-lab .data-card i{
+  color:#eef5ff!important;
+}
+.ai-lab .lab-grid{
+  opacity:.28!important;
+}
+.ai-lab .float-3d{
+  background:rgba(7,13,31,.92)!important;
+  border-color:rgba(113,174,255,.32)!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.25)!important;
+}
+.ai-lab .float-3d span{
+  color:#b7c6e0!important;
+}
+.ai-lab .float-3d b{
+  color:#8fe9ff!important;
+}
+@media(max-width:760px){
+  .ai-lab{min-height:520px!important}
+  .ai-lab .model-card{width:min(88%,430px)!important}
+}
