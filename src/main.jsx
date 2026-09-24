@@ -31,96 +31,149 @@ const skillGroups = [
 ];
 
 function InteractiveField({ dark }) {
-  const ref = useRef(null);
+  const mount = useRef(null);
   const pointer = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
-    const host = ref.current;
+    const host = mount.current;
     if (!host) return;
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(52, innerWidth / innerHeight, 0.1, 100);
-    camera.position.set(0, 0, 13);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.7));
-    renderer.setSize(innerWidth, innerHeight);
-    renderer.setClearColor(0x000000, 0);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(55, host.clientWidth / host.clientHeight, 0.1, 100);
+    camera.position.set(0, 0, 8);
+
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.8));
+    renderer.setSize(host.clientWidth, host.clientHeight);
     host.appendChild(renderer.domElement);
 
-    const group = new THREE.Group();
-    scene.add(group);
-
-    const count = 1150;
+    const count = 3000;
     const positions = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
+    const arms = 5;
+
     for (let i = 0; i < count; i++) {
-      const r = 5 + Math.random() * 15;
-      const a = Math.random() * Math.PI * 2;
-      positions[i * 3] = Math.cos(a) * r;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 11;
-      positions[i * 3 + 2] = -2 - Math.random() * 18;
-      sizes[i] = 0.045 + Math.random() * 0.07;
+      const arm = i % arms;
+      const radius = Math.pow(Math.random(), 0.60) * 5.4;
+      const armAngle = (arm / arms) * Math.PI * 2;
+      const angle = armAngle + radius * 1.5 + (Math.random() - 0.5) * 0.62;
+      const spread = 0.14 + radius * 0.04;
+
+      positions[i * 3] = Math.cos(angle) * radius + (Math.random() - 0.5) * spread;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * (0.13 + radius * 0.06);
+      positions[i * 3 + 2] = Math.sin(angle) * radius + (Math.random() - 0.5) * spread;
+
+      const center = Math.max(0, 1 - radius / 5.4);
+      sizes[i] = 0.045 + Math.random() * 0.095 + center * 0.04;
     }
+
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
-    const points = new THREE.Points(geometry, new THREE.PointsMaterial({
-      color: dark ? 0xa7e9ff : 0x397b91,
-      size: dark ? 0.065 : 0.075,
+
+    const material = new THREE.ShaderMaterial({
       transparent: true,
-      opacity: dark ? 0.48 : 0.25,
-      sizeAttenuation: true
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      uniforms: {
+        uTime: { value: 0 },
+        uColor: { value: new THREE.Color(dark ? 0x75b9ff : 0x526fd1) },
+        uAccent: { value: new THREE.Color(dark ? 0xc7b7ff : 0x8d7ff0) }
+      },
+      vertexShader: `
+        attribute float size;
+        uniform float uTime;
+        varying float vCenter;
+
+        void main() {
+          vec3 p = position;
+          float radius = length(p.xz);
+          float speed = 0.018 + 0.014 * (1.0 - min(radius / 5.4, 1.0));
+          float a = uTime * speed;
+          float cs = cos(a);
+          float sn = sin(a);
+          p.xz = mat2(cs, -sn, sn, cs) * p.xz;
+
+          vec4 mv = modelViewMatrix * vec4(p, 1.0);
+          gl_PointSize = size * (115.0 / -mv.z);
+          gl_Position = projectionMatrix * mv;
+          vCenter = 1.0 - smoothstep(0.0, 5.4, radius);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uColor;
+        uniform vec3 uAccent;
+        varying float vCenter;
+
+        void main() {
+          float d = length(gl_PointCoord - 0.5);
+          float soft = 1.0 - smoothstep(0.05, 0.5, d);
+          if (soft < 0.015) discard;
+          vec3 color = mix(uColor, uAccent, vCenter * 0.8);
+          gl_FragColor = vec4(color, soft * (0.34 + vCenter * 0.60));
+        }
+      `
+    });
+
+    const galaxy = new THREE.Points(geometry, material);
+    scene.add(galaxy);
+
+    const coreGeometry = new THREE.BufferGeometry();
+    coreGeometry.setAttribute("position", new THREE.Float32BufferAttribute([0, 0, 0], 3));
+    const core = new THREE.Points(coreGeometry, new THREE.PointsMaterial({
+      color: dark ? 0xe0dcff : 0x8279df,
+      size: 1.35,
+      transparent: true,
+      opacity: dark ? 0.18 : 0.10,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
     }));
-    group.add(points);
+    scene.add(core);
+
+    const onMove = e => {
+      pointer.current.x = (e.clientX / innerWidth - 0.5) * 2;
+      pointer.current.y = (e.clientY / innerHeight - 0.5) * 2;
+    };
+    const onResize = () => {
+      camera.aspect = host.clientWidth / host.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(host.clientWidth, host.clientHeight);
+    };
+
+    addEventListener("pointermove", onMove);
+    addEventListener("resize", onResize);
 
     let frame;
-    const animate = time => {
-      frame = requestAnimationFrame(animate);
-      const t = time * 0.001;
-      camera.position.x += (pointer.current.x * 0.35 - camera.position.x) * 0.02;
-      camera.position.y += (-pointer.current.y * 0.22 - camera.position.y) * 0.02;
-      camera.lookAt(0, 0, -3);
-      group.position.x += (pointer.current.x * 0.28 - group.position.x) * 0.018;
-      group.position.y += (-pointer.current.y * 0.18 - group.position.y) * 0.018;
-      points.rotation.y += pointer.current.x * 0.00012;
-      points.rotation.x += pointer.current.y * 0.00008;
-      renderer.render(scene, camera);
-    };
-    animate(0);
+    const clock = new THREE.Clock();
+    const animate = () => {
+      const t = clock.getElapsedTime();
+      material.uniforms.uTime.value = t;
 
-    const resize = () => {
-      camera.aspect = innerWidth / innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(innerWidth, innerHeight);
+      galaxy.rotation.y += (pointer.current.x * 0.20 - galaxy.rotation.y) * 0.018;
+      galaxy.rotation.x += (-pointer.current.y * 0.12 - galaxy.rotation.x) * 0.018;
+      galaxy.position.x += (pointer.current.x * 0.32 - galaxy.position.x) * 0.018;
+      galaxy.position.y += (-pointer.current.y * 0.20 - galaxy.position.y) * 0.018;
+
+      core.scale.setScalar(1 + Math.sin(t * 1.25) * 0.13);
+      renderer.render(scene, camera);
+      frame = requestAnimationFrame(animate);
     };
-    addEventListener("resize", resize);
+    animate();
 
     return () => {
       cancelAnimationFrame(frame);
-      removeEventListener("pointermove", mouseMove);
-      removeEventListener("resize", resize);
+      removeEventListener("pointermove", onMove);
+      removeEventListener("resize", onResize);
       geometry.dispose();
-      points.material.dispose();
+      material.dispose();
+      coreGeometry.dispose();
+      core.material.dispose();
       renderer.dispose();
-      if (host.contains(renderer.domElement)) host.removeChild(renderer.domElement);
+      host.removeChild(renderer.domElement);
     };
   }, [dark]);
 
-  return <div className="field" ref={ref} />;
-}
-
-function usePointerGlow() {
-  useEffect(() => {
-    const onMove = e => {
-      const target = e.target.closest?.(".project-card, .skill-group, .learning-cards article, .contact-box, .language-bar, .mini-stats > div");
-      if (!target) return;
-      const r = target.getBoundingClientRect();
-      target.style.setProperty("--glow-x", ((e.clientX - r.left) / r.width * 100).toFixed(1) + "%");
-      target.style.setProperty("--glow-y", ((e.clientY - r.top) / r.height * 100).toFixed(1) + "%");
-    };
-    document.addEventListener("pointermove", onMove);
-    return () => document.removeEventListener("pointermove", onMove);
-  }, []);
+  return <div className="field" ref={mount} aria-hidden="true" />;
 }
 
 function AILab() {
