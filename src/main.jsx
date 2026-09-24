@@ -39,12 +39,12 @@ function InteractiveField({ dark }) {
     if (!host) return;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(55, host.clientWidth / host.clientHeight, 0.1, 100);
+    const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 100);
     camera.position.set(0, 0, 8);
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setPixelRatio(Math.min(devicePixelRatio, 1.8));
-    renderer.setSize(host.clientWidth, host.clientHeight);
+    renderer.setSize(innerWidth, innerHeight);
     host.appendChild(renderer.domElement);
 
     const count = 3000;
@@ -54,13 +54,13 @@ function InteractiveField({ dark }) {
 
     for (let i = 0; i < count; i++) {
       const arm = i % arms;
-      const radius = Math.pow(Math.random(), 0.60) * 5.4;
+      const radius = Math.pow(Math.random(), 0.60) * 6.4;
       const armAngle = (arm / arms) * Math.PI * 2;
       const angle = armAngle + radius * 1.5 + (Math.random() - 0.5) * 0.62;
       const spread = 0.14 + radius * 0.04;
 
       positions[i * 3] = Math.cos(angle) * radius + (Math.random() - 0.5) * spread;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * (0.13 + radius * 0.06);
+      positions[i * 3 + 1] = (Math.random() - 0.5) * (0.9 + radius * 0.18);
       positions[i * 3 + 2] = Math.sin(angle) * radius + (Math.random() - 0.5) * spread;
 
       const center = Math.max(0, 1 - radius / 5.4);
@@ -135,9 +135,9 @@ function InteractiveField({ dark }) {
       pointer.current.y = (e.clientY / innerHeight - 0.5) * 2;
     };
     const onResize = () => {
-      camera.aspect = host.clientWidth / host.clientHeight;
+      camera.aspect = innerWidth / innerHeight;
       camera.updateProjectionMatrix();
-      renderer.setSize(host.clientWidth, host.clientHeight);
+      renderer.setSize(innerWidth, innerHeight);
     };
 
     addEventListener("pointermove", onMove);
