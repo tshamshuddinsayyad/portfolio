@@ -28,8 +28,8 @@ function Space({ dark }) {
 
   useEffect(() => {
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(48, innerWidth / innerHeight, 0.1, 100);
-    camera.position.set(0, 0, 15);
+    const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, .1, 100);
+    camera.position.set(0, 0, 14);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(devicePixelRatio, 1.6));
@@ -38,109 +38,111 @@ function Space({ dark }) {
     ref.current?.appendChild(renderer.domElement);
 
     const palette = dark
-      ? { cyan: 0x61f4df, violet: 0x9a83ff, blue: 0x54a9ff }
-      : { cyan: 0x087f86, violet: 0x7354c9, blue: 0x1677c8 };
+      ? { star: 0xb9dfff, accent: 0x61f4df, cloud: 0x6e8fc9 }
+      : { star: 0x376f91, accent: 0x087f86, cloud: 0x8bb9cf };
 
-    /*
-      NEW VISUAL SYSTEM:
-      A 3D "AEROSPACE DATA GARDEN" — flowing glass ribbons, floating
-      architectural shards and a deep particle field. Nothing is a
-      standard rotating ring or neural network.
-    */
-    const world = new THREE.Group();
-    scene.add(world);
+    // A calm 3D sky: tiny stars, drifting dust, soft clouds and a distant moon.
+    const sky = new THREE.Group();
+    scene.add(sky);
 
-    // Flowing 3D ribbons. Their curves continuously deform in space.
-    const ribbons = [];
-    const ribbonDefs = [
-      { y: 2.0, z: -1.0, amp: 1.15, freq: .72, color: palette.cyan, phase: 0 },
-      { y: -1.0, z: -2.5, amp: .85, freq: .56, color: palette.violet, phase: 2.1 },
-      { y: .2, z: -4.0, amp: 1.45, freq: .42, color: palette.blue, phase: 4.0 }
-    ];
+    // Tiny star field — deliberately small and sparse.
+    const starGeometry = new THREE.BufferGeometry();
+    const starPositions = new Float32Array(1800 * 3);
+    const starSizes = new Float32Array(1800);
 
-    ribbonDefs.forEach((def, ri) => {
-      const count = 90;
-      const positions = new Float32Array(count * 3);
-      const geometry = new THREE.BufferGeometry();
-      geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-
-      const material = new THREE.LineBasicMaterial({
-        color: def.color,
-        transparent: true,
-        opacity: dark ? (ri === 0 ? .42 : .25) : (ri === 0 ? .25 : .14)
-      });
-
-      const line = new THREE.Line(geometry, material);
-      world.add(line);
-      ribbons.push({ line, positions, count, ...def });
-    });
-
-    // Floating glass-like 3D shards.
-    const shards = [];
-    for (let i = 0; i < 22; i++) {
-      const geometry = i % 2
-        ? new THREE.OctahedronGeometry(.22 + Math.random() * .35, 0)
-        : new THREE.BoxGeometry(.25 + Math.random() * .45, .25 + Math.random() * .45, .08 + Math.random() * .22);
-
-      const material = new THREE.MeshBasicMaterial({
-        color: i % 3 === 0 ? palette.cyan : i % 3 === 1 ? palette.violet : palette.blue,
-        wireframe: true,
-        transparent: true,
-        opacity: dark ? .22 : .12
-      });
-
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(
-        (Math.random() - .5) * 16,
-        (Math.random() - .5) * 9,
-        -1 - Math.random() * 9
-      );
-      mesh.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
-      world.add(mesh);
-
-      shards.push({
-        mesh,
-        phase: Math.random() * Math.PI * 2,
-        speed: .18 + Math.random() * .28,
-        drift: .15 + Math.random() * .35,
-        baseX: mesh.position.x,
-        baseY: mesh.position.y
-      });
+    for (let i = 0; i < 1800; i++) {
+      const radius = 10 + Math.random() * 22;
+      const theta = Math.random() * Math.PI * 2;
+      const y = (Math.random() - .5) * 16;
+      starPositions[i * 3] = Math.cos(theta) * radius;
+      starPositions[i * 3 + 1] = y;
+      starPositions[i * 3 + 2] = -5 - Math.random() * 25;
+      starSizes[i] = .018 + Math.random() * .035;
     }
+    starGeometry.setAttribute("position", new THREE.BufferAttribute(starPositions, 3));
 
-    // Fine atmospheric particles.
-    const particleGeometry = new THREE.BufferGeometry();
-    const particlePositions = new Float32Array(1500 * 3);
-    for (let i = 0; i < 1500; i++) {
-      particlePositions[i * 3] = (Math.random() - .5) * 24;
-      particlePositions[i * 3 + 1] = (Math.random() - .5) * 14;
-      particlePositions[i * 3 + 2] = -2 - Math.random() * 16;
-    }
-    particleGeometry.setAttribute("position", new THREE.BufferAttribute(particlePositions, 3));
-
-    const particles = new THREE.Points(
-      particleGeometry,
+    const stars = new THREE.Points(
+      starGeometry,
       new THREE.PointsMaterial({
-        color: palette.blue,
-        size: dark ? .028 : .038,
+        color: palette.star,
+        size: dark ? .035 : .045,
         transparent: true,
-        opacity: dark ? .28 : .14
+        opacity: dark ? .58 : .30,
+        sizeAttenuation: true
       })
     );
-    world.add(particles);
+    sky.add(stars);
 
-    // Soft central light plane, like a distant holographic horizon.
-    const horizon = new THREE.Mesh(
-      new THREE.PlaneGeometry(28, 7),
-      new THREE.MeshBasicMaterial({
-        color: palette.cyan,
+    // A second, much smaller dust layer gives the sky depth.
+    const dustGeometry = new THREE.BufferGeometry();
+    const dustPositions = new Float32Array(420 * 3);
+
+    for (let i = 0; i < 420; i++) {
+      dustPositions[i * 3] = (Math.random() - .5) * 24;
+      dustPositions[i * 3 + 1] = (Math.random() - .5) * 11;
+      dustPositions[i * 3 + 2] = -2 - Math.random() * 15;
+    }
+    dustGeometry.setAttribute("position", new THREE.BufferAttribute(dustPositions, 3));
+
+    const dust = new THREE.Points(
+      dustGeometry,
+      new THREE.PointsMaterial({
+        color: palette.accent,
+        size: dark ? .055 : .065,
         transparent: true,
-        opacity: dark ? .018 : .025,
-        side: THREE.DoubleSide
+        opacity: dark ? .18 : .10
       })
     );
-    horizon.position.set(0, -3.2, -8);
-    world.add(horizon);
+    sky.add(dust);
+
+    // Soft moon / sun-like celestial body.
+    const moon = new THREE.Mesh(
+      new THREE.SphereGeometry(1.15, 32, 32),
+      new THREE.MeshBasicMaterial({
+        color: dark ? 0x9bcfff : 0xffe8a6,
+        transparent: true,
+        opacity: dark ? .12 : .18
+      })
+    );
+    moon.position.set(5.5, 3.2, -10);
+    sky.add(moon);
+
+    // Very subtle atmospheric halo.
+    const halo = new THREE.Mesh(
+      new THREE.SphereGeometry(1.7, 32, 32),
+      new THREE.MeshBasicMaterial({
+        color: palette.cloud,
+        transparent: true,
+        opacity: dark ? .035 : .025,
+        side: THREE.BackSide
+      })
+    );
+    halo.position.copy(moon.position);
+    sky.add(halo);
+
+    // A few tiny "meteor" particles that drift slowly across the scene.
+    const meteors = [];
+    for (let i = 0; i < 9; i++) {
+      const meteor = new THREE.Mesh(
+        new THREE.SphereGeometry(.025 + Math.random() * .025, 8, 8),
+        new THREE.MeshBasicMaterial({
+          color: palette.star,
+          transparent: true,
+          opacity: dark ? .65 : .30
+        })
+      );
+      meteor.position.set(
+        -11 + Math.random() * 22,
+        -2 + Math.random() * 10,
+        -5 - Math.random() * 12
+      );
+      sky.add(meteor);
+      meteors.push({
+        meteor,
+        speed: .12 + Math.random() * .18,
+        phase: Math.random() * 6.28
+      });
+    }
 
     const mouseMove = e => {
       pointer.current.x = (e.clientX / innerWidth - .5) * 2;
@@ -153,40 +155,27 @@ function Space({ dark }) {
       frame = requestAnimationFrame(animate);
       const t = time * .001;
 
-      // Camera follows the mouse for a genuine 3D parallax effect.
-      camera.position.x += (pointer.current.x * 1.25 - camera.position.x) * .025;
-      camera.position.y += (-pointer.current.y * .7 - camera.position.y) * .025;
-      camera.lookAt(0, 0, -3);
+      // Gentle camera parallax, like looking through a window into the sky.
+      camera.position.x += (pointer.current.x * .55 - camera.position.x) * .018;
+      camera.position.y += (-pointer.current.y * .35 - camera.position.y) * .018;
+      camera.lookAt(0, 0, -5);
 
-      // Deform every ribbon in 3D.
-      ribbons.forEach(r => {
-        const attr = r.line.geometry.attributes.position;
-        for (let i = 0; i < r.count; i++) {
-          const u = i / (r.count - 1);
-          const x = (u - .5) * 24;
-          const y =
-            r.y +
-            Math.sin(x * r.freq + t * .65 + r.phase) * r.amp +
-            Math.sin(x * .25 - t * .35 + r.phase) * .42;
-          const z =
-            r.z +
-            Math.cos(x * .22 + t * .28 + r.phase) * 1.4 +
-            Math.sin(x * .08 + t * .2) * .7;
+      // Slow sky drift, not rotation.
+      stars.position.x = Math.sin(t * .018) * .45;
+      stars.position.y = Math.cos(t * .015) * .20;
+      dust.position.x = Math.sin(t * .035) * .8;
+      dust.position.y = Math.cos(t * .028) * .35;
 
-          attr.setXYZ(i, x, y, z);
-        }
-        attr.needsUpdate = true;
+      moon.position.y = 3.2 + Math.sin(t * .12) * .08;
+      halo.position.copy(moon.position);
+      halo.scale.setScalar(1 + Math.sin(t * .18) * .035);
+
+      meteors.forEach(({ meteor, speed, phase }) => {
+        meteor.position.x += speed * .008;
+        meteor.position.y += Math.sin(t * .2 + phase) * .0007;
+        if (meteor.position.x > 12) meteor.position.x = -12;
       });
 
-      shards.forEach(s => {
-        s.mesh.position.x = s.baseX + Math.sin(t * s.speed + s.phase) * s.drift;
-        s.mesh.position.y = s.baseY + Math.cos(t * s.speed * .7 + s.phase) * s.drift;
-        s.mesh.rotation.x += .0015;
-        s.mesh.rotation.y += .001;
-      });
-
-      particles.position.x = Math.sin(t * .08) * .25;
-      particles.position.y = Math.cos(t * .06) * .16;
       renderer.render(scene, camera);
     };
 
@@ -204,9 +193,11 @@ function Space({ dark }) {
       removeEventListener("resize", resize);
       removeEventListener("pointermove", mouseMove);
       renderer.dispose();
-      particleGeometry.dispose();
-      particles.material.dispose();
-      world.traverse(o => {
+      starGeometry.dispose();
+      dustGeometry.dispose();
+      stars.material.dispose();
+      dust.material.dispose();
+      sky.traverse(o => {
         o.geometry?.dispose();
         o.material?.dispose();
       });
