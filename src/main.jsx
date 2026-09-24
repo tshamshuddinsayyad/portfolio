@@ -176,6 +176,20 @@ function InteractiveField({ dark }) {
   return <div className="field" ref={mount} aria-hidden="true" />;
 }
 
+function usePointerGlow() {
+  useEffect(() => {
+    const onMove = e => {
+      const target = e.target.closest?.(".project-card, .skill-group, .learning-cards article, .contact-box, .language-bar, .mini-stats > div");
+      if (!target) return;
+      const rect = target.getBoundingClientRect();
+      target.style.setProperty("--glow-x", ((e.clientX - rect.left) / rect.width * 100).toFixed(1) + "%");
+      target.style.setProperty("--glow-y", ((e.clientY - rect.top) / rect.height * 100).toFixed(1) + "%");
+    };
+    document.addEventListener("pointermove", onMove);
+    return () => document.removeEventListener("pointermove", onMove);
+  }, []);
+}
+
 function AILab() {
   const ref = useRef(null);
 
