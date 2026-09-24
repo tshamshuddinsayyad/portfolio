@@ -80,8 +80,10 @@ function InteractiveField({ dark }) {
       camera.position.x += (pointer.current.x * 0.35 - camera.position.x) * 0.02;
       camera.position.y += (-pointer.current.y * 0.22 - camera.position.y) * 0.02;
       camera.lookAt(0, 0, -3);
-      group.position.x += (pointer.current.x * 0.12 - group.position.x) * 0.025;
-      group.position.y += (-pointer.current.y * 0.08 - group.position.y) * 0.025;
+      group.position.x += (pointer.current.x * 0.28 - group.position.x) * 0.018;
+      group.position.y += (-pointer.current.y * 0.18 - group.position.y) * 0.018;
+      points.rotation.y += pointer.current.x * 0.00012;
+      points.rotation.x += pointer.current.y * 0.00008;
       renderer.render(scene, camera);
     };
     animate(0);
@@ -105,6 +107,20 @@ function InteractiveField({ dark }) {
   }, [dark]);
 
   return <div className="field" ref={ref} />;
+}
+
+function usePointerGlow() {
+  useEffect(() => {
+    const onMove = e => {
+      const target = e.target.closest?.(".project-card, .skill-group, .learning-cards article, .contact-box, .language-bar, .mini-stats > div");
+      if (!target) return;
+      const r = target.getBoundingClientRect();
+      target.style.setProperty("--glow-x", ((e.clientX - r.left) / r.width * 100).toFixed(1) + "%");
+      target.style.setProperty("--glow-y", ((e.clientY - r.top) / r.height * 100).toFixed(1) + "%");
+    };
+    document.addEventListener("pointermove", onMove);
+    return () => document.removeEventListener("pointermove", onMove);
+  }, []);
 }
 
 function AILab() {
@@ -220,6 +236,7 @@ function Chatbot() {
 }
 
 function App() {
+  usePointerGlow();
   const [dark, setDark] = useState(() => localStorage.getItem("theme") !== "light");
   useEffect(() => {
     document.documentElement.dataset.theme = dark ? "dark" : "light";
