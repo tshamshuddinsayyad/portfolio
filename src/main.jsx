@@ -353,7 +353,7 @@ function App() {
           <p>{profile.tagline} I explore machine learning, intelligent applications, robotics concepts and quantum computing.</p>
           <div className="hero-actions"><a className="primary" href="#projects">View my work <ArrowUpRight size={18}/></a><a className="secondary" href="#contact">Let's connect <MessageCircle size={18}/></a></div>
         </div>
-        <div className="hero-console"><div className="console-top"><span>QUANTUM LAB / ROBOTICS CORE</span><i>LIVE</i></div><div className="core-visual"><div className="core-ring r1"/><div className="core-ring r2"/><div className="core-ring r3"/><div className="core-center"><Atom size={40}/><b>Q-BIT</b></div></div><div className="console-data"><span>AI <b>INTELLIGENCE</b></span><span>DATA <b>ANALYTICS</b></span><span>ROBOTICS <b>AUTONOMY</b></span></div></div>
+        <div className="hero-console sky-console"><div className="console-top"><span>DIGITAL SKY / AI LAB</span><i>ONLINE</i></div><div className="sky-visual"><div className="sky-orb orb-a"/><div className="sky-orb orb-b"/><div className="sky-cloud cloud-a"/><div className="sky-cloud cloud-b"><span/><span/><span/></div><div className="sky-signal"><span/><span/><span/><span/></div><div className="sky-center"><Sparkles size={30}/><b>AI SPACE</b><small>BUILD • LEARN • CREATE</small></div></div><div className="console-data"><span>AI <b>INTELLIGENCE</b></span><span>DATA <b>ANALYTICS</b></span><span>WEB <b>ENGINEERING</b></span></div></div>
       </section>
 
       <section className="section about-section theme-intelligence">
