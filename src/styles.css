@@ -362,3 +362,82 @@ p,.section p,.project-card p,.contact-box p{font-size:15px!important;line-height
   .ai-lab{min-height:520px!important}
   .ai-lab .model-card{width:min(88%,430px)!important}
 }
+
+/* Centered composition */
+.hero{
+  grid-template-columns:1fr!important;
+  justify-items:center!important;
+  text-align:center!important;
+}
+.hero-copy{max-width:900px!important;margin:0 auto!important}
+.hero-copy p{margin-left:auto!important;margin-right:auto!important}
+.hero-actions{justify-content:center!important}
+.hero-meta{justify-content:center!important}
+.hero-visual{width:min(900px,100%)!important;margin:10px auto 0!important}
+.section,.section-inner,.section-heading{
+  text-align:center!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+.section-heading{max-width:850px!important}
+.section-heading p{margin-left:auto!important;margin-right:auto!important}
+.projects-grid,.skills-grid,.learning-cards,.language-grid,.mini-stats{
+  justify-items:center!important;
+}
+.project-card,.skill-group,.learning-cards article,.language-bar,.mini-stats>div{
+  width:100%!important;
+  text-align:left!important;
+}
+.contact-box{text-align:center!important;margin-left:auto!important;margin-right:auto!important}
+.contact-actions{justify-content:center!important}
+.ai-lab{margin-left:auto!important;margin-right:auto!important}
+
+/* New premium indigo-violet theme */
+:root{
+  --text:#f5f2ff;
+  --muted:#aaa5c0;
+  --line:rgba(183,160,255,.16);
+  --accent:#b69cff;
+  --accent2:#6f63ff;
+  --panel:rgba(18,14,38,.72);
+  --glow:rgba(182,156,255,.18);
+}
+[data-theme="light"]{
+  --text:#17132b;
+  --muted:#68627e;
+  --line:rgba(101,82,180,.16);
+  --accent:#6654d9;
+  --accent2:#4034b7;
+  --panel:rgba(255,253,255,.84);
+  --glow:rgba(102,84,217,.14);
+}
+body{
+  background:radial-gradient(circle at 50% 20%,rgba(111,99,255,.10),transparent 34%),var(--bg,#050816)!important;
+}
+.ai-lab .lab-top i{
+  color:#d3c5ff!important;
+  background:rgba(139,113,255,.12)!important;
+  border-color:rgba(182,156,255,.30)!important;
+}
+.ai-lab .model-metrics u i{
+  background:linear-gradient(90deg,#b69cff,#6f63ff)!important;
+}
+.ai-lab .float-3d b{color:#c8b8ff!important}
+
+/* Violet cursor reflection */
+.project-card:after,.skill-group:after,.learning-cards article:after,.contact-box:after,.language-bar:after,.mini-stats > div:after{
+  background:
+    radial-gradient(70px circle at var(--glow-x,50%) 0%,rgba(202,178,255,.92),transparent 72%),
+    radial-gradient(70px circle at 100% var(--glow-y,50%),rgba(119,105,255,.84),transparent 72%),
+    radial-gradient(70px circle at var(--glow-x,50%) 100%,rgba(202,178,255,.68),transparent 72%),
+    radial-gradient(70px circle at 0% var(--glow-y,50%),rgba(119,105,255,.58),transparent 72%);
+}
+.project-card:hover,.skill-group:hover,.learning-cards article:hover,.contact-box:hover,.language-bar:hover,.mini-stats > div:hover{
+  border-color:rgba(182,156,255,.34)!important;
+  box-shadow:0 18px 55px rgba(35,22,80,.20),0 0 26px rgba(137,116,255,.12),inset 0 0 24px rgba(182,156,255,.035)!important;
+}
+@media(max-width:760px){
+  .hero-copy{max-width:100%!important}
+  .hero-actions{justify-content:center!important}
+  .hero-meta{justify-content:center!important}
+}
