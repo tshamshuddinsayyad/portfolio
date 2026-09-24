@@ -22,76 +22,181 @@ const projects = [
 
 const skills = ["Python", "JavaScript", "React", "LangChain", "RAG", "OpenAI", "PostgreSQL", "HTML/CSS", "Git", "Three.js", "Pandas", "Data Analytics"];
 
-function Space() {
+function Space({ dark }) {
   const ref = useRef(null);
   const pointer = useRef({ x: 0, y: 0 });
+
   useEffect(() => {
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 1000);
-    camera.position.z = 10;
+    const camera = new THREE.PerspectiveCamera(58, innerWidth / innerHeight, 0.1, 1000);
+    camera.position.set(0, 0, 13);
+
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.8));
     renderer.setSize(innerWidth, innerHeight);
     ref.current?.appendChild(renderer.domElement);
 
-    const galaxy = new THREE.Group();
-    const count = 5200, positions = new Float32Array(count * 3);
-    const arms = 5, radius = 16;
-    for (let i = 0; i < count; i++) {
-      const i3 = i * 3, r = Math.pow(Math.random(), 0.58) * radius;
-      const arm = i % arms, spin = (arm / arms) * Math.PI * 2 + r * 0.72;
-      const spread = (Math.random() - 0.5) * (0.55 + r * 0.055);
-      positions[i3] = Math.cos(spin) * r + spread;
-      positions[i3 + 1] = (Math.random() - 0.5) * (0.45 + r * 0.035);
-      positions[i3 + 2] = Math.sin(spin) * r + spread;
+    const group = new THREE.Group();
+    scene.add(group);
+
+    const palette = dark
+      ? { primary: 0x62f6df, secondary: 0x8c7cff, accent: 0x55a8ff, particle: 0x8fb8ff }
+      : { primary: 0x087f86, secondary: 0x7054d8, accent: 0x1677c8, particle: 0x5f82a7 };
+
+    // Neural/data field
+    const particleCount = dark ? 2600 : 1900;
+    const positions = new Float32Array(particleCount * 3);
+    const phases = new Float32Array(particleCount);
+
+    for (let i = 0; i < particleCount; i++) {
+      const i3 = i * 3;
+      const radius = 5 + Math.random() * 15;
+      const angle = Math.random() * Math.PI * 2;
+      positions[i3] = Math.cos(angle) * radius + (Math.random() - 0.5) * 3;
+      positions[i3 + 1] = (Math.random() - 0.5) * 9;
+      positions[i3 + 2] = Math.sin(angle) * radius - 5;
+      phases[i] = Math.random() * Math.PI * 2;
     }
-    const galaxyGeometry = new THREE.BufferGeometry();
-    galaxyGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    const galaxyMaterial = new THREE.PointsMaterial({ color: 0x9ec5ff, size: 0.045, transparent: true, opacity: 0.78, blending: THREE.AdditiveBlending, depthWrite: false });
-    const galaxyPoints = new THREE.Points(galaxyGeometry, galaxyMaterial);
-    galaxy.rotation.x = 0.35; galaxy.add(galaxyPoints); scene.add(galaxy);
 
-    const objects = [];
-    const makeOrb = (geometry, color, scale, position) => {
-      const group = new THREE.Group();
-      const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color, wireframe: true, transparent: true, opacity: 0.3 }));
-      const glow = new THREE.Mesh(geometry.clone(), new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.045, blending: THREE.AdditiveBlending }));
-      glow.scale.setScalar(1.45); group.add(mesh, glow); group.position.set(...position); group.scale.setScalar(scale); scene.add(group);
-      objects.push({ group, mesh, speed: 0.002 + Math.random() * 0.003, phase: Math.random() * 6.28 });
+    const particleGeometry = new THREE.BufferGeometry();
+    particleGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    const particleMaterial = new THREE.PointsMaterial({
+      color: palette.particle,
+      size: dark ? 0.035 : 0.045,
+      transparent: true,
+      opacity: dark ? 0.58 : 0.34,
+      depthWrite: false
+    });
+    const particles = new THREE.Points(particleGeometry, particleMaterial);
+    group.add(particles);
+
+    // Quantum probability rings
+    const quantum = new THREE.Group();
+    [2.1, 2.7, 3.35].forEach((radius, index) => {
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(radius, 0.012, 8, 120),
+        new THREE.MeshBasicMaterial({
+          color: index % 2 ? palette.secondary : palette.primary,
+          transparent: true,
+          opacity: dark ? 0.38 : 0.22
+        })
+      );
+      ring.rotation.set(index * 0.55, index * 0.8, index * 0.35);
+      quantum.add(ring);
+    });
+    group.add(quantum);
+
+    // Central AI quantum core
+    const core = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(1.35, 2),
+      new THREE.MeshBasicMaterial({
+        color: palette.primary,
+        wireframe: true,
+        transparent: true,
+        opacity: dark ? 0.72 : 0.48
+      })
+    );
+    group.add(core);
+
+    const coreGlow = new THREE.Mesh(
+      new THREE.SphereGeometry(0.9, 24, 24),
+      new THREE.MeshBasicMaterial({
+        color: palette.accent,
+        transparent: true,
+        opacity: dark ? 0.08 : 0.05,
+        blending: THREE.AdditiveBlending
+      })
+    );
+    group.add(coreGlow);
+
+    // Robotics-inspired orbiting modules
+    const modules = [];
+    const moduleGeometry = new THREE.OctahedronGeometry(0.48, 1);
+    [[-4.8, 1.7, -1], [4.9, -1.5, -2], [3.8, 2.7, -3]].forEach((position, index) => {
+      const mesh = new THREE.Mesh(
+        moduleGeometry.clone(),
+        new THREE.MeshBasicMaterial({
+          color: index === 1 ? palette.secondary : palette.accent,
+          wireframe: true,
+          transparent: true,
+          opacity: dark ? 0.42 : 0.3
+        })
+      );
+      mesh.position.set(...position);
+      group.add(mesh);
+      modules.push({ mesh, base: [...position], phase: index * 2.1 });
+    });
+
+    // Data-science grid
+    const grid = new THREE.GridHelper(34, 34, palette.primary, palette.primary);
+    grid.material.transparent = true;
+    grid.material.opacity = dark ? 0.055 : 0.075;
+    grid.position.y = -4.8;
+    grid.rotation.x = 0;
+    scene.add(grid);
+
+    const mouseMove = e => {
+      pointer.current.x = (e.clientX / innerWidth - 0.5) * 2;
+      pointer.current.y = (e.clientY / innerHeight - 0.5) * 2;
     };
-    makeOrb(new THREE.IcosahedronGeometry(1, 1), 0x5ee7df, 1.15, [-5.2, 1.7, -1]);
-    makeOrb(new THREE.OctahedronGeometry(1.1, 1), 0x9b8cff, 0.9, [5.1, -1.1, -1.5]);
-    makeOrb(new THREE.TorusKnotGeometry(0.75, 0.18, 80, 12), 0x76a8ff, 0.72, [3.2, 2.8, -2.5]);
-    const core = new THREE.Mesh(new THREE.IcosahedronGeometry(0.75, 2), new THREE.MeshBasicMaterial({ color: 0x5ee7df, wireframe: true, transparent: true, opacity: 0.32 }));
-    scene.add(core);
-
-    const mouseMove = e => { pointer.current.x = (e.clientX / innerWidth - 0.5) * 2; pointer.current.y = (e.clientY / innerHeight - 0.5) * 2; };
     addEventListener("pointermove", mouseMove);
+
     let frame;
     const animate = time => {
-      frame = requestAnimationFrame(animate); const t = time * 0.001;
-      camera.position.x += (pointer.current.x * 0.8 - camera.position.x) * 0.025;
-      camera.position.y += (-pointer.current.y * 0.5 - camera.position.y) * 0.025; camera.lookAt(0, 0, 0);
-      galaxy.rotation.y += 0.0011; galaxy.rotation.z = Math.sin(t * 0.08) * 0.08;
-      core.rotation.x += 0.003; core.rotation.y += 0.004; core.scale.setScalar(1 + Math.sin(t * 2.2) * 0.08);
-      objects.forEach(({ group, mesh, speed, phase }) => {
-        mesh.rotation.x += speed; mesh.rotation.y += speed * 1.25; group.rotation.z = Math.sin(t + phase) * 0.22;
-        group.position.x += ((group.userData.baseX + pointer.current.x * 0.38) - group.position.x) * 0.012;
-        group.position.y += ((group.userData.baseY - pointer.current.y * 0.28) - group.position.y) * 0.012;
+      frame = requestAnimationFrame(animate);
+      const t = time * 0.001;
+
+      camera.position.x += (pointer.current.x * 1.05 - camera.position.x) * 0.018;
+      camera.position.y += (-pointer.current.y * 0.65 - camera.position.y) * 0.018;
+      camera.lookAt(0, 0, -2);
+
+      quantum.rotation.x += 0.0022;
+      quantum.rotation.y += 0.0032;
+      core.rotation.x += 0.0035;
+      core.rotation.y += 0.0045;
+      core.scale.setScalar(1 + Math.sin(t * 2.2) * 0.07);
+      coreGlow.scale.setScalar(1.05 + Math.sin(t * 1.8) * 0.13);
+      particles.rotation.y += dark ? 0.00045 : -0.0003;
+
+      modules.forEach(({ mesh, base, phase }) => {
+        mesh.rotation.x += 0.005;
+        mesh.rotation.y += 0.007;
+        mesh.position.x = base[0] + Math.sin(t * 0.7 + phase) * 0.35;
+        mesh.position.y = base[1] + Math.cos(t * 0.8 + phase) * 0.3;
       });
+
       renderer.render(scene, camera);
     };
-    objects.forEach(({ group }) => { group.userData.baseX = group.position.x; group.userData.baseY = group.position.y; });
+
     animate(0);
-    const resize = () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); };
-    addEventListener("resize", resize);
-    return () => {
-      cancelAnimationFrame(frame); removeEventListener("resize", resize); removeEventListener("pointermove", mouseMove); renderer.dispose();
-      galaxyGeometry.dispose(); galaxyMaterial.dispose(); objects.forEach(({ group }) => group.traverse(c => { c.geometry?.dispose(); c.material?.dispose(); }));
-      core.geometry.dispose(); core.material.dispose(); ref.current?.contains(renderer.domElement) && ref.current.removeChild(renderer.domElement);
+
+    const resize = () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
     };
-  }, []);
-  return <div className="space" ref={ref} />;
+    addEventListener("resize", resize);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      removeEventListener("resize", resize);
+      removeEventListener("pointermove", mouseMove);
+      renderer.dispose();
+      particleGeometry.dispose();
+      particleMaterial.dispose();
+      moduleGeometry.dispose();
+      quantum.traverse(o => { o.geometry?.dispose(); o.material?.dispose(); });
+      core.geometry.dispose();
+      core.material.dispose();
+      coreGlow.geometry.dispose();
+      coreGlow.material.dispose();
+      grid.geometry.dispose();
+      grid.material.dispose();
+      ref.current?.contains(renderer.domElement) && ref.current.removeChild(renderer.domElement);
+    };
+  }, [dark]);
+
+  return <div className={dark ? "space space-dark" : "space space-light"} ref={ref} />;
 }
 
 function Chatbot() {
@@ -222,23 +327,106 @@ function Chatbot() {
 
 function App() {
   const [dark, setDark] = useState(() => localStorage.getItem("theme") !== "light");
-  useEffect(() => { document.documentElement.dataset.theme = dark ? "dark" : "light"; localStorage.setItem("theme", dark ? "dark" : "light"); }, [dark]);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = dark ? "dark" : "light";
+    localStorage.setItem("theme", dark ? "dark" : "light");
+  }, [dark]);
+
   return <div className="app">
-    <Space />
-    <nav className="nav"><a className="brand" href="#">TS<span>.</span></a><div className="navlinks"><a href="#about">About</a><a href="#focus">Focus</a><a href="#work">Work</a><a href="#skills">Skills</a><a href="#contact">Contact</a></div><div className="nav-right"><button className="theme-toggle" onClick={() => setDark(v=>!v)}>{dark ? <Sun size={16}/> : <Moon size={16}/>}<span>{dark ? "Light" : "Dark"}</span></button><a className="nav-cta" href={profile.github} target="_blank" rel="noreferrer"><Github size={16}/> GitHub</a></div></nav>
+    <Space dark={dark} />
+
+    <nav className="nav">
+      <a className="brand" href="#"><span className="brand-mark">TS</span><span className="brand-dot">.</span></a>
+      <div className="navlinks">
+        <a href="#about">About</a><a href="#domains">Domains</a><a href="#work">Work</a><a href="#skills">Stack</a><a href="#contact">Contact</a>
+      </div>
+      <div className="nav-right">
+        <button className="theme-toggle" onClick={() => setDark(v => !v)}>
+          {dark ? <Sun size={16}/> : <Moon size={16}/>}<span>{dark ? "LIGHT LAB" : "DARK LAB"}</span>
+        </button>
+        <a className="nav-cta" href={profile.github} target="_blank" rel="noreferrer"><Github size={16}/> GitHub</a>
+      </div>
+    </nav>
+
     <main>
-      <section className="hero" id="about"><div className="hero-grid"><div><div className="eyebrow"><span className="dot"/> AI • ML • DATA • WEB</div><h1>Building <em>intelligent</em><br/>digital experiences.</h1><p>{profile.tagline}</p><div className="hero-actions"><a className="primary" href="#work">Explore work <ArrowUpRight size={18}/></a><a className="secondary" href="#contact">Let’s connect <MessageCircle size={18}/></a></div><div className="hero-stats"><div><strong>AI</strong><span>RAG & assistants</span></div><div><strong>WEB</strong><span>React & 3D</span></div><div><strong>DATA</strong><span>Python & analytics</span></div></div></div><div className="hero-orbit"><div className="orbit-ring ring-a"/><div className="orbit-ring ring-b"/><div className="orbit-core"><BrainCircuit size={46}/><span>AI</span></div><span className="orbit-label l1">RAG</span><span className="orbit-label l2">ML</span><span className="orbit-label l3">DATA</span></div></div></section>
+      <section className="hero" id="about">
+        <div className="hero-copy">
+          <div className="eyebrow"><span className="signal"/> AI RESEARCH LAB • 2026</div>
+          <div className="hero-badge"><Bot size={14}/> HUMAN + MACHINE + DATA</div>
+          <h1>Engineering the<br/><em>intelligence layer.</em></h1>
+          <p>{profile.tagline} From retrieval systems and analytics to robotics concepts and quantum computing interfaces.</p>
+          <div className="hero-actions">
+            <a className="primary" href="#work">Explore systems <ArrowUpRight size={18}/></a>
+            <a className="secondary" href="#contact">Connect <MessageCircle size={18}/></a>
+          </div>
+          <div className="hero-metrics">
+            <div><strong>01</strong><span>AI / ML</span></div>
+            <div><strong>02</strong><span>DATA SCIENCE</span></div>
+            <div><strong>03</strong><span>ROBOTICS</span></div>
+            <div><strong>04</strong><span>QUANTUM</span></div>
+          </div>
+        </div>
 
-      <section className="section focus" id="focus"><div className="section-kicker">01 / What I build</div><h2>Where code meets intelligence.</h2><div className="focus-grid"><article><BrainCircuit/><b>AI / ML</b><p>AI assistants, retrieval systems, prompt-driven workflows and practical machine learning.</p></article><article><Database/><b>Data</b><p>Python, analytics, structured data and visual insights for real-world problems.</p></article><article><Atom/><b>Emerging Tech</b><p>Interactive experiments around 3D web experiences and quantum-computing concepts.</p></article><article><Code2/><b>Full Stack</b><p>Responsive interfaces and application experiences built with modern JavaScript tooling.</p></article></div></section>
+        <div className="hero-console">
+          <div className="console-top"><span>NEURAL CORE</span><i>ONLINE</i></div>
+          <div className="core-visual"><div className="core-ring r1"/><div className="core-ring r2"/><div className="core-ring r3"/><div className="core-center"><BrainCircuit size={40}/><b>AI</b></div></div>
+          <div className="console-data"><span>MODEL <b>RAG / LLM</b></span><span>DATA <b>STRUCTURED</b></span><span>STATE <b>LEARNING</b></span></div>
+        </div>
+      </section>
 
-      <section className="section" id="work"><div className="section-kicker">02 / Selected work</div><h2>Projects with a purpose.</h2><div className="project-grid">{projects.map((p,i)=><article className="project" key={p.title}><div className="project-top"><span className="project-num">0{i+1}</span><span className="project-status">BUILDING</span></div><h3>{p.title}</h3><p>{p.text}</p><div className="tags">{p.tags.map(t=><span key={t}>{t}</span>)}</div><a href={profile.github} target="_blank" rel="noreferrer">View GitHub <ArrowUpRight size={15}/></a></article>)}</div></section>
+      <section className="section domains" id="domains">
+        <div className="section-kicker">01 / INTELLIGENCE DOMAINS</div>
+        <h2>Four systems.<br/><em>One engineering mindset.</em></h2>
+        <div className="domain-grid">
+          <article><span className="domain-index">AI_01</span><BrainCircuit/><h3>Artificial Intelligence</h3><p>AI assistants, RAG pipelines, LLM workflows and intelligent interfaces designed around useful outcomes.</p><div className="domain-line"/></article>
+          <article><span className="domain-index">DATA_02</span><Database/><h3>Data Science</h3><p>Python analytics, statistics, datasets and visual reasoning that turn raw information into decisions.</p><div className="domain-line"/></article>
+          <article><span className="domain-index">ROBOT_03</span><Bot/><h3>Robotics</h3><p>Exploring autonomous systems, robot intelligence, sensors, control concepts and human-machine interaction.</p><div className="domain-line"/></article>
+          <article><span className="domain-index">QBIT_04</span><Atom/><h3>Quantum Computing</h3><p>Learning quantum concepts, qubits, superposition, circuits and the future intersection of quantum + AI.</p><div className="domain-line"/></article>
+        </div>
+      </section>
 
-      <section className="section split" id="skills"><div><div className="section-kicker">03 / Toolkit</div><h2>Curious by default.</h2><p className="muted">A growing toolkit across software engineering, AI, data and interactive web experiences.</p></div><div className="skill-cloud">{skills.map(s=><span key={s}>{s}</span>)}</div></section>
+      <section className="section systems" id="work">
+        <div className="section-kicker">02 / SYSTEMS IN DEVELOPMENT</div>
+        <h2>Built to <em>think, retrieve and respond.</em></h2>
+        <div className="project-grid">
+          {projects.map((p, i) => <article className="project" key={p.title}>
+            <div className="project-top"><span className="project-num">SYS_0{i + 1}</span><span className="project-status"><i/> ACTIVE</span></div>
+            <div className="project-icon">{i === 0 ? <BrainCircuit/> : i === 1 ? <Atom/> : <Database/>}</div>
+            <h3>{p.title}</h3><p>{p.text}</p>
+            <div className="tags">{p.tags.map(t => <span key={t}>{t}</span>)}</div>
+            <a href={profile.github} target="_blank" rel="noreferrer">Inspect system <ArrowUpRight size={15}/></a>
+          </article>)}
+        </div>
+      </section>
 
-      <section className="section contact" id="contact"><div className="section-kicker">04 / Let’s connect</div><h2>Have an idea worth building?</h2><p>Explore the work, start a conversation, or ask the portfolio AI about the technology behind it.</p><div className="contact-actions"><a className="primary" href={profile.whatsapp} target="_blank" rel="noreferrer"><MessageCircle/> WhatsApp</a><a className="secondary" href={"mailto:"+profile.email}><Mail/> Email</a><a className="secondary" href={profile.linkedin} target="_blank" rel="noreferrer"><Linkedin/> LinkedIn</a></div></section>
+      <section className="section stack-section" id="skills">
+        <div className="section-kicker">03 / ENGINEERING STACK</div>
+        <div className="stack-layout">
+          <div><h2>Tools for the<br/><em>intelligence layer.</em></h2><p className="muted">A growing stack across software engineering, AI, data, 3D web experiences and emerging technologies.</p></div>
+          <div className="skill-cloud">{skills.map((s, i) => <span key={s}><b>{String(i + 1).padStart(2, "0")}</b>{s}</span>)}</div>
+        </div>
+      </section>
+
+      <section className="section contact" id="contact">
+        <div className="contact-terminal">
+          <div className="terminal-head"><span>CONTACT_PROTOCOL</span><span>READY</span></div>
+          <div className="terminal-body">
+            <span className="prompt">&gt; </span><h2>Have a system<br/>worth building?</h2>
+            <p>Let's collaborate on AI, data science, full-stack products, robotics concepts or emerging quantum technology.</p>
+            <div className="contact-actions">
+              <a className="primary" href={profile.whatsapp} target="_blank" rel="noreferrer"><MessageCircle/> WhatsApp</a>
+              <a className="secondary" href={"mailto:" + profile.email}><Mail/> Email</a>
+              <a className="secondary" href={profile.linkedin} target="_blank" rel="noreferrer"><Linkedin/> LinkedIn</a>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
-    <footer><span>© {new Date().getFullYear()} {profile.name}</span><span>React • Three.js • LangChain • OpenAI</span></footer>
+
+    <footer><span>© {new Date().getFullYear()} {profile.name}</span><span>AI • DATA • ROBOTICS • QUANTUM</span></footer>
     <Chatbot />
   </div>;
 }
+
 createRoot(document.getElementById("root")).render(<App />);
