@@ -8,11 +8,24 @@ const knowledge = [
 
 function tokenize(text) {
   return new Set(
-    text.toLowerCase().replace(/[^a-z0-9\\s]/g, " ").split(/\\s+/).filter(Boolean)
+    text.toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(Boolean)
   );
 }
 
+function isPortfolioQuestion(query) {
+  const q = query.toLowerCase();
+  const personalTerms = [
+    "tayyab", "my portfolio", "your portfolio", "his portfolio",
+    "your project", "his project", "your skill", "his skill",
+    "your education", "his education", "your experience", "his experience",
+    "your github", "your linkedin", "your resume"
+  ];
+  return personalTerms.some(term => q.includes(term));
+}
+
 function retrieve(query) {
+  if (!isPortfolioQuestion(query)) return "";
+
   const q = tokenize(query);
   return knowledge
     .map(text => {
@@ -24,24 +37,29 @@ function retrieve(query) {
     .sort((a, b) => b.score - a.score)
     .slice(0, 3)
     .map(x => x.text)
-    .join("\\n");
+    .join("\n");
 }
 
 async function askGemini(message, context) {
   const apiKey = process.env.GEMINI_API_KEY;
   const model = process.env.GEMINI_MODEL || "gemini-3.5-flash-lite";
 
-  const systemPrompt =
-    "You are the general-purpose AI assistant embedded in Tayyab Sayyad's developer portfolio. " +
-    "Answer general questions normally: programming, mathematics, science, writing, study help, explanations, brainstorming and everyday knowledge. " +
-    "When a question is about Tayyab, his portfolio, projects, skills, education or experience, use the supplied portfolio context and never invent personal facts. " +
-    "If the portfolio context is empty, that does NOT mean you should refuse the question. Answer the user's general question using your general knowledge. " +
-    "Only say that the portfolio does not contain a detail when the user specifically asks for a personal detail about Tayyab and that detail is absent. " +
-    "For general questions, answer directly and do not force the answer to be about Tayyab. " +
-    "For factual questions about well-known people, countries, science, programming, history, mathematics and other general topics, provide the answer directly. " +
-    "Do not claim to have live web access or current real-time information unless it is supplied by a tool. " +
-    "Keep answers clear, useful and appropriately detailed. " +
-    "\\n\\nPortfolio context:\\n" + (context || "No relevant portfolio context.");
+  const systemPrompt = context
+    ? `You are an AI assistant for Tayyab Sayyad's portfolio.
+
+This is a PERSONAL portfolio question. Use the portfolio context below for facts about Tayyab. Never invent personal facts.
+
+Portfolio context:
+${context}
+
+Answer the user's question clearly.`
+    : `You are a GENERAL-PURPOSE AI ASSISTANT.
+
+Answer the user's question directly using your general knowledge. Do NOT talk about Tayyab, the portfolio, or portfolio context unless the user asks about them.
+
+You can answer questions about current general facts to the best of your model knowledge, programming, mathematics, science, history, geography, education, writing, technology and everyday topics.
+
+IMPORTANT: An empty portfolio context does NOT mean the user question cannot be answered. Never respond with "the portfolio does not contain that detail" for a general question.`;
 
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
@@ -60,7 +78,10 @@ async function askGemini(message, context) {
             role: "user",
             parts: [{ text: message }]
           }
-        ]
+        ],
+        generationConfig: {
+          temperature: 0.4
+        }
       })
     }
   );
@@ -89,19 +110,15 @@ export default async function handler(req, res) {
 
   if (!process.env.GEMINI_API_KEY) {
     return res.status(503).json({
-      answer:
-        "The portfolio AI is not configured yet. Add GEMINI_API_KEY in Vercel → Project Settings → Environment Variables, then redeploy."
+      answer: "The AI is not configured. Add GEMINI_API_KEY in Vercel Environment Variables and redeploy."
     });
   }
 
   try {
-    const context = retrieve(message.trim());
-    const answer = await askGemini(message.trim(), context);
-
+    const answer = await askGemini(message.trim(), retrieve(message.trim()));
     return res.status(200).json({ answer });
   } catch (error) {
-    console.error("Portfolio Gemini AI error:", error);
-
+    console.error("Gemini AI error:", error);
     return res.status(500).json({
       answer: "The AI request failed: " + String(error?.message || error)
     });
