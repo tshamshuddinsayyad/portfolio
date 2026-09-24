@@ -73,61 +73,6 @@ function InteractiveField({ dark }) {
     }));
     group.add(points);
 
-    // The hero object is intentionally NOT auto-rotating.
-    // It behaves like a movable 3D object that follows the visitor's cursor.
-    const core = new THREE.Group();
-    core.position.set(0, 0.2, -3.5);
-    scene.add(core);
-
-    const shell = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(1.35, 2),
-      new THREE.MeshBasicMaterial({
-        color: dark ? 0x70f1dc : 0x087f86,
-        wireframe: true,
-        transparent: true,
-        opacity: dark ? 0.34 : 0.22
-      })
-    );
-    core.add(shell);
-
-    const inner = new THREE.Mesh(
-      new THREE.SphereGeometry(0.55, 24, 24),
-      new THREE.MeshBasicMaterial({
-        color: dark ? 0xffffff : 0x0c5262,
-        transparent: true,
-        opacity: dark ? 0.82 : 0.5
-      })
-    );
-    core.add(inner);
-
-    const ring1 = new THREE.Mesh(
-      new THREE.TorusGeometry(1.75, 0.012, 8, 160),
-      new THREE.MeshBasicMaterial({ color: dark ? 0x54a9ff : 0x1677c8, transparent: true, opacity: 0.35 })
-    );
-    ring1.rotation.x = Math.PI / 2.4;
-    core.add(ring1);
-
-    const ring2 = ring1.clone();
-    ring2.rotation.y = Math.PI / 2.2;
-    ring2.scale.setScalar(0.78);
-    core.add(ring2);
-
-    const mouseMove = e => {
-      pointer.current.x = (e.clientX / innerWidth - 0.5) * 2;
-      pointer.current.y = (e.clientY / innerHeight - 0.5) * 2;
-    };
-    const pointerDown = e => {
-      if (e.button === 0) {
-        drag.current.active = true;
-        drag.current.x = e.clientX;
-        drag.current.y = e.clientY;
-      }
-    };
-    const pointerUp = () => { drag.current.active = false; };
-    addEventListener("pointermove", mouseMove);
-    addEventListener("pointerdown", pointerDown);
-    addEventListener("pointerup", pointerUp);
-
     let frame;
     const animate = time => {
       frame = requestAnimationFrame(animate);
@@ -136,16 +81,6 @@ function InteractiveField({ dark }) {
       camera.position.y += (-pointer.current.y * 0.22 - camera.position.y) * 0.02;
       camera.lookAt(0, 0, -3);
 
-      // No continuous spinning. The object is moved by the visitor.
-      const targetX = pointer.current.x * 3.0;
-      const targetY = -pointer.current.y * 1.8;
-      core.position.x += (targetX - core.position.x) * 0.045;
-      core.position.y += (0.2 + targetY - core.position.y) * 0.045;
-
-      // Small breathing effect only — position changes, not rotation.
-      const pulse = 1 + Math.sin(t * 1.7) * 0.045;
-      shell.scale.setScalar(pulse);
-      inner.scale.setScalar(1 + Math.sin(t * 2.0) * 0.06);
       renderer.render(scene, camera);
     };
     animate(0);
@@ -160,18 +95,316 @@ function InteractiveField({ dark }) {
     return () => {
       cancelAnimationFrame(frame);
       removeEventListener("pointermove", mouseMove);
-      removeEventListener("pointerdown", pointerDown);
-      removeEventListener("pointerup", pointerUp);
       removeEventListener("resize", resize);
       geometry.dispose();
       points.material.dispose();
-      core.traverse(o => { o.geometry?.dispose(); o.material?.dispose(); });
       renderer.dispose();
       if (host.contains(renderer.domElement)) host.removeChild(renderer.domElement);
     };
   }, [dark]);
 
   return <div className="field" ref={ref} />;
+}
+
+function AILab() {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const host = ref.current;
+    if (!host) return;
+
+    const move = e => {
+      const rect = host.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+      host.style.setProperty("--mx", x.toFixed(3));
+      host.style.setProperty("--my", y.toFixed(3));
+    };
+    const leave = () => {
+      host.style.setProperty("--mx", "0");
+      host.style.setProperty("--my", "0");
+    };
+
+    host.addEventListener("pointermove", move);
+    host.addEventListener("pointerleave", leave);
+    return () => {
+      host.removeEventListener("pointermove", move);
+      host.removeEventListener("pointerleave", leave);
+    };
+  }, []);
+
+  return <div className="ai-lab" ref={ref}>
+    <div className="lab-top"><span>AI / DATA SCIENCE LAB</span><i>MODEL ONLINE</i></div>
+    <div className="lab-grid" />
+
+    <div className="float-3d item-python"><b>PY</b><span>PYTHON</span></div>
+    <div className="float-3d item-data"><Database size={15}/><span>DATA</span></div>
+    <div className="float-3d item-rag"><BrainCircuit size={15}/><span>RAG</span></div>
+    <div className="float-3d item-sql"><b>SQL</b><span>QUERY</span></div>
+
+    <div className="model-card">
+      <div className="model-head"><div><small>ACTIVE MODEL</small><b>INTELLIGENCE ENGINE</b></div><span>v2.6</span></div>
+      <div className="model-stage">
+        <div className="model-core"><BrainCircuit size={28}/></div>
+        <span className="core-line line-a" />
+        <span className="core-line line-b" />
+        <span className="core-line line-c" />
+      </div>
+      <div className="model-metrics">
+        <div><span>ACCURACY</span><b>94.8%</b><u><i style={{width:"94.8%"}}/></u></div>
+        <div><span>DATA</span><b>12.4K</b><u><i style={{width:"78%"}}/></u></div>
+        <div><span>LATENCY</span><b>42ms</b><u><i style={{width:"42%"}}/></u></div>
+      </div>
+    </div>
+
+    <div className="signal-line s1"/><div className="signal-line s2"/>
+    <div className="lab-bottom"><span>PYTHON</span><span>PANDAS</span><span>LANGCHAIN</span><span>SQL</span></div>
+  </div>;
+}
+
+function Chatbot() {
+  const [open, setOpen] = useState(false);
+  const [input, setInput] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [webSearch, setWebSearch] = useState(true);
+  const [messages, setMessages] = useState([{
+    role: "assistant",
+    content: "Hi! I’m Tayyab’s AI assistant. Ask me about Tayyab, his projects, coding, AI/ML, study topics, or current information."
+  }]);
+
+  const prompts = [
+    "Who is Tayyab?",
+    "What AI projects has he built?",
+    "Explain RAG simply",
+    "Write a Python Fibonacci program"
+  ];
+
+  async function send(text = input) {
+    const q = text.trim();
+    if (!q || busy) return;
+    const history = messages.slice(-8).map(m => ({ role: m.role, content: m.content }));
+    setMessages(m => [...m, { role: "user", content: q }]);
+    setInput("");
+    setBusy(true);
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: q, history, useWebSearch: webSearch })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.answer || "Request failed");
+      setMessages(m => [...m, { role: "assistant", content: data.answer || "I couldn't answer that.", sources: data.sources || [] }]);
+    } catch (e) {
+      setMessages(m => [...m, { role: "assistant", content: e.message || "The AI service is unavailable." }]);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return <>
+    <button className="chat-fab" onClick={() => setOpen(v => !v)}><Bot size={18}/><span>Ask my AI</span><i/></button>
+    {open && <section className="chat-panel">
+      <div className="chat-head">
+        <div><b><Sparkles size={14}/> TAYYAB AI</b><small>Ask the portfolio anything</small></div>
+        <div className="chat-head-actions"><button className={webSearch ? "search-toggle active" : "search-toggle"} onClick={() => setWebSearch(v => !v)}>{webSearch ? "WEB ON" : "WEB OFF"}</button><button onClick={() => setOpen(false)}>×</button></div>
+      </div>
+      <div className="quick-prompts">{prompts.map(p => <button key={p} onClick={() => send(p)}>{p}</button>)}</div>
+      <div className="chat-body">
+        {messages.map((m,i) => <div key={i} className={"chat-message " + m.role}><div className={"bubble " + m.role}>{m.content}</div>{m.sources?.length > 0 && <div className="sources"><span>Sources</span>{m.sources.map((s,j)=><a key={s.url+j} href={s.url} target="_blank" rel="noreferrer">{j+1}. {s.title}</a>)}</div>}</div>)}
+        {busy && <div className="bubble assistant typing">Thinking<span>•••</span></div>}
+      </div>
+      <div className="chat-input"><input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && send()} placeholder="Ask anything…"/><button onClick={() => send()} disabled={busy}><Send size={16}/></button></div>
+    </section>}
+  </>;
+}
+
+function App() {
+  const [dark, setDark] = useState(() => localStorage.getItem("theme") !== "light");
+  useEffect(() => {
+    document.documentElement.dataset.theme = dark ? "dark" : "light";
+    localStorage.setItem("theme", dark ? "dark" : "light");
+  }, [dark]);
+
+  return <div className="app">
+    <InteractiveField dark={dark}/>
+    <header className="nav">
+      <a className="brand" href="#"><span className="brand-mark">T</span><span>SAYYAD</span></a>
+      <div className="navlinks"><a href="#about">About</a><a href="#work">Work</a><a href="#skills">Skills</a><a href="#contact">Contact</a></div>
+      <div className="nav-right"><button className="theme-toggle" onClick={() => setDark(v => !v)}>{dark ? <Sun size={15}/> : <Moon size={15}/>}<span>{dark ? "Light" : "Dark"}</span></button><a className="nav-cta" href={profile.github} target="_blank" rel="noreferrer"><Github size={15}/> GitHub</a></div>
+    </header>
+
+    <main>
+      <section className="hero" id="about">
+        <div className="hero-copy">
+          <div className="eyebrow"><span className="status-dot"/> ARTIFICIAL INTELLIGENCE / DATA SCIENCE</div>
+          <h1>I turn <em>data</em><br/>into intelligence.</h1>
+          <p>{profile.tagline} Explore my work, interact with my AI assistant, and see how I turn ideas into working products.</p>
+          <div className="hero-actions"><a className="primary" href="#work">Explore my work <ArrowUpRight size={17}/></a><a className="secondary" href="#contact">Let's connect <MessageCircle size={17}/></a></div>
+          <div className="scroll-hint"><MousePointer2 size={14}/> Explore the model, data and systems I build</div>
+        </div>
+        <AILab/>\neact, { useEffect, useRef, useState } from "react";
+import { createRoot } from "react-dom/client";
+import * as THREE from "three";
+import {
+  ArrowUpRight, Bot, Github, Linkedin, Mail, MessageCircle, Send,
+  Sparkles, Sun, Moon, BrainCircuit, Database, Atom, Code2,
+  MousePointer2, ExternalLink
+} from "lucide-react";
+import "./styles.css";
+
+const profile = {
+  name: "Tayyab Sayyad",
+  role: "AI / ML • Full Stack Developer",
+  tagline: "I build intelligent digital systems that turn ideas into useful experiences.",
+  github: "https://github.com/tshamshuddinsayyad",
+  linkedin: "https://www.linkedin.com/",
+  whatsapp: "https://wa.me/919999999999",
+  email: "your-email@example.com"
+};
+
+const projects = [
+  { title: "University AI Chatbot", text: "A document-aware academic assistant using LangChain, RAG and LLMs to answer university questions from trusted documents.", tags: ["LangChain", "RAG", "LLM"], icon: BrainCircuit },
+  { title: "Interactive AI Portfolio", text: "A personal product-style portfolio combining React, Three.js, motion and a portfolio-aware universal AI assistant.", tags: ["React", "Three.js", "Vite"], icon: Atom },
+  { title: "Student Analytics", text: "Python-based analytics and visualization work focused on student datasets, descriptive statistics and data-driven insights.", tags: ["Python", "Pandas", "Data"], icon: Database }
+];
+
+const skillGroups = [
+  { title: "Build", items: ["Python", "JavaScript", "React", "HTML", "CSS", "SQL"] },
+  { title: "Think", items: ["AI / ML", "LangChain", "RAG", "OpenAI", "Data Analytics", "Statistics"] },
+  { title: "Ship", items: ["Git", "GitHub", "PostgreSQL", "Three.js", "APIs", "Vite"] }
+];
+
+function InteractiveField({ dark }) {
+  const ref = useRef(null);
+  const pointer = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const host = ref.current;
+    if (!host) return;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(52, innerWidth / innerHeight, 0.1, 100);
+    camera.position.set(0, 0, 13);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.7));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setClearColor(0x000000, 0);
+    host.appendChild(renderer.domElement);
+
+    const group = new THREE.Group();
+    scene.add(group);
+
+    const count = 1150;
+    const positions = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
+    for (let i = 0; i < count; i++) {
+      const r = 5 + Math.random() * 15;
+      const a = Math.random() * Math.PI * 2;
+      positions[i * 3] = Math.cos(a) * r;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 11;
+      positions[i * 3 + 2] = -2 - Math.random() * 18;
+      sizes[i] = 0.02 + Math.random() * 0.035;
+    }
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
+    const points = new THREE.Points(geometry, new THREE.PointsMaterial({
+      color: dark ? 0xa7e9ff : 0x397b91,
+      size: dark ? 0.035 : 0.045,
+      transparent: true,
+      opacity: dark ? 0.48 : 0.25,
+      sizeAttenuation: true
+    }));
+    group.add(points);
+
+    let frame;
+    const animate = time => {
+      frame = requestAnimationFrame(animate);
+      const t = time * 0.001;
+      camera.position.x += (pointer.current.x * 0.35 - camera.position.x) * 0.02;
+      camera.position.y += (-pointer.current.y * 0.22 - camera.position.y) * 0.02;
+      camera.lookAt(0, 0, -3);
+
+      renderer.render(scene, camera);
+    };
+    animate(0);
+
+    const resize = () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    };
+    addEventListener("resize", resize);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      removeEventListener("pointermove", mouseMove);
+      removeEventListener("resize", resize);
+      geometry.dispose();
+      points.material.dispose();
+      renderer.dispose();
+      if (host.contains(renderer.domElement)) host.removeChild(renderer.domElement);
+    };
+  }, [dark]);
+
+  return <div className="field" ref={ref} />;
+}
+
+function AILab() {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const host = ref.current;
+    if (!host) return;
+
+    const move = e => {
+      const rect = host.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+      host.style.setProperty("--mx", x.toFixed(3));
+      host.style.setProperty("--my", y.toFixed(3));
+    };
+    const leave = () => {
+      host.style.setProperty("--mx", "0");
+      host.style.setProperty("--my", "0");
+    };
+
+    host.addEventListener("pointermove", move);
+    host.addEventListener("pointerleave", leave);
+    return () => {
+      host.removeEventListener("pointermove", move);
+      host.removeEventListener("pointerleave", leave);
+    };
+  }, []);
+
+  return <div className="ai-lab" ref={ref}>
+    <div className="lab-top"><span>AI / DATA SCIENCE LAB</span><i>MODEL ONLINE</i></div>
+    <div className="lab-grid" />
+
+    <div className="float-3d item-python"><b>PY</b><span>PYTHON</span></div>
+    <div className="float-3d item-data"><Database size={15}/><span>DATA</span></div>
+    <div className="float-3d item-rag"><BrainCircuit size={15}/><span>RAG</span></div>
+    <div className="float-3d item-sql"><b>SQL</b><span>QUERY</span></div>
+
+    <div className="model-card">
+      <div className="model-head"><div><small>ACTIVE MODEL</small><b>INTELLIGENCE ENGINE</b></div><span>v2.6</span></div>
+      <div className="model-stage">
+        <div className="model-core"><BrainCircuit size={28}/></div>
+        <span className="core-line line-a" />
+        <span className="core-line line-b" />
+        <span className="core-line line-c" />
+      </div>
+      <div className="model-metrics">
+        <div><span>ACCURACY</span><b>94.8%</b><u><i style={{width:"94.8%"}}/></u></div>
+        <div><span>DATA</span><b>12.4K</b><u><i style={{width:"78%"}}/></u></div>
+        <div><span>LATENCY</span><b>42ms</b><u><i style={{width:"42%"}}/></u></div>
+      </div>
+    </div>
+
+    <div className="signal-line s1"/><div className="signal-line s2"/>
+    <div className="lab-bottom"><span>PYTHON</span><span>PANDAS</span><span>LANGCHAIN</span><span>SQL</span></div>
+  </div>;
 }
 
 function Chatbot() {
