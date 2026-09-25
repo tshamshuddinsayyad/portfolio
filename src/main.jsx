@@ -497,7 +497,7 @@ function ConfusionMatrixGame({setScore,onBack}) {
 }
 
 function Chatbot() {
-  const STORAGE_KEY = "tayyab-ai-conversation-v2";
+  const STORAGE_KEY = "tayyab-ai-conversation-v3";
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
