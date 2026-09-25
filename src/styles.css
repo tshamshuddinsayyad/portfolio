@@ -1896,3 +1896,22 @@ main > .hero + .section.intro [class*="vertical-line"]{
 .contact .contact-actions{
   justify-content:center !important;
 }
+
+
+/* SECTION 09 — direct Telegram contact form */
+.contact-message-wrap{width:min(760px,100%);margin:34px auto 0;padding:24px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.022);text-align:left;position:relative;overflow:hidden}
+.contact-message-wrap:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(420px circle at var(--glow-x,50%) var(--glow-y,0%),rgba(97,231,255,.055),transparent 62%)}
+.contact-form-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:17px}
+.contact-form-head span{color:var(--accent);font:700 9px "DM Mono";letter-spacing:1.5px}.contact-form-head small{color:var(--muted);font:8px "DM Mono"}
+.contact-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative}
+.contact-form input,.contact-form textarea{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.025);color:var(--text);outline:0;padding:12px 13px;font:12px/1.5 "DM Sans",sans-serif;transition:.2s}
+.contact-form textarea{grid-column:1/-1;resize:vertical;min-height:130px}.contact-form input:focus,.contact-form textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
+.contact-form input::placeholder,.contact-form textarea::placeholder{color:var(--muted)}
+.contact-form-bottom{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:15px;margin-top:2px}
+.contact-form-bottom small{color:var(--muted);font:8px/1.5 "DM Mono"}
+.contact-form-bottom button{display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:0 0 auto;border:1px solid var(--accent);border-radius:10px;padding:11px 15px;background:var(--accent);color:#071017;font:800 8px "DM Mono";letter-spacing:.7px;cursor:pointer;transition:.2s}
+.contact-form-bottom button:hover{transform:translateY(-1px);box-shadow:0 0 20px var(--glow)}.contact-form-bottom button:disabled{opacity:.6;cursor:wait;transform:none}
+.contact-form-status{grid-column:1/-1;padding:10px 12px;border-radius:9px;font:8px/1.5 "DM Mono";border:1px solid var(--line)}.contact-form-status.success{color:var(--accent);border-color:rgba(97,231,255,.25);background:rgba(97,231,255,.04)}.contact-form-status.error{color:#ff9b9b;border-color:rgba(255,120,120,.24);background:rgba(255,120,120,.04)}
+.contact-honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;opacity:0!important}
+[data-theme="light"] .contact-message-wrap{background:rgba(255,255,255,.46)}[data-theme="light"] .contact-form input,[data-theme="light"] .contact-form textarea{background:rgba(255,255,255,.72);border-color:rgba(82,61,116,.14)}[data-theme="light"] .contact-form input:focus,[data-theme="light"] .contact-form textarea:focus{border-color:#7654d6;box-shadow:0 0 0 3px rgba(118,84,214,.10)}[data-theme="light"] .contact-form-bottom button{background:#7654d6;border-color:#7654d6;color:#fff}
+@media(max-width:700px){.contact-message-wrap{padding:18px;margin-top:26px}.contact-form{grid-template-columns:1fr}.contact-form textarea,.contact-form-bottom,.contact-form-status{grid-column:1}.contact-form-head{align-items:flex-start;flex-direction:column;gap:6px}.contact-form-bottom{align-items:stretch;flex-direction:column}.contact-form-bottom button{width:100%}}
