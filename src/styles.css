@@ -1862,3 +1862,24 @@ main > .hero + .section.intro [class*="vertical-line"]{
 .section-heading{
   align-items:center;
 }
+
+/* CONNECT section alignment */
+.contact .contact-box{
+  text-align:left !important;
+}
+.contact .contact-box .section-label{
+  text-align:left !important;
+  margin-bottom:24px;
+}
+.contact .contact-box h2,
+.contact .contact-box > p{
+  text-align:left !important;
+}
+.contact .contact-actions{
+  justify-content:flex-start;
+}
+@media (max-width:700px){
+  .contact .contact-box{
+    text-align:left !important;
+  }
+}
