@@ -610,3 +610,51 @@ body{
     100%{top:calc(100% - 58px);opacity:0}
   }
 }
+
+
+/* MOVING SKILLS STRIP — directly below the fixed navigation */
+.skills-marquee{
+  position:relative;
+  z-index:18;
+  width:100%;
+  height:38px;
+  margin-top:92px;
+  overflow:hidden;
+  border-top:1px solid rgba(201,167,255,.10);
+  border-bottom:1px solid rgba(201,167,255,.10);
+  background:rgba(10,7,20,.36);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  mask-image:linear-gradient(90deg,transparent,black 6%,black 94%,transparent);
+  -webkit-mask-image:linear-gradient(90deg,transparent,black 6%,black 94%,transparent);
+}
+.skills-marquee-track{
+  width:max-content;
+  height:100%;
+  display:flex;
+  align-items:center;
+  gap:22px;
+  white-space:nowrap;
+  animation:skillsMarquee 24s linear infinite;
+}
+.skills-marquee span{
+  color:#d9caff;
+  font:600 9px "DM Mono";
+  letter-spacing:2px;
+  text-shadow:0 0 14px rgba(201,167,255,.25);
+}
+.skills-marquee i{
+  color:var(--accent);
+  font:normal 10px "DM Mono";
+  opacity:.75;
+}
+.skills-marquee:hover .skills-marquee-track{animation-play-state:paused}
+@keyframes skillsMarquee{
+  from{transform:translateX(0)}
+  to{transform:translateX(-50%)}
+}
+@media(max-width:760px){
+  .skills-marquee{height:34px;margin-top:78px}
+  .skills-marquee-track{gap:16px;animation-duration:20s}
+  .skills-marquee span{font-size:8px;letter-spacing:1.5px}
+}
