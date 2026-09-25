@@ -19,9 +19,11 @@ const profile = {
 };
 
 const projects = [
-  { title: "University AI Chatbot", text: "An academic AI assistant built around LangChain and RAG, designed to work with university documents and provide grounded answers.", tags: ["LangChain", "RAG", "LLM"], icon: BrainCircuit },
-  { title: "Interactive AI Portfolio", text: "This interactive portfolio combines React, Three.js, responsive UI, theme switching and the TAYYAB AI assistant.", tags: ["React", "Three.js", "Vite"], icon: Atom },
-  { title: "Student Analytics", text: "Python and data-analysis work focused on student datasets, descriptive statistics, visualization and extracting useful insights from data.", tags: ["Python", "Pandas", "Data"], icon: Database }
+  { title: "University AI Chatbot", text: "A university-focused Generative AI assistant using LangChain, RAG, university documents and Gemini to answer academic questions.", tags: ["LangChain", "RAG", "Gemini"], icon: BrainCircuit, status: "ONGOING" },
+  { title: "TAYYAB AI / Interactive Portfolio", text: "An AI-powered portfolio combining React, Three.js, Gemini, responsive UI, voice interaction, document tools and an interactive learning arcade.", tags: ["React", "Three.js", "Gemini"], icon: Atom, status: "ONGOING" },
+  { title: "Student Analytics & Data Analysis", text: "Python-based academic data work covering student datasets, descriptive statistics, visualization and extracting useful patterns from data.", tags: ["Python", "Pandas", "Statistics"], icon: Database, status: "ACADEMIC" },
+  { title: "AI & Data Science Learning Arcade", text: "Interactive browser-based experiments that make machine learning and data concepts easier to explore through hands-on visual missions.", tags: ["React", "AI / ML", "Interactive"], icon: Sparkles, status: "ONGOING" },
+  { title: "Statistical Analysis & Visualization", text: "Academic exercises using datasets, descriptive statistics, box plots, charts and statistical calculations to build practical data-analysis foundations.", tags: ["Python", "Statistics", "Visualization"], icon: Database, status: "ACADEMIC" }
 ];
 
 const skillGroups = [
@@ -837,39 +839,73 @@ function App() {
 
       <section className="section work" id="work">
         <div className="section-label">02 — ENGINEER</div>
-        <div className="section-heading"><h2>Selected <em>missions.</em></h2><span>Hover a project</span></div>
+        <div className="section-heading"><h2>Selected <em>missions.</em></h2><span>Projects, experiments & academic work</span></div>
         <div className="project-grid">{projects.map((p,i) => { const Icon=p.icon; return <article className="project-card" key={p.title}>
-          <div className="project-number">0{i+1}</div><div className="project-icon"><Icon size={22}/></div><span className="project-type">CASE STUDY / 0{i+1}</span>
+          <div className="project-number">{String(i+1).padStart(2,"0")}</div><div className="project-icon"><Icon size={22}/></div><span className="project-type">PROJECT / {String(i+1).padStart(2,"0")} · {p.status}</span>
           <h3>{p.title}</h3><p>{p.text}</p><div className="tags">{p.tags.map(t=><span key={t}>{t}</span>)}</div>
-          <a href={profile.github} target="_blank" rel="noreferrer">View on GitHub <ExternalLink size={14}/></a>
+          <a href={profile.github} target="_blank" rel="noreferrer">GitHub profile <ExternalLink size={14}/></a>
           <div className="project-hover"><span>BUILD</span><b>→</b></div>
         </article>})}</div>
       </section>
 
+      <section className="section flagship" id="flagship">
+        <div className="section-label">03 — FLAGSHIP PROJECT</div>
+        <div className="flagship-head">
+          <div>
+            <span className="flagship-kicker">GENERATIVE AI / RAG / FULL-STACK</span>
+            <h2>University AI <em>Chatbot.</em></h2>
+          </div>
+          <span className="flagship-status">ONGOING BUILD</span>
+        </div>
+        <p className="flagship-lead">A university-focused AI assistant designed to help students access academic information through natural-language questions and university-provided documents.</p>
+        <div className="flagship-grid">
+          <div className="flagship-panel">
+            <span>THE PROBLEM</span>
+            <h3>Make academic information easier to access.</h3>
+            <p>University information can be spread across PDFs, notices and academic resources. The project explores a conversational interface that can retrieve relevant information before generating an answer.</p>
+          </div>
+          <div className="flagship-panel">
+            <span>THE APPROACH</span>
+            <h3>Documents → Retrieval → AI response.</h3>
+            <div className="flagship-flow"><b>DOCUMENTS</b><i>→</i><b>CHUNKING</b><i>→</i><b>RAG</b><i>→</i><b>GEMINI</b></div>
+            <p>Built around LangChain and a retrieval-augmented generation workflow, with a React web interface and Python-based AI application development.</p>
+          </div>
+        </div>
+        <div className="flagship-features">
+          <div><span>CURRENT</span><b>LangChain + RAG</b><small>University document workflow</small></div>
+          <div><span>CURRENT</span><b>Gemini integration</b><small>LLM-powered responses</small></div>
+          <div><span>CURRENT</span><b>Web interface</b><small>Conversational student experience</small></div>
+          <div><span>PLANNED</span><b>Source citations</b><small>Make retrieved evidence visible</small></div>
+          <div><span>PLANNED</span><b>Authentication</b><small>Student and admin access</small></div>
+          <div><span>PLANNED</span><b>Cloud deployment</b><small>Production-ready infrastructure</small></div>
+        </div>
+        <div className="flagship-tech"><span>PYTHON</span><span>LANGCHAIN</span><span>RAG</span><span>GEMINI</span><span>REACT</span><span>POSTGRESQL</span></div>
+      </section>
+
       <section className="section systems">
-        <div className="section-label">03 — MODEL</div>
+        <div className="section-label">04 — MODEL</div>
         <h2>A toolkit for <em>building intelligence.</em></h2>
         <div className="skill-grid">{skillGroups.map(g => <div className="skill-group" key={g.title}><span className="group-title">{g.title}</span>{g.items.map((s,i)=><div className="skill-row" key={s}><small>0{i+1}</small><b>{s}</b><span>↗</span></div>)}</div>)}</div>
         <LiveModelLab/>
       </section>
 
       <section className="section language-section" id="skills">
-        <div className="section-label">04 — TECHNICAL STACK</div>
+        <div className="section-label">05 — TECHNICAL STACK</div>
         <div className="language-layout"><div><h2>Tools I <em>build with.</em></h2><p>My current toolkit spans programming, AI and data work, databases, and modern web development.</p></div><div className="language-bars">{[["Python","AI • Data Science • Automation","PRIMARY"],["JavaScript","React • Web • Interactive UI","CORE"],["SQL","Databases • Analytics","CORE"],["C","Programming fundamentals","LEARNING"]].map(x=><div className="language-bar" key={x[0]}><div><b>{x[0]}</b><span>{x[1]}</span><i>{x[2]}</i></div><u><span style={{width:x[2]==="PRIMARY"?"92%":x[2]==="CORE"?"78%":"60%"}}/></u></div>)}</div></div>
       </section>
 
       <section className="section learning">
-        <div className="section-label">05 — LEARNING JOURNEY</div>
+        <div className="section-label">06 — LEARNING JOURNEY</div>
         <div className="learning-grid"><div><h2>Learning by <em>building.</em></h2><p>I’m continuously developing my foundation in Artificial Intelligence & Data Science through projects, experimentation and hands-on technical work.</p></div><div className="learning-cards"><article><Atom/><b>Generative AI</b><span>LLMs, RAG, LangChain and AI assistants</span></article><article><Database/><b>Data Science</b><span>Python, Pandas, statistics and analytics</span></article><article><Code2/><b>Full-Stack Development</b><span>React, JavaScript, APIs and databases</span></article></div></div>
       </section>
 
       <section className="section education">
-        <div className="section-label">06 — EDUCATION</div>
+        <div className="section-label">07 — EDUCATION</div>
         <div className="intro-grid"><h2>Academic <em>foundation.</em></h2><div><p>I’m currently pursuing an <b>MSc in Artificial Intelligence & Data Science (MSc AIDS)</b> at <b>Indira University, Pune</b>.</p><div className="mini-stats"><div><b>MSc AIDS</b><span>Current degree</span></div><div><b>INDIRA UNIVERSITY</b><span>Pune, Maharashtra</span></div><div><b>FOCUS</b><span>AI • Data • Development</span></div></div></div></div>
       </section>
 
       <section className="section contact" id="contact">
-        <div className="contact-box"><div className="section-label">07 — CONNECT</div><h2>Have an idea?<br/><em>Let's build it.</em></h2><p>AI, data, web development or an interesting experiment — I'm always open to meaningful projects and conversations.</p><div className="contact-actions"><a className="primary" href={profile.whatsapp} target="_blank" rel="noreferrer"><MessageCircle size={17}/> WhatsApp</a><a className="secondary" href={"mailto:"+profile.email}><Mail size={17}/> Email</a><a className="secondary" href={profile.linkedin} target="_blank" rel="noreferrer"><Linkedin size={17}/> LinkedIn</a></div></div>
+        <div className="contact-box"><div className="section-label">08 — CONNECT</div><h2>Have an idea?<br/><em>Let's build it.</em></h2><p>AI, data, web development or an interesting experiment — I'm always open to meaningful projects and conversations.</p><div className="contact-actions"><a className="primary" href={profile.whatsapp} target="_blank" rel="noreferrer"><MessageCircle size={17}/> WhatsApp</a><a className="secondary" href={"mailto:"+profile.email}><Mail size={17}/> Email</a><a className="secondary" href={profile.linkedin} target="_blank" rel="noreferrer"><Linkedin size={17}/> LinkedIn</a></div></div>
       </section>
     </main>
 
