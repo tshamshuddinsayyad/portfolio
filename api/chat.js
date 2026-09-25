@@ -92,7 +92,7 @@ function routeMode(mode, message, hasDocument) {
   if (/(code|coding|debug|error|bug|javascript|python|java|sql|react|program|algorithm|function)/.test(q)) {
     return "coding";
   }
-  if (/(study|exam|assignment|learn|explain|tutorial|concept|definition|formula)/.test(q)) {
+  if (/(study|exam|assignment|learn|explain|tutorial|concept|definition|formula|what is|what are|how does|why does)/.test(q)) {
     return "study";
   }
   if (/(latest|today|current|recent|news|price|2026|research|paper|paperwork|source|citation)/.test(q)) {
@@ -133,6 +133,7 @@ ANSWER QUALITY CONTRACT:
     common +
     "\nMODE:\n" + (modes[mode] || modes.auto) +
     (mode === "portfolio" && context ? "\n\nPORTFOLIO CONTEXT:\n" + context : "") +
+    "\n\nCURRENT USER QUESTION IS THE HIGHEST-PRIORITY TURN. Do not answer an older question from history by mistake." +
     (documentText
       ? "\n\nUPLOADED DOCUMENT (" + (documentName || "uploaded document") + "):\n" + documentText.slice(0, 120000)
       : "")
@@ -166,11 +167,16 @@ function supportsGemini3Thinking(model) {
 
 function generationConfig(model, mode, message) {
   const config = {};
+
   if (supportsGemini3Thinking(model)) {
     config.thinkingConfig = {
       thinkingLevel: thinkingLevelFor(mode, message)
     };
   }
+
+  // Give the model enough room for reasoning + the final response.
+  // Do not set temperature/topP/topK for Gemini 3.x.
+  config.maxOutputTokens = 32768;
   return config;
 }
 
@@ -408,12 +414,14 @@ export default async function handler(req, res) {
   const portfolioContext =
     selectedMode === "portfolio" ? retrievePortfolio(message.trim()) : "";
 
-  const systemPrompt = buildSystemPrompt(
-    selectedMode,
-    portfolioContext,
-    documentText,
-    documentName
-  );
+  const systemPrompt =
+    buildSystemPrompt(
+      selectedMode,
+      portfolioContext,
+      documentText,
+      documentName
+    ) +
+    "\n\nFINAL CHECK BEFORE ANSWERING: Make sure the response directly answers the current user question, does not contradict the supplied context, and does not invent missing facts.";
 
   // Do not let the current question get diluted by stale transcript content.
   // The model receives the most recent bounded turns plus the exact new user message.
