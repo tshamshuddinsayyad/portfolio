@@ -497,7 +497,7 @@ function ConfusionMatrixGame({setScore,onBack}) {
 }
 
 function Chatbot() {
-  const STORAGE_KEY = "tayyab-ai-conversation-v3";
+  const STORAGE_KEY = "tayyab-ai-conversation-v5";
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -649,7 +649,19 @@ function Chatbot() {
     const q = text.trim();
     if (!q || busy) return;
     try { window.speechSynthesis?.cancel(); } catch {}
-    const history = messages.slice(-12).map(m => ({ role:m.role, content:m.content }));
+    // Send only complete user -> assistant turns. The initial UI greeting is
+    // not conversation context, and an in-progress user turn must never be
+    // accidentally reused as history.
+    const history = [];
+    for (let i = 0; i + 1 < messages.length; i++) {
+      if (messages[i]?.role === "user" && messages[i + 1]?.role === "assistant") {
+        history.push(
+          { role: "user", content: messages[i].content },
+          { role: "assistant", content: messages[i + 1].content }
+        );
+      }
+    }
+
     setMessages(m => [...m, { role:"user", content:q }]);
     setInput("");
     setBusy(true);
