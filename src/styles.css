@@ -1567,3 +1567,100 @@ main > .hero + .section.intro [class*="vertical-line"]{
 @media(prefers-reduced-motion:reduce){
   .ai-live-dot{animation:none}
 }
+
+
+/* =========================================================
+   TAYYAB AI — CHATGPT-STYLE COMPOSER / INTERACTION SYSTEM
+   ========================================================= */
+.chat-panel{
+  background:
+    radial-gradient(circle at 80% 0%,rgba(118,84,214,.12),transparent 34%),
+    radial-gradient(circle at 0% 100%,rgba(22,140,165,.08),transparent 30%),
+    var(--panel,#0f0d16);
+  overflow:hidden;
+}
+.chat-body{
+  flex:1;min-height:0;
+}
+.document-chip{
+  display:flex;align-items:center;gap:7px;margin:7px 10px 0;padding:7px 9px;
+  border:1px solid var(--line);border-radius:10px;background:rgba(118,84,214,.07);
+  color:var(--accent);font:700 8px "DM Mono";
+}
+.document-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.document-chip button{margin-left:auto;border:0;background:none;color:var(--muted);cursor:pointer}
+.chat-composer{
+  position:relative;margin:9px 10px 10px;border:1px solid var(--line);
+  border-radius:18px;background:rgba(255,255,255,.035);
+  box-shadow:0 12px 35px rgba(0,0,0,.18),inset 0 0 0 1px rgba(255,255,255,.018);
+  transition:.25s;
+}
+.chat-composer:focus-within,.chat-composer.is-listening{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--glow),0 14px 40px rgba(0,0,0,.20);
+}
+.composer-row{display:flex;align-items:flex-end;gap:5px;padding:7px}
+.composer-plus-wrap{position:relative}
+.composer-plus,.composer-mic,.composer-send{
+  width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+  flex:0 0 34px;border:1px solid var(--line);background:transparent;
+  color:var(--muted);cursor:pointer;transition:.2s;
+}
+.composer-plus{font:400 25px/1 Arial}
+.composer-plus:hover,.composer-mic:hover{color:var(--text);border-color:var(--accent);transform:scale(1.05)}
+.composer-mic.active{color:#fff;background:#7654d6;border-color:#7654d6;animation:micPulse 1.3s infinite}
+@keyframes micPulse{50%{box-shadow:0 0 0 7px rgba(118,84,214,.10)}}
+.composer-send{color:#fff;background:var(--accent);border-color:var(--accent)}
+.composer-send:hover{transform:scale(1.06);filter:brightness(1.08);box-shadow:0 0 18px var(--glow)}
+.chat-composer textarea{
+  flex:1;min-width:0;max-height:120px;resize:none;border:0;outline:0;
+  background:transparent;color:var(--text);padding:8px 5px;
+  font:14px/1.45 "DM Sans",sans-serif;
+}
+.chat-composer textarea::placeholder{color:var(--muted)}
+.composer-meta{
+  display:flex;justify-content:space-between;gap:10px;padding:0 12px 8px;
+  color:var(--muted);font:7px "DM Mono";letter-spacing:.25px;
+}
+.composer-menu{
+  position:absolute;left:0;bottom:43px;width:255px;padding:7px;border:1px solid var(--line);
+  border-radius:14px;background:var(--panel,#121019);box-shadow:0 18px 50px rgba(0,0,0,.35);
+  z-index:80;animation:menuPop .16s ease-out;
+}
+@keyframes menuPop{from{opacity:0;transform:translateY(5px) scale(.98)}to{opacity:1;transform:none}}
+.composer-menu button{
+  width:100%;display:flex;align-items:center;gap:10px;text-align:left;padding:9px;
+  border:0;border-radius:9px;background:transparent;color:var(--text);cursor:pointer;
+}
+.composer-menu button:hover{background:rgba(118,84,214,.10);color:var(--accent)}
+.composer-menu button>svg{flex:0 0 auto}
+.composer-menu span{display:flex;flex-direction:column;gap:2px}
+.composer-menu b{font:700 9px "DM Sans"}
+.composer-menu small{font:7px "DM Mono";color:var(--muted)}
+[data-theme="light"] .chat-panel{
+  background:
+    radial-gradient(circle at 85% 0%,rgba(118,84,214,.13),transparent 36%),
+    radial-gradient(circle at 0% 100%,rgba(22,140,165,.08),transparent 32%),
+    rgba(255,255,255,.94);
+  box-shadow:0 28px 80px rgba(66,48,100,.18);
+}
+[data-theme="light"] .chat-composer{
+  background:rgba(255,255,255,.92);
+  border-color:rgba(82,61,116,.16);
+  box-shadow:0 12px 30px rgba(66,48,100,.10);
+}
+[data-theme="light"] .chat-composer:focus-within{
+  border-color:#7654d6;box-shadow:0 0 0 3px rgba(118,84,214,.10),0 15px 35px rgba(66,48,100,.12);
+}
+[data-theme="light"] .composer-menu{
+  background:rgba(255,255,255,.98);
+  border-color:rgba(82,61,116,.13);
+  box-shadow:0 18px 50px rgba(66,48,100,.16);
+}
+[data-theme="light"] .composer-menu button:hover{background:rgba(118,84,214,.07)}
+[data-theme="light"] .composer-send{background:#7654d6}
+@media(max-width:560px){
+  .chat-composer{margin:7px 7px 8px;border-radius:16px}
+  .composer-meta{font-size:6px}
+  .composer-menu{width:min(255px,calc(100vw - 42px))}
+}
