@@ -1239,3 +1239,207 @@ main > .hero + .section.intro [class*="vertical-line"]{
   [data-theme="light"] .nav{box-shadow:0 10px 30px rgba(66,48,100,.08)}
   [data-theme="light"] .chat-panel{box-shadow:0 20px 55px rgba(66,48,100,.12)}
 }
+
+
+
+/* =========================================================
+   LIGHT THEME — INTERACTION LAYER
+   Soft glass, cursor-aware lighting, lift and micro-motion.
+   ========================================================= */
+[data-theme="light"]{
+  --light-bg:#f7f5fb;
+  --light-surface:rgba(255,255,255,.78);
+  --light-surface-strong:rgba(255,255,255,.92);
+  --light-ink:#21172f;
+  --light-violet:#7654d6;
+  --light-violet-2:#a16ee8;
+  --light-cyan:#168ca5;
+}
+
+/* Smooth theme transition without changing the dark system */
+[data-theme="light"] .nav,
+[data-theme="light"] .skills-marquee,
+[data-theme="light"] .ai-lab,
+[data-theme="light"] .model-card,
+[data-theme="light"] .float-3d,
+[data-theme="light"] .project-card,
+[data-theme="light"] .skill-group,
+[data-theme="light"] .learning-cards article,
+[data-theme="light"] .contact-box,
+[data-theme="light"] .language-bar,
+[data-theme="light"] .mini-stats>div,
+[data-theme="light"] .game-screen,
+[data-theme="light"] .game-cards button,
+[data-theme="light"] .chat-panel{
+  transition:background .35s ease,border-color .35s ease,box-shadow .35s ease,transform .35s cubic-bezier(.2,.8,.2,1);
+}
+
+/* Cursor-following violet light */
+[data-theme="light"] .ai-lab:after,
+[data-theme="light"] .project-card:after,
+[data-theme="light"] .game-cards button:after,
+[data-theme="light"] .learning-cards article:after,
+[data-theme="light"] .contact-box:after{
+  background:radial-gradient(220px circle at var(--glow-x,50%) var(--glow-y,50%),rgba(118,84,214,.13),transparent 68%);
+  opacity:0;
+  transition:opacity .25s ease;
+  pointer-events:none;
+}
+[data-theme="light"] .ai-lab:hover:after,
+[data-theme="light"] .project-card:hover:after,
+[data-theme="light"] .game-cards button:hover:after,
+[data-theme="light"] .learning-cards article:hover:after,
+[data-theme="light"] .contact-box:hover:after{opacity:1}
+
+/* Interactive project cards */
+[data-theme="light"] .project-card{
+  transform:translateY(0);
+  background:linear-gradient(145deg,rgba(255,255,255,.88),rgba(246,242,252,.72));
+}
+[data-theme="light"] .project-card:hover{
+  transform:translateY(-7px);
+}
+[data-theme="light"] .project-card:hover .project-icon{
+  transform:translateY(-2px) rotate(-4deg);
+  box-shadow:0 8px 22px rgba(118,84,214,.15);
+}
+[data-theme="light"] .project-icon{transition:transform .3s ease,box-shadow .3s ease}
+
+/* AI lab becomes a living light-mode control surface */
+[data-theme="light"] .ai-lab{
+  --mx:0;--my:0;
+  transform:perspective(1200px) rotateX(calc(var(--my) * -1.4deg)) rotateY(calc(var(--mx) * 1.8deg));
+  box-shadow:0 30px 80px rgba(66,48,100,.11),0 0 55px rgba(118,84,214,.06);
+}
+[data-theme="light"] .ai-lab:hover{
+  border-color:rgba(118,84,214,.28);
+}
+[data-theme="light"] .model-card{
+  transform:translate3d(calc(var(--mx) * 5px),calc(var(--my) * 5px),0);
+}
+[data-theme="light"] .float-3d{
+  transition:transform .35s ease,box-shadow .35s ease;
+}
+[data-theme="light"] .float-3d:hover{
+  transform:translateY(-6px) scale(1.035);
+  box-shadow:0 18px 38px rgba(118,84,214,.16);
+}
+[data-theme="light"] .model-core{
+  animation:lightCorePulse 3s ease-in-out infinite;
+}
+@keyframes lightCorePulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(118,84,214,.10),0 0 25px rgba(118,84,214,.08)}
+  50%{box-shadow:0 0 0 10px rgba(118,84,214,.025),0 0 38px rgba(118,84,214,.18)}
+}
+
+/* Skills become responsive, tactile rows */
+[data-theme="light"] .skill-row{
+  transition:padding-left .25s ease,background .25s ease,border-color .25s ease;
+  border-radius:8px;
+}
+[data-theme="light"] .skill-row:hover{
+  padding-left:9px;
+  background:linear-gradient(90deg,rgba(118,84,214,.055),transparent);
+}
+
+/* Arcade cards: stronger hover + active feedback */
+[data-theme="light"] .game-cards button{
+  position:relative;
+  overflow:hidden;
+  transform:translateY(0);
+}
+[data-theme="light"] .game-cards button:hover{
+  transform:translateY(-6px) scale(1.012);
+}
+[data-theme="light"] .game-cards button:active{
+  transform:translateY(-1px) scale(.995);
+}
+[data-theme="light"] .game-icon{
+  transition:transform .3s ease,box-shadow .3s ease,background .3s ease;
+}
+[data-theme="light"] .game-cards button:hover .game-icon{
+  transform:rotate(-6deg) scale(1.08);
+  background:rgba(118,84,214,.09);
+  box-shadow:0 0 28px rgba(118,84,214,.14);
+}
+
+/* Learning score gets a live halo */
+[data-theme="light"] .play-score{
+  border-color:rgba(118,84,214,.18);
+  background:linear-gradient(145deg,rgba(118,84,214,.07),rgba(255,255,255,.62));
+  box-shadow:0 10px 30px rgba(66,48,100,.06);
+  transition:box-shadow .3s ease,transform .3s ease;
+}
+[data-theme="light"] .play-score:hover{
+  transform:translateY(-3px);
+  box-shadow:0 14px 35px rgba(118,84,214,.12);
+}
+[data-theme="light"] .play-score b{text-shadow:0 0 18px rgba(118,84,214,.18)}
+
+/* Mission playground gets a subtle scanning highlight */
+[data-theme="light"] .game-screen{
+  position:relative;
+  isolation:isolate;
+}
+[data-theme="light"] .game-screen:after{
+  animation:lightScan 5s linear infinite;
+  opacity:.5;
+}
+@keyframes lightScan{
+  0%{transform:translateX(-55%);opacity:0}
+  20%{opacity:.55}
+  80%{opacity:.55}
+  100%{transform:translateX(55%);opacity:0}
+}
+
+/* Interactive threshold slider */
+[data-theme="light"] .threshold-controls input[type="range"]{
+  cursor:ew-resize;
+  height:6px;
+}
+[data-theme="light"] .threshold-controls input[type="range"]::-webkit-slider-thumb{
+  transition:transform .18s ease,box-shadow .18s ease;
+}
+[data-theme="light"] .threshold-controls input[type="range"]:hover::-webkit-slider-thumb{
+  transform:scale(1.28);
+  box-shadow:0 0 20px rgba(118,84,214,.58);
+}
+[data-theme="light"] .threshold-metrics div{
+  transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease;
+}
+[data-theme="light"] .threshold-metrics div:hover{
+  transform:translateY(-3px);
+  border-color:rgba(118,84,214,.22);
+  box-shadow:0 10px 24px rgba(118,84,214,.08);
+}
+
+/* Chat controls feel like a real light product UI */
+[data-theme="light"] .chat-fab{
+  transition:transform .25s ease,box-shadow .25s ease;
+}
+[data-theme="light"] .chat-fab:hover{
+  transform:translateY(-4px) scale(1.025);
+  box-shadow:0 18px 42px rgba(33,23,47,.20);
+}
+[data-theme="light"] .quick-prompts button,
+[data-theme="light"] .chat-head-actions button{
+  transition:transform .2s ease,border-color .2s ease,background .2s ease;
+}
+[data-theme="light"] .quick-prompts button:hover,
+[data-theme="light"] .chat-head-actions button:hover{
+  transform:translateY(-2px);
+  border-color:rgba(118,84,214,.28);
+  background:rgba(118,84,214,.06);
+}
+
+/* Better touch behavior */
+@media(max-width:760px){
+  [data-theme="light"] .project-card:hover,
+  [data-theme="light"] .game-cards button:hover{transform:translateY(-3px)}
+  [data-theme="light"] .ai-lab{transform:none!important}
+  [data-theme="light"] .model-card{transform:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+  [data-theme="light"] .model-core,
+  [data-theme="light"] .game-screen:after{animation:none!important}
+}
