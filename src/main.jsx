@@ -281,6 +281,8 @@ function LiveModelLab() {
             <button onClick={() => startGame("neural")}><span className="game-icon">⌘</span><small>06 / NEURAL NETWORKS</small><strong>NEURAL<br/><em>BUILDER</em></strong><p>Activate hidden neurons and run a tiny forward pass.</p><b>BUILD →</b></button>
             <button onClick={() => startGame("pca")}><span className="game-icon">↗</span><small>07 / DATA SCIENCE</small><strong>PCA<br/><em>COMPRESSOR</em></strong><p>Rotate a projection to preserve the most variance.</p><b>REDUCE →</b></button>
           </div>
+            <button onClick={() => startGame("neural")}><span className="game-icon">⌘</span><small>06 / NEURAL NETWORKS</small><strong>NEURAL<br/><em>BUILDER</em></strong><p>Activate hidden neurons and run a tiny forward pass.</p><b>BUILD →</b></button>
+            <button onClick={() => startGame("pca")}><span className="game-icon">↗</span><small>07 / DATA SCIENCE</small><strong>PCA<br/><em>COMPRESSOR</em></strong><p>Rotate a projection to preserve the most variance.</p><b>REDUCE →</b></button>
           <div className="concept-strip"><span>FEATURES</span> → <span>MODEL</span> → <span>LOSS</span> → <span>RETRIEVAL</span> → <span>ANSWER</span></div>
         </div>
       )}
@@ -290,6 +292,8 @@ function LiveModelLab() {
       {game === "rag" && <RagRescue setScore={setScore} score={score} onBack={() => setGame(null)} />}
       {game === "knn" && <KNNGame setScore={setScore} onBack={() => setGame(null)} />}
       {game === "sql" && <SQLGame setScore={setScore} onBack={() => setGame(null)} />}
+      {game === "neural" && <NeuralGame setScore={setScore} onBack={() => setGame(null)} />}
+      {game === "pca" && <PCAGame setScore={setScore} onBack={() => setGame(null)} />}
 
       <div className="playground-footer"><span>DATA → LEARN → PREDICT → EXPLAIN</span><b>AI LAB ONLINE</b></div>
     </div>
@@ -398,6 +402,30 @@ function SQLGame({setScore,onBack}) {
   const [q,setQ]=useState(0),[pick,setPick]=useState(null); const item=qs[q];
   return <div className="game-screen concept-game"><GameTop label={"MISSION 05 / SQL DETECTIVE / QUERY "+(q+1)} onBack={onBack}/><div className="sql-head"><span className="panel-kicker">DATABASE CHALLENGE</span><h4>{item[0]}</h4></div><div className="sql-table"><div className="sql-row header"><span>id</span><span>department</span><span>Mid_Sem</span><span>End_Sem</span></div>{[[1,"AI",82,88],[2,"CS",64,74],[3,"AI",91,93],[4,"DS",69,67]].map(r=><div className="sql-row" key={r[0]}>{r.map((v,j)=><span key={j}>{v}</span>)}</div>)}</div><div className="sql-options">{item[1].map((x,i)=><button key={x} className={pick===i?"sql-picked":""} onClick={()=>{if(pick===null){setPick(i);if(i===0)setScore(v=>v+140)}}}><b>{String.fromCharCode(65+i)}</b><code>{x}</code></button>)}</div>{pick!==null&&<div className={"sql-feedback "+(pick===0?"correct":"wrong")}><b>{pick===0?"✓ QUERY CORRECT":"× TRY AGAIN"}</b><span>WHERE filters rows; GROUP BY groups rows; ORDER BY + LIMIT controls ranking.</span><button className="again-btn" onClick={()=>{setQ((q+1)%3);setPick(null)}}>NEXT QUERY →</button></div>}<div className="lesson-note"><b>WHAT YOU LEARN:</b> SQL converts questions into precise <em>filter, group and sort</em> operations.</div></div>;
 }
+
+function NeuralGame({setScore,onBack}) {
+  const [active,setActive]=useState([true,true,true]),[done,setDone]=useState(false);
+  const vals=[.24,.67,.91],count=active.filter(Boolean).length;
+  return <div className="game-screen concept-game"><GameTop label="MISSION 06 / NEURAL NETWORK BUILDER" onBack={onBack}/>
+    <div className="game-center-head"><span className="panel-kicker">INPUT → HIDDEN → OUTPUT</span><h4>Activate neurons and run a tiny <em>forward pass.</em></h4></div>
+    <div className="neural-network"><div className="nn-column"><small>INPUT</small><span>STUDY</span><span>ATTEND</span><span>PROJECT</span></div>
+      <div className="nn-column hidden"><small>HIDDEN</small>{active.map((x,i)=><button key={i} className={x?"active":""} onClick={()=>{setActive(a=>a.map((v,j)=>j===i?!v:v));setDone(false)}}>h{i+1}<em>{x?vals[i].toFixed(2):"OFF"}</em></button>)}</div>
+      <div className="nn-output"><small>OUTPUT</small><b>{done?(count>=2?"HIGH":"LOW"):"?"}</b><span>ACTIVATION</span></div></div>
+    <div className="nn-controls"><span>{count}/3 HIDDEN NEURONS ACTIVE</span><button className="again-btn" onClick={()=>{if(!done){setDone(true);setScore(v=>v+160)}}}>{done?"FORWARD PASS COMPLETE ✓":"RUN FORWARD PASS →"}</button></div>
+    <div className="lesson-note"><b>WHAT YOU LEARN:</b> Neural networks transform inputs through weighted <em>hidden layers</em> into predictions.</div></div>;
+}
+
+function PCAGame({setScore,onBack}) {
+  const [angle,setAngle]=useState(25),[done,setDone]=useState(false);
+  const quality=Math.max(0,100-Math.abs(angle-45)*1.65);
+  return <div className="game-screen concept-game"><GameTop label="MISSION 07 / PCA COMPRESSOR" onBack={onBack}/>
+    <div className="game-center-head"><span className="panel-kicker">DIMENSIONALITY REDUCTION</span><h4>Rotate the axis to capture maximum <em>variance.</em></h4></div>
+    <div className="pca-layout"><div className="pca-plot"><div className="pca-axis target"/><div className="pca-axis" style={{transform:"rotate("+angle+"deg)"}}/>{Array.from({length:18},(_,i)=><i key={i} className="pca-dot" style={{left:(14+i*4)+"%",top:(30+Math.sin(i*.75)*14)+"%"}}/>)}</div>
+      <div className="pca-readout"><span>PROJECTION ANGLE</span><b>{angle}°</b><input type="range" min="0" max="90" value={angle} onChange={e=>{setAngle(+e.target.value);setDone(false)}}/><small>Target ≈ 45°</small><button className="again-btn" onClick={()=>{if(!done){setDone(true);if(quality>=85)setScore(v=>v+170)}}}>{done?"DATA COMPRESSED ✓":"COMPRESS DATA →"}</button></div></div>
+    {done&&<div className={"pca-result "+(quality>=85?"correct":"wrong")}><b>{quality>=85?"HIGH VARIANCE RETAINED":"LOW VARIANCE RETAINED"}</b><span>Projection quality: {quality.toFixed(0)}%. PCA preserves important variance while reducing dimensions.</span></div>}
+    <div className="lesson-note"><b>WHAT YOU LEARN:</b> PCA projects data onto directions that preserve as much <em>variance</em> as possible.</div></div>;
+}
+
 function Chatbot() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
