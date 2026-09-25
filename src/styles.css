@@ -1004,3 +1004,39 @@ body{
 
 /* Remove the divider line immediately before 01 — UNDERSTAND */
 .section.intro:before{display:none!important}
+
+
+/* FINAL HERO → UNDERSTAND GAP / DIVIDER CLEANUP */
+/* The transition below the hero should be clean: no vertical route/divider and no oversized dead space. */
+main > .hero + .section.intro{
+  margin-top:0!important;
+  padding-top:52px!important;
+  border-top:0!important;
+}
+main > .hero + .section.intro:before,
+main > .hero + .section.intro:after,
+main > .hero + .section.intro .section-flow-wrap,
+main > .hero + .section.intro .section-flow-line,
+main > .hero + .section.intro [class*="flow-line"],
+main > .hero + .section.intro [class*="vertical-divider"],
+main > .hero + .section.intro [class*="vertical-line"]{
+  display:none!important;
+  content:none!important;
+  width:0!important;
+  height:0!important;
+  border:0!important;
+}
+/* Also neutralize the old engineering route if a cached bundle still contains it. */
+.section-flow-wrap,
+.section-flow-line,
+.section-flow-orb{
+  display:none!important;
+  width:0!important;
+  height:0!important;
+  border:0!important;
+  background:none!important;
+  box-shadow:none!important;
+}
+@media(max-width:760px){
+  main > .hero + .section.intro{padding-top:40px!important}
+}
