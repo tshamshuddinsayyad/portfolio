@@ -35,30 +35,57 @@ function retrievePortfolio(query) {
 function cleanHistory(history) {
   if (!Array.isArray(history)) return [];
 
-  const cleaned = history
+  const raw = history
     .filter(
       item =>
         item &&
-        (item.role === "user" || item.role === "assistant") &&
+        (item.role === "user" || item.role === "assistant" || item.role === "model") &&
         typeof item.content === "string" &&
         item.content.trim()
     )
-    .slice(-12)
+    .slice(-16)
     .map(item => ({
-      role: item.role === "assistant" ? "model" : "user",
-      parts: [{ text: item.content.slice(0, 6000) }]
+      role: item.role === "assistant" || item.role === "model" ? "model" : "user",
+      text: item.content.trim().slice(0, 6000)
     }));
 
-  // Keep the history useful without allowing a huge browser transcript
-  // to crowd out the actual user question or uploaded document.
+  // GenerateContent conversations must begin with a user turn and alternate
+  // user/model roles. Merge accidental consecutive turns instead of sending
+  // an invalid transcript to Gemini.
+  const normalized = [];
+  for (const item of raw) {
+    if (!normalized.length) {
+      if (item.role !== "user") continue;
+      normalized.push(item);
+      continue;
+    }
+
+    const previous = normalized[normalized.length - 1];
+    if (previous.role === item.role) {
+      previous.text += "\n\n" + item.text;
+    } else {
+      normalized.push(item);
+    }
+  }
+
   let total = 0;
   const result = [];
-  for (let i = cleaned.length - 1; i >= 0; i--) {
-    const size = cleaned[i].parts[0].text.length;
+  for (let i = normalized.length - 1; i >= 0; i--) {
+    const size = normalized[i].text.length;
     if (total + size > 30000) break;
-    result.unshift(cleaned[i]);
+    result.unshift({
+      role: normalized[i].role,
+      parts: [{ text: normalized[i].text }]
+    });
     total += size;
   }
+
+  // Never end history with a model turn because the new user message is
+  // appended immediately after this function.
+  while (result.length && result[result.length - 1].role === "model") {
+    result.pop();
+  }
+
   return result;
 }
 
@@ -375,7 +402,24 @@ async function withModelFallback(args) {
   }
 }
 
+// GET /api/chat?health=1 returns sanitized configuration diagnostics.
+function healthResponse(req, res) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  const model = process.env.GEMINI_MODEL || "gemini-3.8-flash";
+  return res.status(200).json({
+    ok: Boolean(apiKey),
+    provider: "Google Gemini",
+    model,
+    apiKeyConfigured: Boolean(apiKey),
+    timestamp: new Date().toISOString()
+  });
+}
+
 export default async function handler(req, res) {
+  if (req.method === "GET" && req.query?.health === "1") {
+    return healthResponse(req, res);
+  }
+
   if (req.method !== "POST") {
     return res.status(405).json({ answer: "Method not allowed", sources: [] });
   }
@@ -534,9 +578,10 @@ export default async function handler(req, res) {
       } catch {}
     }
 
-    return res.status(500).json({
+    return res.status(error?.status && error.status >= 400 && error.status < 600 ? error.status : 500).json({
       answer: "The AI request failed: " + String(error?.message || error),
-      sources: []
+      sources: [],
+      errorCode: error?.code || null
     });
   }
 }
