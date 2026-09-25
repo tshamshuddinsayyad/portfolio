@@ -47,13 +47,15 @@ function isFollowUpQuestion(currentQuestion, previousQuestion) {
   const previous = String(previousQuestion || "").trim().toLowerCase();
   if (!current || !previous) return false;
 
-  const followUpPattern = /^(and|also|then|so|but|what about|how about|why|how|where|when|which|can you|could you|tell me more|explain more|what does (it|that|this)|why does (it|that|this)|how does (it|that|this)|what about (it|that|this)|is (it|that|this)|does (it|that|this)|can (it|that|this)|what if)\b/i;
+  const followUpPattern = /^(and|also|then|so|but|what about|how about|can you|could you|tell me more|explain more|what does (it|that|this)|why does (it|that|this)|how does (it|that|this)|what about (it|that|this)|is (it|that|this)|does (it|that|this)|can (it|that|this)|what if)\b/i;
 
   const currentWords = meaningfulTokens(current);
   const previousWords = new Set(meaningfulTokens(previous));
   const overlap = currentWords.filter(word => previousWords.has(word)).length;
 
-  if (followUpPattern.test(current) && currentWords.length <= 10) return true;
+  // Bare follow-ups such as "why?" or "how?" can inherit the last topic.
+  if (/^(why|how|where|when|which|what about|tell me more|explain more)[?!.,\s]*$/i.test(current)) return true;
+  if (followUpPattern.test(current) && overlap >= 1) return true;
   if (overlap >= 2) return true;
   if (
     currentWords.length <= 6 &&
@@ -176,7 +178,7 @@ function routeMode(mode, message, hasDocument) {
   if (/(study|exam|assignment|learn|explain|tutorial|concept|definition|formula|what is|what are|how does|why does)/.test(q)) {
     return "study";
   }
-  if (/(latest|today|current|recent|news|price|2026|research|paper|paperwork|source|citation)/.test(q)) {
+  if (/(latest|today|current|recent|news|price|2026|research|paper|paperwork|source|citation|prime minister|president|chief minister|current government|union minister|minister of|election)/.test(q)) {
     return "research";
   }
 
