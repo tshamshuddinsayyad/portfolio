@@ -230,6 +230,95 @@ function AILab() {
   );
 }
 
+
+function LiveModelLab() {
+  const [signal, setSignal] = useState(72);
+  const [complexity, setComplexity] = useState(64);
+  const [running, setRunning] = useState(false);
+
+  const score = Math.round(Math.min(99, 48 + signal * 0.42 + complexity * 0.14));
+  const confidence = Math.max(68, Math.min(99, score + 2));
+  const prediction = score >= 88 ? "HIGH SIGNAL" : score >= 74 ? "PATTERN DETECTED" : "LOW SIGNAL";
+
+  function runModel() {
+    setRunning(true);
+    window.setTimeout(() => setRunning(false), 900);
+  }
+
+  return (
+    <div className="live-model-lab">
+      <div className="live-model-grid" />
+      <div className="live-model-scan" />
+      <div className="live-model-head">
+        <div>
+          <span className="live-kicker"><i /> LIVE MODEL LAB</span>
+          <h3>Try a model <em>live.</em></h3>
+          <p>Adjust the inputs and watch the inference engine respond in real time.</p>
+        </div>
+        <div className="live-status"><span /> ONLINE <b>v2.6</b></div>
+      </div>
+
+      <div className="live-model-body">
+        <div className="live-controls">
+          <div className="control-title"><span>MODEL INPUTS</span><small>INTERACTIVE</small></div>
+
+          <label className="model-control">
+            <div><span>Signal strength</span><b>{signal}%</b></div>
+            <input type="range" min="0" max="100" value={signal} onChange={e => setSignal(Number(e.target.value))} />
+          </label>
+
+          <label className="model-control">
+            <div><span>Model complexity</span><b>{complexity}%</b></div>
+            <input type="range" min="0" max="100" value={complexity} onChange={e => setComplexity(Number(e.target.value))} />
+          </label>
+
+          <button className="run-model" onClick={runModel}>
+            <span>{running ? "RUNNING INFERENCE" : "RUN MODEL"}</span>
+            <span>{running ? "◌" : "→"}</span>
+          </button>
+
+          <div className="live-tech-row">
+            <span>PYTHON</span><span>RAG</span><span>LLM</span><span>DATA</span>
+          </div>
+        </div>
+
+        <div className={"live-network " + (running ? "is-running" : "")}>
+          <div className="network-orbit orbit-one" />
+          <div className="network-orbit orbit-two" />
+          <div className="network-core"><BrainCircuit size={25}/><span>MODEL</span></div>
+
+          <div className="network-node n1"><i /></div>
+          <div className="network-node n2"><i /></div>
+          <div className="network-node n3"><i /></div>
+          <div className="network-node n4"><i /></div>
+          <div className="network-node n5"><i /></div>
+          <div className="network-node n6"><i /></div>
+
+          <span className="network-line nl1" /><span className="network-line nl2" />
+          <span className="network-line nl3" /><span className="network-line nl4" />
+          <span className="network-line nl5" /><span className="network-line nl6" />
+
+          <div className="network-packet p1" /><div className="network-packet p2" />
+          <div className="network-packet p3" />
+
+          <div className="prediction-card">
+            <small>LIVE PREDICTION</small>
+            <strong>{prediction}</strong>
+            <div><span>CONFIDENCE</span><b>{confidence}%</b></div>
+            <u><i style={{width: confidence + "%"}} /></u>
+          </div>
+        </div>
+      </div>
+
+      <div className="live-model-footer">
+        <span>INPUT → TRANSFORM → INFERENCE → OUTPUT</span>
+        <b>{running ? "PROCESSING…" : "READY FOR INPUT"}</b>
+      </div>
+    </div>
+  );
+}
+
+
 function Chatbot() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
@@ -349,6 +438,7 @@ function App() {
         <div className="section-label">03 — MODEL</div>
         <h2>A toolkit for <em>building intelligence.</em></h2>
         <div className="skill-grid">{skillGroups.map(g => <div className="skill-group" key={g.title}><span className="group-title">{g.title}</span>{g.items.map((s,i)=><div className="skill-row" key={s}><small>0{i+1}</small><b>{s}</b><span>↗</span></div>)}</div>)}</div>
+        <LiveModelLab/>
       </section>
 
       <section className="section language-section" id="skills">
