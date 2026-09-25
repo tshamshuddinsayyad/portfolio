@@ -497,7 +497,7 @@ function ConfusionMatrixGame({setScore,onBack}) {
 }
 
 function Chatbot() {
-  const STORAGE_KEY = "tayyab-ai-conversation-v5";
+  const STORAGE_KEY = "tayyab-ai-conversation-v6";
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -648,89 +648,57 @@ function Chatbot() {
   async function send(text = input, options = {}) {
     const q = text.trim();
     if (!q || busy) return;
-    try { window.speechSynthesis?.cancel(); } catch {}
-    // Send only complete user -> assistant turns. The initial UI greeting is
-    // not conversation context, and an in-progress user turn must never be
-    // accidentally reused as history.
-    const history = [];
-    for (let i = 0; i + 1 < messages.length; i++) {
-      if (messages[i]?.role === "user" && messages[i + 1]?.role === "assistant") {
-        history.push(
-          { role: "user", content: messages[i].content },
-          { role: "assistant", content: messages[i + 1].content }
-        );
-      }
-    }
 
+    try { window.speechSynthesis?.cancel(); } catch {}
     setMessages(m => [...m, { role:"user", content:q }]);
     setInput("");
     setBusy(true);
     abortRef.current = new AbortController();
 
-    let assistantIndex = null;
     try {
       const res = await fetch("/api/chat", {
         method:"POST",
-        headers:{"Content-Type":"application/json","Accept":"text/event-stream"},
+        headers:{"Content-Type":"application/json","Accept":"application/json"},
         signal:abortRef.current.signal,
         body:JSON.stringify({
           message:q,
-          history,
+          // History is intentionally not sent. Each request is isolated.
           useWebSearch:webSearch,
           mode,
           documentText: mode === "document" ? documentText : "",
           documentName
         })
       });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.answer || "AI request failed");
-      }
 
-      const reader = res.body?.getReader();
-      if (!reader) throw new Error("Streaming is not supported by this browser.");
-      const decoder = new TextDecoder();
-      let buffer = "";
-      let answer = "";
-      assistantIndex = messages.length + 1;
-      setMessages(m => [...m, { role:"assistant", content:"", sources:[] }]);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.answer || "AI request failed");
 
-      const pushEvent = payload => {
-        if (payload.type === "text") {
-          answer += payload.text || "";
-          setMessages(m => m.map((item,i) => i === assistantIndex ? {...item, content:answer} : item));
-        }
-        if (payload.type === "sources") {
-          setMessages(m => m.map((item,i) => i === assistantIndex ? {...item, sources:payload.sources || []} : item));
-        }
-        if (payload.type === "error") throw new Error(payload.message || "AI stream failed");
-      };
+      const answer = typeof data.answer === "string"
+        ? data.answer.trim()
+        : "";
 
-      while (true) {
-        const {value,done} = await reader.read();
-        buffer += decoder.decode(value || new Uint8Array(), {stream:!done});
-        const lines = buffer.split("\n");
-        buffer = lines.pop() || "";
-        for (const line of lines) {
-          if (!line.startsWith("data:")) continue;
-          const raw = line.slice(5).trim();
-          if (!raw || raw === "[DONE]") continue;
-          pushEvent(JSON.parse(raw));
-        }
-        if (done) break;
-      }
-      if (buffer.startsWith("data:")) {
-        const raw=buffer.slice(5).trim();
-        if(raw) pushEvent(JSON.parse(raw));
-      }
       if (!answer) throw new Error("The AI returned an empty response.");
-      if (voiceMode || options.speak) speakAnswer(answer);
+
+      const cleanedAnswer = answer
+        .replace(/^\\+(?=#+\\s)/gm, "")
+        .replace(/\\\\(?=#+\\s)/g, "");
+
+      setMessages(m => [
+        ...m,
+        {
+          role:"assistant",
+          content:cleanedAnswer,
+          sources:Array.isArray(data.sources) ? data.sources : []
+        }
+      ]);
+
+      if (voiceMode || options.speak) speakAnswer(cleanedAnswer);
     } catch (e) {
       if (e.name !== "AbortError") {
-        setMessages(m => {
-          const cleaned = assistantIndex === null ? m : m.filter((_,i)=>i!==assistantIndex);
-          return [...cleaned, {role:"assistant",content:e.message || "The AI service is unavailable."}];
-        });
+        setMessages(m => [...m, {
+          role:"assistant",
+          content:e.message || "The AI service is unavailable."
+        }]);
       }
     } finally {
       setBusy(false);
