@@ -15,7 +15,8 @@ const profile = {
   github: "https://github.com/tshamshuddinsayyad",
   linkedin: "https://www.linkedin.com/",
   whatsapp: "https://wa.me/918007766305",
-  email: "tayyabsayyad2005@gmail.com"
+  email: "tayyabsayyad2005@gmail.com",
+  interests: ["Generative AI", "Machine Learning", "Data Science", "Full-Stack Development", "RAG & LLM Applications"]
 };
 
 const projects = [
@@ -824,7 +825,7 @@ function App() {
         <div className="hero-copy">
           <div className="eyebrow"><span className="status-dot"/> ARTIFICIAL INTELLIGENCE / DATA SCIENCE</div>
           <h1>I turn <em>data</em><br/>into intelligence.</h1>
-          <p>{profile.tagline} I’m Tayyab Sayyad, an MSc Artificial Intelligence & Data Science student at Indira University, Pune, focused on Generative AI, Machine Learning, Data Science and full-stack development.</p>
+          <p>{profile.tagline} I’m Tayyab Sayyad, an MSc Artificial Intelligence & Data Science student at Indira University, Pune, focused on <span className="typing-interest"><span className="typing-interest-text">Generative AI</span><i className="typing-cursor" aria-hidden="true" /></span>.</p>
           <div className="hero-actions"><a className="primary" href="#work">Explore my work <ArrowUpRight size={17}/></a><a className="secondary" href="#contact">Let's connect <MessageCircle size={17}/></a></div>
           <div className="scroll-hint"><MousePointer2 size={14}/> Explore the model, data and systems I build</div>
         </div>
@@ -835,7 +836,7 @@ function App() {
         <div className="section-label">01 — UNDERSTAND</div>
         <div className="intro-grid">
           <h2>Building ideas into<br/><em>intelligent systems.</em></h2>
-          <div><p>I’m Tayyab Shamshuddin Sayyad, an MSc Artificial Intelligence & Data Science student at Indira University, Pune. I’m interested in Generative AI, Machine Learning, Data Science and full-stack development, with a focus on learning by building practical applications.</p><div className="mini-stats"><div><b>AI / ML</b><span>Intelligent systems</span></div><div><b>DATA</b><span>Analytics & statistics</span></div><div><b>WEB</b><span>Modern applications</span></div></div></div>
+          <div><p>I’m Tayyab Shamshuddin Sayyad, an MSc Artificial Intelligence & Data Science student at Indira University, Pune. I’m interested in Generative AI, Machine Learning, Data Science, full-stack development and RAG/LLM applications, with a focus on learning by building practical applications.</p><div className="mini-stats"><div><b>AI / ML</b><span>Intelligent systems</span></div><div><b>DATA</b><span>Analytics & statistics</span></div><div><b>WEB</b><span>Modern applications</span></div></div></div>
         </div>
       </section>
 
@@ -907,16 +908,27 @@ function App() {
         <div className="intro-grid"><h2>Academic <em>foundation.</em></h2><div>
           <p>My academic journey has progressed from computer science fundamentals into Artificial Intelligence & Data Science, with a focus on building practical technology projects.</p>
           <div className="education-timeline">
-            <div className="education-item"><span>10TH • 2020–21</span><b>Shri Sainath Highschool</b><small>87%</small></div>
-            <div className="education-item"><span>12TH • 2022–23</span><b>Creative Public School</b><small>55.17%</small></div>
-            <div className="education-item"><span>BSc CS • 2025–26</span><b>Indira College of Commerce and Science</b><small>CGPA 9.72</small></div>
-            <div className="education-item"><span>MSc AIDS • 2027–28</span><b>Indira College of Commerce and Science</b><small>Currently pursuing • 1st Semester • Expected graduation 2027–28</small></div>
+            <div className="education-line" aria-hidden="true"><i /></div>
+            <div className="education-item"><span className="education-node" /><span>10TH • 2020–21</span><b>Shri Sainath Highschool</b><small>87%</small><em>School foundation</em></div>
+            <div className="education-item"><span className="education-node" /><span>12TH • 2022–23</span><b>Creative Public School</b><small>55.17%</small><em>Higher secondary</em></div>
+            <div className="education-item"><span className="education-node" /><span>BSc CS • 2025–26</span><b>Indira College of Commerce and Science</b><small>CGPA 9.72</small><em>Computer Science</em></div>
+            <div className="education-item active"><span className="education-node" /><span>MSc AIDS • 2027–28</span><b>Indira College of Commerce and Science</b><small>Currently pursuing • 1st Semester • Expected graduation 2027–28</small><em>Artificial Intelligence & Data Science • Current</em></div>
           </div>
         </div></div>
       </section>
 
+      <section className="section certifications" id="certifications">
+        <div className="section-label">08 — CERTIFICATIONS</div>
+        <div className="section-heading"><h2>Completed <em>credentials.</em></h2><span>Verified learning milestones</span></div>
+        <div className="certification-grid">
+          <article className="certification-card"><span className="cert-index">01</span><span className="cert-platform">UDEMY • COMPLETED</span><h3>Mastering Data Structures & Algorithms using C and C++</h3><p>Completed certification covering data structures and algorithmic problem-solving with C and C++.</p><div className="cert-badge">COMPLETED ✓</div></article>
+          <article className="certification-card"><span className="cert-index">02</span><span className="cert-platform">REDMAGIC / INFOSYS • COMPLETED</span><h3>RedMagic / Infosys Certification Course</h3><p>Completed certification course as part of my technical learning journey.</p><div className="cert-badge">COMPLETED ✓</div></article>
+        </div>
+        <div className="learning-note"><span>CURRENTLY LEARNING</span><b>Ongoing MSc AI & Data Science + hands-on Generative AI, RAG, Machine Learning and full-stack development.</b></div>
+      </section>
+
       <section className="section contact" id="contact">
-        <div className="contact-box"><div className="section-label">08 — CONNECT</div><h2>Have an idea?<br/><em>Let's build it.</em></h2><p>AI, data, web development or an interesting experiment — I'm always open to meaningful projects and conversations.</p><div className="contact-actions"><a className="primary" href={profile.whatsapp} target="_blank" rel="noreferrer"><MessageCircle size={17}/> WhatsApp</a><a className="secondary" href={"mailto:"+profile.email}><Mail size={17}/> Email</a><a className="secondary" href={profile.linkedin} target="_blank" rel="noreferrer"><Linkedin size={17}/> LinkedIn</a></div></div>
+        <div className="contact-box"><div className="section-label">09 — CONNECT</div><h2>Have an idea?<br/><em>Let's build it.</em></h2><p>AI, data, web development or an interesting experiment — I'm always open to meaningful projects and conversations.</p><div className="contact-actions"><a className="primary" href={profile.whatsapp} target="_blank" rel="noreferrer"><MessageCircle size={17}/> WhatsApp</a><a className="secondary" href={"mailto:"+profile.email}><Mail size={17}/> Email</a><a className="secondary" href={profile.linkedin} target="_blank" rel="noreferrer"><Linkedin size={17}/> LinkedIn</a></div></div>
       </section>
     </main>
 
