@@ -232,93 +232,123 @@ function AILab() {
 
 
 function LiveModelLab() {
-  const [signal, setSignal] = useState(72);
-  const [complexity, setComplexity] = useState(64);
-  const [running, setRunning] = useState(false);
+  const [game, setGame] = useState(null);
+  const [round, setRound] = useState(0);
+  const [message, setMessage] = useState("");
+  const [guess, setGuess] = useState(null);
+  const [secret, setSecret] = useState(() => Math.floor(Math.random() * 10) + 1);
+  const [score, setScore] = useState(0);
+  const [busy, setBusy] = useState(false);
 
-  const score = Math.round(Math.min(99, 48 + signal * 0.42 + complexity * 0.14));
-  const confidence = Math.max(68, Math.min(99, score + 2));
-  const prediction = score >= 88 ? "HIGH SIGNAL" : score >= 74 ? "PATTERN DETECTED" : "LOW SIGNAL";
+  function startGame(type) {
+    setGame(type);
+    setRound(r => r + 1);
+    setMessage("");
+    setGuess(null);
+    setBusy(false);
+    setSecret(Math.floor(Math.random() * 10) + 1);
+  }
 
-  function runModel() {
-    setRunning(true);
-    window.setTimeout(() => setRunning(false), 900);
+  function predictNumber(n) {
+    if (busy) return;
+    setGuess(n);
+    setBusy(true);
+    const correct = n === secret;
+    if (correct) setScore(s => s + 100);
+    window.setTimeout(() => {
+      setMessage(correct ? "AI PREDICTION HIT" : "MODEL OUTSMARTED");
+      setBusy(false);
+    }, 700);
+  }
+
+  function foolAI() {
+    setBusy(true);
+    setMessage("");
+    window.setTimeout(() => {
+      setMessage("MODEL ANALYZED YOUR INPUT");
+      setBusy(false);
+    }, 800);
   }
 
   return (
-    <div className="live-model-lab">
-      <div className="live-model-grid" />
-      <div className="live-model-scan" />
-      <div className="live-model-head">
+    <div className="ai-playground">
+      <div className="playground-grid" />
+      <div className="playground-scan" />
+      <div className="playground-head">
         <div>
-          <span className="live-kicker"><i /> LIVE MODEL LAB</span>
-          <h3>Try a model <em>live.</em></h3>
-          <p>Adjust the inputs and watch the inference engine respond in real time.</p>
+          <span className="play-kicker"><i /> AI INTERACTION ZONE</span>
+          <h3>AI <em>PLAYGROUND</em></h3>
+          <p>Don't just read about AI. <b>Play with it.</b> Run a tiny experiment inside the portfolio.</p>
         </div>
-        <div className="live-status"><span /> ONLINE <b>v2.6</b></div>
+        <div className="play-score"><span>SCORE</span><b>{score.toString().padStart(4,"0")}</b></div>
       </div>
 
-      <div className="live-model-body">
-        <div className="live-controls">
-          <div className="control-title"><span>MODEL INPUTS</span><small>INTERACTIVE</small></div>
-
-          <label className="model-control">
-            <div><span>Signal strength</span><b>{signal}%</b></div>
-            <input type="range" min="0" max="100" value={signal} onChange={e => setSignal(Number(e.target.value))} />
-          </label>
-
-          <label className="model-control">
-            <div><span>Model complexity</span><b>{complexity}%</b></div>
-            <input type="range" min="0" max="100" value={complexity} onChange={e => setComplexity(Number(e.target.value))} />
-          </label>
-
-          <button className="run-model" onClick={runModel}>
-            <span>{running ? "RUNNING INFERENCE" : "RUN MODEL"}</span>
-            <span>{running ? "◌" : "→"}</span>
-          </button>
-
-          <div className="live-tech-row">
-            <span>PYTHON</span><span>RAG</span><span>LLM</span><span>DATA</span>
+      {!game && (
+        <div className="game-select">
+          <div className="select-title"><span>SELECT AN EXPERIMENT</span><small>03 MODULES ONLINE</small></div>
+          <div className="game-cards">
+            <button onClick={() => startGame("mind")}>
+              <span className="game-icon">◉</span><small>01 / PREDICT</small><strong>READ MY<br/><em>MIND</em></strong><p>Think of a number. Let the model try to find it.</p><b>START →</b>
+            </button>
+            <button onClick={() => startGame("fool")}>
+              <span className="game-icon">◇</span><small>02 / CHALLENGE</small><strong>FOOL THE<br/><em>AI</em></strong><p>Give the model a challenge and see its confidence react.</p><b>START →</b>
+            </button>
+            <button onClick={() => startGame("build")}>
+              <span className="game-icon">✦</span><small>03 / BUILDER</small><strong>BUILD<br/><em>AI</em></strong><p>Assemble a tiny intelligence pipeline from data to output.</p><b>START →</b>
+            </button>
           </div>
         </div>
+      )}
 
-        <div className={"live-network " + (running ? "is-running" : "")}>
-          <div className="network-orbit orbit-one" />
-          <div className="network-orbit orbit-two" />
-          <div className="network-core"><BrainCircuit size={25}/><span>MODEL</span></div>
+      {game === "mind" && (
+        <div className="game-screen mind-game">
+          <div className="game-topline"><span>EXPERIMENT 01 / NEURAL GUESS</span><button onClick={() => setGame(null)}>← ALL EXPERIMENTS</button></div>
+          <div className="mind-stage">
+            <div className={"mind-core " + (busy ? "thinking" : "")}><BrainCircuit size={34}/><span>{busy ? "ANALYZING" : message || "THINK 1–10"}</span></div>
+            <div className="mind-orbit o1"/><div className="mind-orbit o2"/>
+            {[1,2,3,4,5,6].map(n => <i key={n} className={"mind-node mn"+n}/>)}
+          </div>
+          <div className="number-row">{[1,2,3,4,5,6,7,8,9,10].map(n => <button key={n} className={guess===n ? "chosen" : ""} onClick={() => predictNumber(n)}>{n}</button>)}</div>
+          <p className="game-instruction">{message || "Choose the number you think the AI is thinking about."}</p>
+          {message && <button className="again-btn" onClick={() => startGame("mind")}>PLAY AGAIN →</button>}
+        </div>
+      )}
 
-          <div className="network-node n1"><i /></div>
-          <div className="network-node n2"><i /></div>
-          <div className="network-node n3"><i /></div>
-          <div className="network-node n4"><i /></div>
-          <div className="network-node n5"><i /></div>
-          <div className="network-node n6"><i /></div>
-
-          <span className="network-line nl1" /><span className="network-line nl2" />
-          <span className="network-line nl3" /><span className="network-line nl4" />
-          <span className="network-line nl5" /><span className="network-line nl6" />
-
-          <div className="network-packet p1" /><div className="network-packet p2" />
-          <div className="network-packet p3" />
-
-          <div className="prediction-card">
-            <small>LIVE PREDICTION</small>
-            <strong>{prediction}</strong>
-            <div><span>CONFIDENCE</span><b>{confidence}%</b></div>
-            <u><i style={{width: confidence + "%"}} /></u>
+      {game === "fool" && (
+        <div className="game-screen fool-game">
+          <div className="game-topline"><span>EXPERIMENT 02 / MODEL STRESS TEST</span><button onClick={() => setGame(null)}>← ALL EXPERIMENTS</button></div>
+          <div className="fool-center">
+            <div className="ai-face"><span>AI</span><i/><i/><i/></div>
+            <div className="confidence-ring"><strong>{busy ? "..." : "93%"}</strong><span>CONFIDENCE</span></div>
+            <p>Try to fool the model.</p>
+            <textarea placeholder="Type anything that might confuse the AI…" />
+            <button className="again-btn" onClick={foolAI}>{busy ? "ANALYZING…" : "CHALLENGE MODEL →"}</button>
+            {message && <small>{message}</small>}
           </div>
         </div>
-      </div>
+      )}
 
-      <div className="live-model-footer">
-        <span>INPUT → TRANSFORM → INFERENCE → OUTPUT</span>
-        <b>{running ? "PROCESSING…" : "READY FOR INPUT"}</b>
-      </div>
+      {game === "build" && (
+        <div className="game-screen build-game">
+          <div className="game-topline"><span>EXPERIMENT 03 / MODEL BUILDER</span><button onClick={() => setGame(null)}>← ALL EXPERIMENTS</button></div>
+          <div className="pipeline">
+            <div className="pipe-node active"><span>01</span><b>DATA</b></div>
+            <div className="pipe-arrow">→</div>
+            <div className="pipe-node"><span>02</span><b>PROCESS</b></div>
+            <div className="pipe-arrow">→</div>
+            <div className="pipe-node"><span>03</span><b>MODEL</b></div>
+            <div className="pipe-arrow">→</div>
+            <div className="pipe-node"><span>04</span><b>OUTPUT</b></div>
+          </div>
+          <div className="build-core"><div><BrainCircuit size={34}/><span>INTELLIGENCE ONLINE</span></div></div>
+          <button className="again-btn" onClick={() => startGame("build")}>REBUILD MODEL →</button>
+        </div>
+      )}
+
+      <div className="playground-footer"><span>HUMAN INPUT → AI PROCESSING → INTERACTIVE OUTPUT</span><b>LAB ONLINE</b></div>
     </div>
   );
 }
-
-
 function Chatbot() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
