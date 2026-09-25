@@ -298,7 +298,7 @@ function App() {
   return <div className="app">
     <InteractiveField dark={dark}/>
     <header className="nav">
-      <a className="brand" href="#"><span className="brand-mark">T</span><span>SAYYAD</span></a>
+      <a className="brand" href="#"><span className="brand-mark">T</span><span>TAYYAB SAYYAD</span></a>
       <div className="navlinks"><a href="#about">About</a><a href="#work">Work</a><a href="#skills">Skills</a><a href="#contact">Contact</a></div>
       <div className="nav-right"><button className="theme-toggle" onClick={() => setDark(v => !v)}>{dark ? <Sun size={15}/> : <Moon size={15}/>}<span>{dark ? "Light" : "Dark"}</span></button><a className="nav-cta" href={profile.github} target="_blank" rel="noreferrer"><Github size={15}/> GitHub</a></div>
     </header>
