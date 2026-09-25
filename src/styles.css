@@ -1081,3 +1081,7 @@ body{
 .game-screen .matrix-layout:before{
   display:none!important;
 }
+
+
+/* Remove the divider line immediately before 01 — UNDERSTAND */
+.section.intro:before{display:none!important}
