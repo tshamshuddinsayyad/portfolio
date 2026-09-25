@@ -38,7 +38,7 @@ button{cursor:pointer}
 [data-theme="light"] .nav-cta{background:#101820;color:#fff}
 
 main{position:relative;z-index:5}
-.hero{min-height:100vh;max-width:1180px;margin:auto;padding:150px 28px 70px;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;position:relative}
+.hero{min-height:calc(100vh - 38px);max-width:1180px;margin:auto;padding:150px 28px 70px;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;position:relative}
 .hero-copy{position:relative;z-index:3}
 .eyebrow,.section-label{font:500 11px "DM Mono";letter-spacing:2px;color:var(--muted)}
 .eyebrow{display:flex;align-items:center;gap:9px;margin-bottom:25px}
@@ -528,87 +528,6 @@ body{
 }
 @keyframes connectBorderSweep{
   to{transform:rotate(360deg)}
-}
-
-
-/* ENGINEERING FLOW — animated route from 02 ENGINEER to the final CONNECT box */
-.section-flow-wrap{
-  position:relative;
-}
-.section-flow-line{
-  position:absolute;
-  z-index:2;
-  top:70px;
-  bottom:70px;
-  left:max(12px,calc((100% - 1180px)/2 - 24px));
-  width:1px;
-  background:linear-gradient(
-    180deg,
-    transparent 0%,
-    rgba(201,167,255,.16) 4%,
-    rgba(201,167,255,.42) 18%,
-    rgba(135,92,255,.34) 50%,
-    rgba(201,167,255,.42) 82%,
-    rgba(201,167,255,.16) 96%,
-    transparent 100%
-  );
-  pointer-events:none;
-}
-.section-flow-line:before,
-.section-flow-line:after{
-  content:"";
-  position:absolute;
-  left:50%;
-  width:5px;
-  height:5px;
-  border:1px solid var(--accent);
-  border-radius:50%;
-  transform:translateX(-50%);
-  background:#05040a;
-  box-shadow:0 0 12px rgba(201,167,255,.55);
-}
-.section-flow-line:before{top:0}
-.section-flow-line:after{bottom:0}
-.section-flow-orb{
-  position:absolute;
-  left:50%;
-  top:0;
-  width:4px;
-  height:74px;
-  transform:translateX(-50%);
-  border-radius:999px;
-  background:linear-gradient(180deg,transparent,var(--accent),#875cff,transparent);
-  box-shadow:0 0 14px rgba(201,167,255,.75),0 0 28px rgba(135,92,255,.35);
-  animation:engineeringFlow 3.8s linear infinite;
-}
-@keyframes engineeringFlow{
-  0%{top:0;opacity:0}
-  8%{opacity:1}
-  48%{opacity:1}
-  92%{opacity:1}
-  100%{top:calc(100% - 74px);opacity:0}
-}
-@media(max-width:760px){
-  .section-flow-line{
-    left:8px;
-    top:55px;
-    bottom:55px;
-  }
-  .section-flow-line:before,
-  .section-flow-line:after{
-    width:4px;
-    height:4px;
-  }
-  .section-flow-orb{
-    width:3px;
-    height:58px;
-  }
-  @keyframes engineeringFlow{
-    0%{top:0;opacity:0}
-    10%{opacity:1}
-    90%{opacity:1}
-    100%{top:calc(100% - 58px);opacity:0}
-  }
 }
 
 
