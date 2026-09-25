@@ -1915,3 +1915,22 @@ main > .hero + .section.intro [class*="vertical-line"]{
 .contact-honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;opacity:0!important}
 [data-theme="light"] .contact-message-wrap{background:rgba(255,255,255,.46)}[data-theme="light"] .contact-form input,[data-theme="light"] .contact-form textarea{background:rgba(255,255,255,.72);border-color:rgba(82,61,116,.14)}[data-theme="light"] .contact-form input:focus,[data-theme="light"] .contact-form textarea:focus{border-color:#7654d6;box-shadow:0 0 0 3px rgba(118,84,214,.10)}[data-theme="light"] .contact-form-bottom button{background:#7654d6;border-color:#7654d6;color:#fff}
 @media(max-width:700px){.contact-message-wrap{padding:18px;margin-top:26px}.contact-form{grid-template-columns:1fr}.contact-form textarea,.contact-form-bottom,.contact-form-status{grid-column:1}.contact-form-head{align-items:flex-start;flex-direction:column;gap:6px}.contact-form-bottom{align-items:stretch;flex-direction:column}.contact-form-bottom button{width:100%}}
+
+/* SECTION 09 — mobile contact number */
+.contact-phone{
+  width:fit-content;
+  margin:14px auto 0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  color:var(--muted);
+  font:9px "DM Mono";
+}
+.contact-phone svg{color:var(--accent)}
+.contact-phone span{letter-spacing:1px;text-transform:uppercase}
+.contact-phone a{color:var(--text);font-weight:700;letter-spacing:.4px}
+.contact-phone a:hover{color:var(--accent)}
+@media(max-width:560px){
+  .contact-phone{font-size:8px;flex-wrap:wrap}
+}
