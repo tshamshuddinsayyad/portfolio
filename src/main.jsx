@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import * as THREE from "three";
 import {
-  ArrowUpRight, Bot, Github, Linkedin, Mail, MessageCircle, Send,
+  ArrowUpRight, Bot, Github, Linkedin, Mail, MessageCircle, Send, Mic as MicIcon,
   Sparkles, Sun, Moon, BrainCircuit, Database, Atom, Code2,
   MousePointer2, ExternalLink, FileText, Upload, Trash2, RotateCcw, Square
 } from "lucide-react";
@@ -506,6 +506,10 @@ function Chatbot() {
   const [documentText, setDocumentText] = useState("");
   const [documentName, setDocumentName] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [showComposerMenu, setShowComposerMenu] = useState(false);
+  const [listening, setListening] = useState(false);
+  const [voiceMode, setVoiceMode] = useState(false);
+  const recognitionRef = useRef(null);
   const [messages, setMessages] = useState(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
@@ -518,6 +522,31 @@ function Chatbot() {
   });
   const abortRef = useRef(null);
   const fileRef = useRef(null);
+
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.lang = "en-IN";
+    recognition.onstart = () => setListening(true);
+    recognition.onend = () => setListening(false);
+    recognition.onerror = () => setListening(false);
+    recognition.onresult = event => {
+      let finalText = "";
+      let interimText = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const chunk = event.results[i][0].transcript;
+        if (event.results[i].isFinal) finalText += chunk;
+        else interimText += chunk;
+      }
+      if (finalText) setInput(v => (v ? v + " " : "") + finalText.trim());
+      else if (interimText) setInput(v => v.replace(/\s*\[listening…\]$/, "") + " " + interimText.trim() + " [listening…]");
+    };
+    recognitionRef.current = recognition;
+    return () => { try { recognition.abort(); } catch {} };
+  }, []);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-40)));
@@ -577,6 +606,16 @@ function Chatbot() {
       setUploading(false);
       if (fileRef.current) fileRef.current.value = "";
     }
+  }
+
+  function toggleVoiceInput() {
+    const recognition = recognitionRef.current;
+    if (!recognition) {
+      setMessages(m => [...m, {role:"assistant", content:"Voice input is not supported by this browser. Try Chrome or Edge and allow microphone access."}]);
+      return;
+    }
+    if (listening) { recognition.stop(); return; }
+    try { recognition.start(); } catch {}
   }
 
   function clearChat() {
@@ -699,12 +738,7 @@ function Chatbot() {
         {modes.map(([value,label]) => <button key={value} className={mode===value?"active":""} onClick={()=>setMode(value)}>{label}</button>)}
       </div>
 
-      <div className="ai-toolbar">
-        <button onClick={()=>fileRef.current?.click()} disabled={uploading}><Upload size={12}/> {uploading ? "READING…" : "UPLOAD DOCUMENT"}</button>
-        {documentName && <span><FileText size={12}/> {documentName}</span>}
-        {documentName && <button onClick={()=>{setDocumentText("");setDocumentName("");setMode("auto")}} title="Remove document">×</button>}
-        <input ref={fileRef} type="file" accept=".pdf,.docx,.txt,.md,.csv,.json" hidden onChange={e=>extractFile(e.target.files?.[0])}/>
-      </div>
+      {documentName && <div className="document-chip"><FileText size={12}/><span>{documentName}</span><button onClick={()=>{setDocumentText("");setDocumentName("");setMode("auto")}}>×</button></div>}
 
       <div className="quick-prompts">{prompts.map(p => <button key={p} onClick={() => send(p)}>{p}</button>)}</div>
 
@@ -716,10 +750,35 @@ function Chatbot() {
         </div>)}
       </div>
 
-      <div className="chat-input">
-        <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && send()} placeholder={mode==="document" && documentName ? "Ask about your document…" : "Ask Tayyab AI anything…"}/>
-        <button onClick={() => busy ? abortRef.current?.abort() : send()}>{busy ? <Square size={15}/> : <Send size={16}/>}</button>
+      <div className={"chat-composer " + (listening ? "is-listening" : "")}>
+        <div className="composer-row">
+          <div className="composer-plus-wrap">
+            <button className="composer-plus" onClick={()=>setShowComposerMenu(v=>!v)} aria-label="Open tools">+</button>
+            {showComposerMenu && <div className="composer-menu">
+              <button onClick={()=>{fileRef.current?.click();setShowComposerMenu(false)}}><Upload size={15}/><span><b>Upload files</b><small>PDF, DOCX, TXT, CSV, JSON</small></span></button>
+              <button onClick={()=>{setMode("study");setShowComposerMenu(false)}}><Sparkles size={15}/><span><b>Study mode</b><small>Learn with step-by-step explanations</small></span></button>
+              <button onClick={()=>{setMode("coding");setShowComposerMenu(false)}}><Code2 size={15}/><span><b>Coding mode</b><small>Debug and build code</small></span></button>
+              <button onClick={()=>{setMode("research");setShowComposerMenu(false)}}><ExternalLink size={15}/><span><b>Research mode</b><small>Search the web with sources</small></span></button>
+              <button onClick={()=>{setVoiceMode(v=>!v);setShowComposerMenu(false)}}><Bot size={15}/><span><b>{voiceMode?"Disable":"Enable"} voice replies</b><small>{voiceMode?"AI answers can be read aloud":"Use browser speech for answers"}</small></span></button>
+            </div>}
+          </div>
+          <textarea
+            rows="1"
+            value={input.replace(/\s*\[listening…\]$/,"")}
+            onChange={e=>setInput(e.target.value)}
+            onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}}}
+            placeholder={mode==="document"&&documentName?"Ask about your document…":"Message Tayyab AI…"}
+          />
+          <button className={"composer-mic "+(listening?"active":"")} onClick={toggleVoiceInput} aria-label={listening?"Stop voice input":"Voice input"}>
+            <MicIcon size={17}/>
+          </button>
+          <button className="composer-send" onClick={() => busy ? abortRef.current?.abort() : send()} aria-label={busy?"Stop generation":"Send message"}>
+            {busy ? <Square size={15}/> : <Send size={16}/>}
+          </button>
+        </div>
+        <div className="composer-meta"><span>{listening?"Listening… speak now":voiceMode?"Voice replies enabled":"Tayyab AI can make mistakes. Check important information."}</span><span>ENTER ↵</span></div>
       </div>
+      <input ref={fileRef} type="file" accept=".pdf,.docx,.txt,.md,.csv,.json" hidden onChange={e=>extractFile(e.target.files?.[0])}/>
     </section>}
   </>;
 }
