@@ -1883,3 +1883,16 @@ main > .hero + .section.intro [class*="vertical-line"]{
     text-align:left !important;
   }
 }
+
+/* Section 09 — centered text alignment */
+.contact .contact-box{
+  text-align:center !important;
+}
+.contact .contact-box .section-label,
+.contact .contact-box h2,
+.contact .contact-box > p{
+  text-align:center !important;
+}
+.contact .contact-actions{
+  justify-content:center !important;
+}
