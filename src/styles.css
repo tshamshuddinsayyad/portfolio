@@ -496,3 +496,36 @@ body{
   background-size:140px 140px,190px 190px;
   mask-image:linear-gradient(to bottom,transparent,black 18%,black 82%,transparent);
 }
+
+
+/* CONNECT — animate the outer square border; remove the old inner decoration */
+.contact-box:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  width:auto;
+  height:auto;
+  right:auto;
+  bottom:auto;
+  border-radius:inherit;
+  padding:1px;
+  border:0;
+  background:conic-gradient(
+    from 0deg,
+    transparent 0deg 300deg,
+    rgba(201,167,255,.08) 320deg,
+    rgba(201,167,255,.95) 340deg,
+    rgba(135,92,255,.65) 350deg,
+    transparent 360deg
+  );
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+  mask-composite:exclude;
+  box-shadow:none;
+  pointer-events:none;
+  opacity:.9;
+  animation:connectBorderSweep 4.5s linear infinite;
+}
+@keyframes connectBorderSweep{
+  to{transform:rotate(360deg)}
+}
