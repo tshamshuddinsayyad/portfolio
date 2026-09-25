@@ -835,7 +835,7 @@ function App() {
     <InteractiveField dark={dark}/>
     <header className="nav">
       <a className="brand" href="#"><span className="brand-mark">T</span><span>TAYYAB SAYYAD</span></a>
-      <div className="navlinks"><a href="#about">About</a><a href="#work">Work</a><a href="#skills">Skills</a><a href="#contact">Contact</a></div>
+      <div className="navlinks"><a href="#about">About</a><a href="#work">Work</a><a href="#flagship">AI Chatbot</a><a href="#skills">Skills</a><a href="#education">Education</a><a href="#certifications">Certifications</a><a href="#contact">Contact</a></div>
       <div className="nav-right"><button className="theme-toggle" onClick={() => setDark(v => !v)}>{dark ? <Sun size={15}/> : <Moon size={15}/>}<span>{dark ? "Light" : "Dark"}</span></button><a className="nav-cta" href={profile.github} target="_blank" rel="noreferrer"><Github size={15}/> GitHub</a></div>
     </header>
 
@@ -929,7 +929,7 @@ function App() {
         <div className="learning-grid"><div><h2>Learning by <em>building.</em></h2><p>I’m continuously developing my foundation in Artificial Intelligence & Data Science through projects, experimentation and hands-on technical work.</p></div><div className="learning-cards"><article><Atom/><b>Generative AI</b><span>LLMs, RAG, LangChain and AI assistants</span></article><article><Database/><b>Data Science</b><span>Python, Pandas, statistics and analytics</span></article><article><Code2/><b>Full-Stack Development</b><span>React, JavaScript, APIs and databases</span></article></div></div>
       </section>
 
-      <section className="section education">
+      <section className="section education" id="education">
         <div className="section-label">07 — EDUCATION</div>
         <div className="intro-grid"><h2>Academic <em>foundation.</em></h2><div>
           <p>My academic journey has progressed from computer science fundamentals into Artificial Intelligence & Data Science, with a focus on building practical technology projects.</p>
