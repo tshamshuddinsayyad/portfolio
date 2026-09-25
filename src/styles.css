@@ -1813,3 +1813,34 @@ main > .hero + .section.intro [class*="vertical-line"]{
 @media(prefers-reduced-motion:reduce){
   .education-line i,.typing-cursor{animation:none}
 }
+
+/* =========================================================
+   NEW BOXES — reuse the original square edge-light animation
+   ========================================================= */
+.education-item,.certification-card,.learning-note{
+  --glow-x:50%;--glow-y:50%;
+}
+.education-item:after,.certification-card:after,.learning-note:after{
+  content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
+  background:
+    radial-gradient(70px circle at var(--glow-x,50%) 0%,rgba(97,231,255,.95),transparent 72%),
+    radial-gradient(70px circle at 100% var(--glow-y,50%),rgba(139,124,255,.85),transparent 72%),
+    radial-gradient(70px circle at var(--glow-x,50%) 100%,rgba(97,231,255,.75),transparent 72%),
+    radial-gradient(70px circle at 0% var(--glow-y,50%),rgba(139,124,255,.65),transparent 72%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .2s ease;
+}
+.education-item:hover:after,.certification-card:hover:after,.learning-note:hover:after{opacity:1}
+[data-theme="light"] .education-item:after,[data-theme="light"] .certification-card:after,[data-theme="light"] .learning-note:after{
+  background:
+    radial-gradient(70px circle at var(--glow-x,50%) 0%,rgba(118,84,214,.72),transparent 72%),
+    radial-gradient(70px circle at 100% var(--glow-y,50%),rgba(161,110,232,.65),transparent 72%),
+    radial-gradient(70px circle at var(--glow-x,50%) 100%,rgba(118,84,214,.58),transparent 72%),
+    radial-gradient(70px circle at 0% var(--glow-y,50%),rgba(161,110,232,.52),transparent 72%);
+}
+
+/* Keep the top menu as one clean first-theme navigation bar */
+.navlinks{overflow-x:auto;scrollbar-width:none;white-space:nowrap}
+.navlinks::-webkit-scrollbar{display:none}
+@media(max-width:1100px){.navlinks{gap:16px}.nav{width:min(1180px,calc(100% - 24px))}}
+@media(max-width:900px){.navlinks{display:none}}
