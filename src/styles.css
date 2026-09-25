@@ -1664,3 +1664,98 @@ main > .hero + .section.intro [class*="vertical-line"]{
   .composer-meta{font-size:6px}
   .composer-menu{width:min(255px,calc(100vw - 42px))}
 }
+
+
+/* =========================================================
+   FLAGSHIP PROJECT — UNIVERSITY AI CHATBOT
+   Large case-study surface while preserving the first theme.
+   ========================================================= */
+.flagship{
+  padding-top:105px;
+}
+.flagship-head{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:25px;
+  margin:25px 0 20px;
+}
+.flagship-kicker{
+  display:block;margin-bottom:14px;color:var(--accent);
+  font:500 9px "DM Mono";letter-spacing:1.8px;
+}
+.flagship-head h2{margin:0;max-width:800px}
+.flagship-status{
+  flex:0 0 auto;padding:8px 10px;border:1px solid var(--line);
+  border-radius:999px;color:var(--muted);font:8px "DM Mono";letter-spacing:1px;
+}
+.flagship-lead{
+  max-width:850px;color:var(--muted);font-size:16px;line-height:1.8;margin:0 0 30px;
+}
+.flagship-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+}
+.flagship-panel{
+  min-height:250px;border:1px solid var(--line);border-radius:18px;padding:26px;
+  background:rgba(255,255,255,.025);position:relative;overflow:hidden;
+}
+[data-theme="light"] .flagship-panel{
+  background:rgba(255,255,255,.48);
+}
+.flagship-panel>span{
+  display:block;color:var(--accent);font:500 8px "DM Mono";letter-spacing:1.6px;margin-bottom:18px;
+}
+.flagship-panel h3{
+  font-size:24px;line-height:1.2;margin:0 0 13px;letter-spacing:-1px;
+}
+.flagship-panel p{
+  color:var(--muted);font-size:12px;line-height:1.75;margin:0;max-width:650px;
+}
+.flagship-flow{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:20px 0 18px;
+}
+.flagship-flow b{
+  padding:8px 10px;border:1px solid var(--line);border-radius:9px;
+  background:var(--panel);font:8px "DM Mono";color:var(--text);
+}
+.flagship-flow i{font-style:normal;color:var(--accent);font:10px "DM Mono"}
+.flagship-features{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;
+}
+.flagship-features>div{
+  min-height:125px;padding:17px;border:1px solid var(--line);border-radius:14px;
+  background:var(--panel);display:flex;flex-direction:column;gap:8px;
+}
+.flagship-features span{
+  color:var(--accent);font:7px "DM Mono";letter-spacing:1px;
+}
+.flagship-features b{font-size:12px}
+.flagship-features small{color:var(--muted);font-size:9px;line-height:1.55}
+.flagship-tech{
+  display:flex;flex-wrap:wrap;gap:7px;margin-top:18px;
+}
+.flagship-tech span{
+  padding:7px 9px;border:1px solid var(--line);border-radius:999px;
+  color:var(--muted);font:8px "DM Mono";
+}
+.flagship-panel:hover,.flagship-features>div:hover{
+  border-color:rgba(97,231,255,.28);
+  box-shadow:0 18px 55px rgba(0,0,0,.12);
+  transform:translateY(-3px);
+  transition:.25s ease;
+}
+[data-theme="light"] .flagship-panel:hover,
+[data-theme="light"] .flagship-features>div:hover{
+  border-color:rgba(118,84,214,.30);
+  box-shadow:0 18px 48px rgba(66,48,100,.09);
+}
+@media(max-width:900px){
+  .flagship-grid{grid-template-columns:1fr}
+  .flagship-features{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  .flagship{padding-top:80px}
+  .flagship-head{align-items:flex-start;flex-direction:column}
+  .flagship-lead{font-size:14px}
+  .flagship-features{grid-template-columns:1fr}
+  .flagship-panel{min-height:0;padding:21px}
+  .flagship-flow{gap:5px}
+  .flagship-flow b{font-size:7px;padding:7px 8px}
+}
