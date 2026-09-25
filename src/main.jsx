@@ -323,6 +323,10 @@ function App() {
         </div>
       </section>
 
+      <div className="section-flow-wrap" aria-hidden="true">
+        <div className="section-flow-line"><span className="section-flow-orb"/></div>
+      </div>
+
       <section className="section work" id="work">
         <div className="section-label">02 — ENGINEER</div>
         <div className="section-heading"><h2>Selected <em>missions.</em></h2><span>Hover a project</span></div>
