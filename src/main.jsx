@@ -552,6 +552,24 @@ function Chatbot() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-40)));
   }, [messages]);
 
+  useEffect(() => {
+    return () => {
+      try { window.speechSynthesis?.cancel(); } catch {}
+    };
+  }, []);
+
+  function speakAnswer(text) {
+    if (!text || !("speechSynthesis" in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text.replace(/[#*_`]/g, ""));
+      utterance.lang = "en-IN";
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      window.speechSynthesis.speak(utterance);
+    } catch {}
+  }
+
   const modes = [
     ["auto","AUTO"],
     ["study","STUDY"],
@@ -627,9 +645,10 @@ function Chatbot() {
     }]);
   }
 
-  async function send(text = input) {
+  async function send(text = input, options = {}) {
     const q = text.trim();
     if (!q || busy) return;
+    try { window.speechSynthesis?.cancel(); } catch {}
     const history = messages.slice(-12).map(m => ({ role:m.role, content:m.content }));
     setMessages(m => [...m, { role:"user", content:q }]);
     setInput("");
@@ -693,6 +712,7 @@ function Chatbot() {
         if(raw) pushEvent(JSON.parse(raw));
       }
       if (!answer) throw new Error("The AI returned an empty response.");
+      if (voiceMode || options.speak) speakAnswer(answer);
     } catch (e) {
       if (e.name !== "AbortError") {
         setMessages(m => {
@@ -706,14 +726,23 @@ function Chatbot() {
     }
   }
 
-  function regenerate() {
+  function regenerate(messageIndex) {
     if (busy) return;
-    const lastUser = [...messages].reverse().find(m => m.role === "user");
+    const lastUser = [...messages]
+      .slice(0, Math.max(0, messageIndex ?? messages.length))
+      .reverse()
+      .find(m => m.role === "user");
     if (!lastUser) return;
-    setMessages(m => {
-      const i = m.map(x=>x.role).lastIndexOf("assistant");
-      return i >= 0 ? m.filter((_,idx)=>idx!==i) : m;
-    });
+
+    const lastAssistantIndex = [...messages]
+      .slice(0, messageIndex ?? messages.length)
+      .map(m => m.role)
+      .lastIndexOf("assistant");
+
+    if (lastAssistantIndex >= 0) {
+      setMessages(m => m.filter((_, index) => index !== lastAssistantIndex));
+    }
+
     setTimeout(() => send(lastUser.content), 0);
   }
 
@@ -746,7 +775,7 @@ function Chatbot() {
         {messages.map((m,i) => <div key={i} className={"chat-message " + m.role}>
           <div className={"bubble " + m.role}>{m.content || (busy && i===messages.length-1 ? "Thinking…" : "")}</div>
           {m.sources?.length > 0 && <div className="sources"><span>SOURCES</span>{m.sources.map((s,j)=><a key={s.url+j} href={s.url} target="_blank" rel="noreferrer">{j+1}. {s.title}</a>)}</div>}
-          {m.role==="assistant" && i===messages.length-1 && !busy && m.content && <div className="message-actions"><button onClick={()=>navigator.clipboard?.writeText(m.content)}>COPY</button><button onClick={regenerate}><RotateCcw size={11}/> REGENERATE</button></div>}
+          {m.role==="assistant" && m.content && <div className="message-actions"><button onClick={()=>navigator.clipboard?.writeText(m.content)}>COPY</button><button onClick={()=>speakAnswer(m.content)} title="Read this answer aloud">🔊 SPEAK</button>{i===messages.length-1 && !busy && <button onClick={()=>regenerate(i)}><RotateCcw size={11}/> REGENERATE</button>}</div>}
         </div>)}
       </div>
 
@@ -759,7 +788,7 @@ function Chatbot() {
               <button onClick={()=>{setMode("study");setShowComposerMenu(false)}}><Sparkles size={15}/><span><b>Study mode</b><small>Learn with step-by-step explanations</small></span></button>
               <button onClick={()=>{setMode("coding");setShowComposerMenu(false)}}><Code2 size={15}/><span><b>Coding mode</b><small>Debug and build code</small></span></button>
               <button onClick={()=>{setMode("research");setShowComposerMenu(false)}}><ExternalLink size={15}/><span><b>Research mode</b><small>Search the web with sources</small></span></button>
-              <button onClick={()=>{setVoiceMode(v=>!v);setShowComposerMenu(false)}}><Bot size={15}/><span><b>{voiceMode?"Disable":"Enable"} voice replies</b><small>{voiceMode?"AI answers can be read aloud":"Use browser speech for answers"}</small></span></button>
+              <button onClick={()=>{setVoiceMode(v=>{const next=!v;if(!next){try{window.speechSynthesis?.cancel()}catch{}}return next});setShowComposerMenu(false)}}><Bot size={15}/><span><b>{voiceMode?"Disable":"Enable"} voice replies</b><small>{voiceMode?"AI answers can be read aloud":"Use browser speech for answers"}</small></span></button>
             </div>}
           </div>
           <textarea
