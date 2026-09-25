@@ -19,15 +19,15 @@ const profile = {
 };
 
 const projects = [
-  { title: "University AI Chatbot", text: "A document-aware academic assistant using LangChain, RAG and LLMs to answer university questions from trusted documents.", tags: ["LangChain", "RAG", "LLM"], icon: BrainCircuit },
-  { title: "Interactive AI Portfolio", text: "A personal product-style portfolio combining React, Three.js, motion and a portfolio-aware universal AI assistant.", tags: ["React", "Three.js", "Vite"], icon: Atom },
-  { title: "Student Analytics", text: "Python-based analytics and visualization work focused on student datasets, descriptive statistics and data-driven insights.", tags: ["Python", "Pandas", "Data"], icon: Database }
+  { title: "University AI Chatbot", text: "An academic AI assistant built around LangChain and RAG, designed to work with university documents and provide grounded answers.", tags: ["LangChain", "RAG", "LLM"], icon: BrainCircuit },
+  { title: "Interactive AI Portfolio", text: "This interactive portfolio combines React, Three.js, responsive UI, theme switching and the TAYYAB AI assistant.", tags: ["React", "Three.js", "Vite"], icon: Atom },
+  { title: "Student Analytics", text: "Python and data-analysis work focused on student datasets, descriptive statistics, visualization and extracting useful insights from data.", tags: ["Python", "Pandas", "Data"], icon: Database }
 ];
 
 const skillGroups = [
-  { title: "Build", items: ["Python", "JavaScript", "React", "HTML", "CSS", "SQL"] },
-  { title: "Think", items: ["AI / ML", "LangChain", "RAG", "OpenAI", "Data Analytics", "Statistics"] },
-  { title: "Ship", items: ["Git", "GitHub", "PostgreSQL", "Three.js", "APIs", "Vite"] }
+  { title: "Programming", items: ["Python", "JavaScript", "C", "HTML", "CSS", "SQL"] },
+  { title: "AI & Data", items: ["AI / ML", "LangChain", "RAG", "Data Analytics", "Statistics", "Pandas"] },
+  { title: "Development", items: ["React", "PostgreSQL", "Three.js", "APIs", "Git", "GitHub"] }
 ];
 
 function InteractiveField({ dark }) {
@@ -854,17 +854,22 @@ function App() {
       </section>
 
       <section className="section language-section" id="skills">
-        <div className="section-label">04 — DATA STACK</div>
-        <div className="language-layout"><div><h2>Code is a <em>language.</em></h2><p>From Python and SQL to JavaScript and React, I use technology as a medium for solving problems.</p></div><div className="language-bars">{[["Python","AI • Data • Automation","92%"],["JavaScript","Web • React • UI","84%"],["SQL","Database • Analytics","78%"],["C / Java","Core programming","65%"]].map(x=><div className="language-bar" key={x[0]}><div><b>{x[0]}</b><span>{x[1]}</span><i>{x[2]}</i></div><u><span style={{width:x[2]}}/></u></div>)}</div></div>
+        <div className="section-label">04 — TECHNICAL STACK</div>
+        <div className="language-layout"><div><h2>Tools I <em>build with.</em></h2><p>My current toolkit spans programming, AI and data work, databases, and modern web development.</p></div><div className="language-bars">{[["Python","AI • Data Science • Automation","PRIMARY"],["JavaScript","React • Web • Interactive UI","CORE"],["SQL","Databases • Analytics","CORE"],["C","Programming fundamentals","LEARNING"]].map(x=><div className="language-bar" key={x[0]}><div><b>{x[0]}</b><span>{x[1]}</span><i>{x[2]}</i></div><u><span style={{width:x[2]==="PRIMARY"?"92%":x[2]==="CORE"?"78%":"60%"}}/></u></div>)}</div></div>
       </section>
 
       <section className="section learning">
-        <div className="section-label">05 — RESEARCH / LEARN</div>
-        <div className="learning-grid"><div><h2>Always <em>evolving.</em></h2><p>Currently exploring AI engineering, LLM applications, data science and emerging computing.</p></div><div className="learning-cards"><article><Atom/><b>AI & ML</b><span>LLMs, RAG and intelligent systems</span></article><article><Database/><b>Data Science</b><span>Statistics, Python and analytics</span></article><article><Code2/><b>Full Stack</b><span>React, APIs and databases</span></article></div></div>
+        <div className="section-label">05 — LEARNING JOURNEY</div>
+        <div className="learning-grid"><div><h2>Learning by <em>building.</em></h2><p>I’m continuously developing my foundation in Artificial Intelligence & Data Science through projects, experimentation and hands-on technical work.</p></div><div className="learning-cards"><article><Atom/><b>Generative AI</b><span>LLMs, RAG, LangChain and AI assistants</span></article><article><Database/><b>Data Science</b><span>Python, Pandas, statistics and analytics</span></article><article><Code2/><b>Full-Stack Development</b><span>React, JavaScript, APIs and databases</span></article></div></div>
+      </section>
+
+      <section className="section education">
+        <div className="section-label">06 — EDUCATION</div>
+        <div className="intro-grid"><h2>Academic <em>foundation.</em></h2><div><p>I’m currently pursuing an <b>MSc in Artificial Intelligence & Data Science (MSc AIDS)</b> at <b>Indira University, Pune</b>.</p><div className="mini-stats"><div><b>MSc AIDS</b><span>Current degree</span></div><div><b>INDIRA UNIVERSITY</b><span>Pune, Maharashtra</span></div><div><b>FOCUS</b><span>AI • Data • Development</span></div></div></div></div>
       </section>
 
       <section className="section contact" id="contact">
-        <div className="contact-box"><div className="section-label">06 — CONNECT</div><h2>Have an idea?<br/><em>Let's build it.</em></h2><p>AI, data, web development or an interesting experiment — I'm always open to meaningful projects and conversations.</p><div className="contact-actions"><a className="primary" href={profile.whatsapp} target="_blank" rel="noreferrer"><MessageCircle size={17}/> WhatsApp</a><a className="secondary" href={"mailto:"+profile.email}><Mail size={17}/> Email</a><a className="secondary" href={profile.linkedin} target="_blank" rel="noreferrer"><Linkedin size={17}/> LinkedIn</a></div></div>
+        <div className="contact-box"><div className="section-label">07 — CONNECT</div><h2>Have an idea?<br/><em>Let's build it.</em></h2><p>AI, data, web development or an interesting experiment — I'm always open to meaningful projects and conversations.</p><div className="contact-actions"><a className="primary" href={profile.whatsapp} target="_blank" rel="noreferrer"><MessageCircle size={17}/> WhatsApp</a><a className="secondary" href={"mailto:"+profile.email}><Mail size={17}/> Email</a><a className="secondary" href={profile.linkedin} target="_blank" rel="noreferrer"><Linkedin size={17}/> LinkedIn</a></div></div>
       </section>
     </main>
 
