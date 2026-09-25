@@ -797,6 +797,32 @@ function Chatbot() {
     </section>}
   </>;
 }
+function InterestTyping() {
+  const [index, setIndex] = useState(0);
+  const [text, setText] = useState("");
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    const word = profile.interests[index];
+    const delay = deleting ? 42 : 78;
+    const timer = setTimeout(() => {
+      if (!deleting && text.length < word.length) {
+        setText(word.slice(0, text.length + 1));
+      } else if (!deleting && text.length === word.length) {
+        setDeleting(true);
+      } else if (deleting && text.length > 0) {
+        setText(word.slice(0, text.length - 1));
+      } else {
+        setDeleting(false);
+        setIndex(i => (i + 1) % profile.interests.length);
+      }
+    }, (!deleting && text.length === word.length) ? 1500 : delay);
+    return () => clearTimeout(timer);
+  }, [index, text, deleting]);
+
+  return <span className="typing-interest"><span className="typing-interest-text">{text || "\u00a0"}</span><i className="typing-cursor" aria-hidden="true" /></span>;
+}
+
 function App() {
   usePointerGlow();
   const [dark, setDark] = useState(() => localStorage.getItem("theme") !== "light");
@@ -825,7 +851,7 @@ function App() {
         <div className="hero-copy">
           <div className="eyebrow"><span className="status-dot"/> ARTIFICIAL INTELLIGENCE / DATA SCIENCE</div>
           <h1>I turn <em>data</em><br/>into intelligence.</h1>
-          <p>{profile.tagline} I’m Tayyab Sayyad, an MSc Artificial Intelligence & Data Science student at Indira University, Pune, focused on <span className="typing-interest"><span className="typing-interest-text">Generative AI</span><i className="typing-cursor" aria-hidden="true" /></span>.</p>
+          <p>{profile.tagline} I’m Tayyab Sayyad, an MSc Artificial Intelligence & Data Science student at Indira University, Pune, focused on <InterestTyping/>.</p>
           <div className="hero-actions"><a className="primary" href="#work">Explore my work <ArrowUpRight size={17}/></a><a className="secondary" href="#contact">Let's connect <MessageCircle size={17}/></a></div>
           <div className="scroll-hint"><MousePointer2 size={14}/> Explore the model, data and systems I build</div>
         </div>
