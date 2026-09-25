@@ -934,7 +934,6 @@ function App() {
         <div className="intro-grid"><h2>Academic <em>foundation.</em></h2><div>
           <p>My academic journey has progressed from computer science fundamentals into Artificial Intelligence & Data Science, with a focus on building practical technology projects.</p>
           <div className="education-timeline">
-            <div className="education-line" aria-hidden="true"><i /></div>
             <div className="education-item"><span className="education-node" /><span>10TH • 2020–21</span><b>Shri Sainath Highschool</b><small>87%</small><em>School foundation</em></div>
             <div className="education-item"><span className="education-node" /><span>12TH • 2022–23</span><b>Creative Public School</b><small>55.17%</small><em>Higher secondary</em></div>
             <div className="education-item"><span className="education-node" /><span>BSc CS • 2025–26</span><b>Indira College of Commerce and Science</b><small>CGPA 9.72</small><em>Computer Science</em></div>
