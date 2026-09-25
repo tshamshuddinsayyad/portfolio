@@ -246,14 +246,14 @@ function LiveModelLab() {
         <div>
           <span className="play-kicker"><i /> AI & DATA SCIENCE ARCADE</span>
           <h3>Learn AI. <em>Play AI.</em></h3>
-          <p>Ten interactive missions that turn AI concepts into experiments you can see, control and understand.</p>
+          <p>Eleven interactive missions that turn AI concepts into experiments you can see, control and understand.</p>
         </div>
         <div className="play-score"><span>LEARNING SCORE</span><b>{score.toString().padStart(4,"0")}</b></div>
       </div>
 
       {!game && (
         <div className="game-select">
-          <div className="select-title"><span>CHOOSE YOUR MISSION</span><small>10 CONCEPTS / 10 GAMES</small></div>
+          <div className="select-title"><span>CHOOSE YOUR MISSION</span><small>11 CONCEPTS / 11 GAMES</small></div>
           <div className="game-cards">
             <GameCard n="01" icon="⌁" meta="SUPERVISED LEARNING" title={<>DATA<br/><em>DETECTIVE</em></>} text="Inspect features and train your intuition to classify messages." action="CLASSIFY" onClick={() => startGame("detective")} />
             <GameCard n="02" icon="∇" meta="MODEL TRAINING" title={<>GRADIENT<br/><em>RACE</em></>} text="Control learning rate and watch loss fall during training." action="TRAIN" onClick={() => startGame("gradient")} />
@@ -265,6 +265,7 @@ function LiveModelLab() {
             <GameCard n="08" icon="◇" meta="DECISION TREES" title={<>TREE<br/><em>ARCHITECT</em></>} text="Choose splits that make a decision tree more informative." action="SPLIT" onClick={() => startGame("tree")} />
             <GameCard n="09" icon="✣" meta="UNSUPERVISED LEARNING" title={<>CLUSTER<br/><em>MISSION</em></>} text="Place data, move centroids and discover hidden groups." action="CLUSTER" onClick={() => startGame("cluster")} />
             <GameCard n="10" icon="▦" meta="MODEL EVALUATION" title={<>CONFUSION<br/><em>ARENA</em></>} text="Make predictions and see precision, recall and accuracy update live." action="EVALUATE" onClick={() => startGame("matrix")} />
+            <GameCard n="11" icon="⌖" meta="CLASSIFICATION THRESHOLD" title={<>DYNAMIC<br/><em>THRESHOLD</em></>} text="Move the decision threshold and balance precision, recall and F1." action="TUNE" onClick={() => startGame("threshold")} />
           </div>
           <div className="concept-strip"><span>DATA</span> → <span>FEATURES</span> → <span>MODEL</span> → <span>LOSS</span> → <span>PREDICTION</span> → <span>EVALUATION</span></div>
         </div>
@@ -280,10 +281,61 @@ function LiveModelLab() {
       {game === "tree" && <DecisionTreeGame setScore={setScore} onBack={back} />}
       {game === "cluster" && <ClusterGame setScore={setScore} onBack={back} />}
       {game === "matrix" && <ConfusionMatrixGame setScore={setScore} onBack={back} />}
+      {game === "threshold" && <DynamicThresholdTool setScore={setScore} onBack={back} />}
 
       <div className="playground-footer"><span>EXPERIMENT → LEARN → PREDICT → EXPLAIN</span><b>AI LAB ONLINE</b></div>
     </div>
   );
+}
+
+function DynamicThresholdTool({setScore,onBack}) {
+  const samples=[
+    {score:.96,label:1},{score:.91,label:1},{score:.84,label:1},{score:.78,label:1},
+    {score:.72,label:0},{score:.63,label:1},{score:.57,label:0},{score:.49,label:0},
+    {score:.38,label:0},{score:.26,label:0},{score:.18,label:0},{score:.08,label:0}
+  ];
+  const [threshold,setThreshold]=useState(.50),[done,setDone]=useState(false);
+  const predicted=samples.map(s=>({...s,pred:s.score>=threshold?1:0}));
+  const tp=predicted.filter(s=>s.pred===1&&s.label===1).length;
+  const tn=predicted.filter(s=>s.pred===0&&s.label===0).length;
+  const fp=predicted.filter(s=>s.pred===1&&s.label===0).length;
+  const fn=predicted.filter(s=>s.pred===0&&s.label===1).length;
+  const precision=tp+fp?tp/(tp+fp):0;
+  const recall=tp+fn?tp/(tp+fn):0;
+  const f1=precision+recall?2*precision*recall/(precision+recall):0;
+  function tune(){
+    if(done)return;
+    setDone(true);
+    setScore(s=>s+200);
+  }
+  return <div className="game-screen concept-game threshold-game">
+    <GameTop label="MISSION 11 / DYNAMIC THRESHOLD" onBack={onBack}/>
+    <div className="game-center-head">
+      <span className="panel-kicker">CLASSIFICATION CONTROL</span>
+      <h4>Move the threshold and watch the <em>decision boundary</em> change.</h4>
+      <p>A higher threshold usually makes positive predictions harder, changing precision and recall.</p>
+    </div>
+    <div className="threshold-layout">
+      <div className="threshold-chart">
+        <div className="threshold-zone positive">PREDICT POSITIVE</div>
+        <div className="threshold-zone negative">PREDICT NEGATIVE</div>
+        <div className="threshold-axis"><span>0.0</span><span>MODEL SCORE</span><span>1.0</span></div>
+        {predicted.map((s,i)=><i key={i} className={"threshold-point "+(s.label?"actual-positive":"actual-negative")+" "+(s.pred===s.label?"correct":"incorrect")} style={{left:(s.score*100)+"%"}} title={"Score "+s.score}/>)}
+        <div className="threshold-marker" style={{left:(threshold*100)+"%"}}><b>{threshold.toFixed(2)}</b></div>
+      </div>
+      <div className="threshold-controls">
+        <div className="threshold-readout"><span>DECISION THRESHOLD</span><b>{threshold.toFixed(2)}</b></div>
+        <input aria-label="Decision threshold" type="range" min="0.05" max="0.95" step="0.01" value={threshold} onChange={e=>{setThreshold(+e.target.value);setDone(false)}}/>
+        <div className="threshold-hints"><small>MORE RECALL</small><small>MORE PRECISION</small></div>
+        <button className="again-btn" onClick={tune}>{done?"THRESHOLD ANALYZED ✓":"ANALYZE THIS THRESHOLD →"}</button>
+      </div>
+    </div>
+    <div className="threshold-metrics">
+      <div><span>TP</span><b>{tp}</b></div><div><span>FP</span><b>{fp}</b></div><div><span>FN</span><b>{fn}</b></div><div><span>TN</span><b>{tn}</b></div>
+      <div><span>PRECISION</span><b>{(precision*100).toFixed(0)}%</b></div><div><span>RECALL</span><b>{(recall*100).toFixed(0)}%</b></div><div><span>F1</span><b>{(f1*100).toFixed(0)}%</b></div>
+    </div>
+    <div className="lesson-note"><b>WHAT YOU LEARN:</b> A classification model outputs a score; the <em>threshold</em> converts that score into a positive or negative decision. Moving it changes the precision–recall trade-off.</div>
+  </div>;
 }
 
 function GameCard({n,icon,meta,title,text,action,onClick}) {
