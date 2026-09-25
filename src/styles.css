@@ -1040,3 +1040,29 @@ main > .hero + .section.intro [class*="vertical-line"]{
 @media(max-width:760px){
   main > .hero + .section.intro{padding-top:40px!important}
 }
+
+
+/* DYNAMIC THRESHOLD TOOL */
+.threshold-layout{display:grid;grid-template-columns:1.35fr .65fr;gap:20px;max-width:900px;margin:28px auto 18px;align-items:center}
+.threshold-chart{position:relative;height:210px;border:1px solid rgba(201,167,255,.16);border-radius:16px;background:linear-gradient(180deg,rgba(135,92,255,.07),rgba(5,6,18,.48));overflow:hidden}
+.threshold-zone{position:absolute;top:14px;font:7px "DM Mono";letter-spacing:1px;color:#85798f}
+.threshold-zone.positive{right:15px;color:#a9e4cb}.threshold-zone.negative{left:15px}
+.threshold-axis{position:absolute;left:15px;right:15px;bottom:15px;display:flex;justify-content:space-between;color:#70657d;font:7px "DM Mono";letter-spacing:1px}
+.threshold-axis span:nth-child(2){color:#a095ad}
+.threshold-point{position:absolute;top:50%;width:13px;height:13px;border-radius:50%;transform:translate(-50%,-50%);z-index:2}
+.threshold-point.actual-positive{background:#c9a7ff;box-shadow:0 0 14px rgba(201,167,255,.65)}
+.threshold-point.actual-negative{background:#61e7ff;box-shadow:0 0 14px rgba(97,231,255,.5)}
+.threshold-point.incorrect{border:2px solid #f09abb;box-shadow:0 0 18px rgba(240,154,187,.65)}
+.threshold-marker{position:absolute;top:0;bottom:0;width:2px;background:#c9a7ff;box-shadow:0 0 20px rgba(201,167,255,.8);z-index:3;transition:left .2s}
+.threshold-marker:after{content:"";position:absolute;top:42px;left:50%;width:11px;height:11px;border-radius:50%;background:#c9a7ff;transform:translateX(-50%);box-shadow:0 0 16px #c9a7ff}
+.threshold-marker b{position:absolute;top:65px;left:50%;transform:translateX(-50%);padding:6px 8px;border:1px solid rgba(201,167,255,.3);border-radius:8px;background:#171027;color:#e9ddf7;font:700 8px "DM Mono";white-space:nowrap}
+.threshold-controls{padding:20px;border:1px solid rgba(201,167,255,.13);border-radius:16px;background:rgba(14,9,27,.72)}
+.threshold-readout{display:flex;justify-content:space-between;align-items:center;color:#80758d;font:8px "DM Mono";letter-spacing:1px}.threshold-readout b{color:#c9a7ff;font-size:24px}
+.threshold-controls input{width:100%;margin:24px 0 12px;accent-color:#c9a7ff}
+.threshold-hints{display:flex;justify-content:space-between;color:#756a80;font:7px "DM Mono";margin-bottom:18px}
+.threshold-metrics{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;max-width:900px;margin:0 auto}
+.threshold-metrics div{padding:11px 8px;border:1px solid rgba(201,167,255,.10);border-radius:10px;background:rgba(255,255,255,.02);text-align:center}
+.threshold-metrics span{display:block;color:#786d85;font:7px "DM Mono";letter-spacing:.5px}.threshold-metrics b{display:block;margin-top:5px;color:#ded4f0;font:700 13px "DM Mono"}
+@media(max-width:760px){
+ .threshold-layout{grid-template-columns:1fr}.threshold-chart{height:190px}.threshold-metrics{grid-template-columns:repeat(4,1fr)}.threshold-metrics div:nth-child(n+5){grid-column:auto}
+}
