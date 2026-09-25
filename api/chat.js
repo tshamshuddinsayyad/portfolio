@@ -236,7 +236,7 @@ function shouldUseWebSearch(enabled, mode, message) {
 
   // Search is useful for volatile questions, but should not make every
   // simple math/coding/general question depend on external search.
-  return /(latest|today|current|recent|news|price|weather|score|ranking|release|version|2026|2027|this week|this month|who is the current)/i.test(
+  return /(latest|today|current|recent|news|price|weather|score|ranking|release|version|2026|2027|this week|this month|who is the current|prime minister|president|chief minister|current government|union minister|minister of|election)/i.test(
     message
   );
 }
