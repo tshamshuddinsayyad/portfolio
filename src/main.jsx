@@ -823,6 +823,60 @@ function InterestTyping() {
   return <span className="typing-interest"><span className="typing-interest-text">{text || "\u00a0"}</span><i className="typing-cursor" aria-hidden="true" /></span>;
 }
 
+function ContactForm() {
+  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "", website: "" });
+  const [status, setStatus] = useState({ type: "", text: "" });
+  const [sending, setSending] = useState(false);
+
+  function updateField(key, value) {
+    setForm(prev => ({ ...prev, [key]: value }));
+    if (status.type) setStatus({ type: "", text: "" });
+  }
+
+  async function submit(e) {
+    e.preventDefault();
+    if (sending) return;
+    setSending(true);
+    setStatus({ type: "", text: "" });
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form)
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data?.message || "Could not send the message.");
+      setForm({ name: "", email: "", subject: "", message: "", website: "" });
+      setStatus({ type: "success", text: "Message sent. I'll get back to you soon." });
+    } catch (error) {
+      setStatus({ type: "error", text: error.message || "Could not send the message. Please try again." });
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <div className="contact-message-wrap">
+      <div className="contact-form-head">
+        <span>SEND ME A MESSAGE</span>
+        <small>Messages are delivered to my Telegram.</small>
+      </div>
+      <form className="contact-form" onSubmit={submit}>
+        <input aria-label="Your name" value={form.name} onChange={e => updateField("name", e.target.value)} placeholder="Your name" maxLength={80} required />
+        <input aria-label="Your email" type="email" value={form.email} onChange={e => updateField("email", e.target.value)} placeholder="Your email" maxLength={160} required />
+        <input aria-label="Subject" value={form.subject} onChange={e => updateField("subject", e.target.value)} placeholder="Subject" maxLength={120} required />
+        <textarea aria-label="Your message" value={form.message} onChange={e => updateField("message", e.target.value)} placeholder="Write your message..." maxLength={3000} rows={6} required />
+        <input className="contact-honeypot" aria-hidden="true" tabIndex="-1" autoComplete="off" value={form.website} onChange={e => updateField("website", e.target.value)} />
+        <div className="contact-form-bottom">
+          <small>I'll receive your message on Telegram and can contact you directly.</small>
+          <button type="submit" disabled={sending}><Send size={15}/> {sending ? "SENDING..." : "SEND MESSAGE"}</button>
+        </div>
+        {status.text && <div className={"contact-form-status " + status.type} role="status">{status.text}</div>}
+      </form>
+    </div>
+  );
+}
+
 function App() {
   usePointerGlow();
   const [dark, setDark] = useState(() => localStorage.getItem("theme") !== "light");
@@ -953,7 +1007,13 @@ function App() {
       </section>
 
       <section className="section contact" id="contact">
-        <div className="contact-box"><div className="section-label">09 — CONNECT</div><h2>Have an idea?<br/><em>Let's build it.</em></h2><p>AI, data, web development or an interesting experiment — I'm always open to meaningful projects and conversations.</p><div className="contact-actions"><a className="primary" href={profile.whatsapp} target="_blank" rel="noreferrer"><MessageCircle size={17}/> WhatsApp</a><a className="secondary" href={"mailto:"+profile.email}><Mail size={17}/> Email</a><a className="secondary" href={profile.linkedin} target="_blank" rel="noreferrer"><Linkedin size={17}/> LinkedIn</a></div></div>
+        <div className="contact-box">
+          <div className="section-label">09 — CONNECT</div>
+          <h2>Have an idea?<br/><em>Let's build it.</em></h2>
+          <p>AI, data, web development or an interesting experiment — I'm always open to meaningful projects and conversations.</p>
+          <div className="contact-actions"><a className="primary" href={profile.whatsapp} target="_blank" rel="noreferrer"><MessageCircle size={17}/> WhatsApp</a><a className="secondary" href={"mailto:"+profile.email}><Mail size={17}/> Email</a><a className="secondary" href={profile.linkedin} target="_blank" rel="noreferrer"><Linkedin size={17}/> LinkedIn</a></div>
+          <ContactForm />
+        </div>
       </section>
     </main>
 
