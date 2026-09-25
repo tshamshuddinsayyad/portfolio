@@ -1759,3 +1759,12 @@ main > .hero + .section.intro [class*="vertical-line"]{
   .flagship-flow{gap:5px}
   .flagship-flow b{font-size:7px;padding:7px 8px}
 }
+
+
+.education-timeline{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+.education-item{padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--panel);display:flex;flex-direction:column;gap:7px}
+.education-item span{font:8px "DM Mono";letter-spacing:1px;color:var(--accent)}
+.education-item b{font-size:13px;line-height:1.35}
+.education-item small{font-size:10px;color:var(--muted);line-height:1.5}
+.education-item:hover{border-color:rgba(97,231,255,.28);transform:translateY(-2px);transition:.25s ease}
+@media(max-width:700px){.education-timeline{grid-template-columns:1fr}}
