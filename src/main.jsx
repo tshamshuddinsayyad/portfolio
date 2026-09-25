@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import * as THREE from "three";
 import {
-  ArrowUpRight, Bot, Github, Linkedin, Mail, MessageCircle, Send, Mic as MicIcon,
+  ArrowUpRight, Bot, Github, Linkedin, Mail, MessageCircle, Phone, Send, Mic as MicIcon,
   Sparkles, Sun, Moon, BrainCircuit, Database, Atom, Code2,
   MousePointer2, ExternalLink, FileText, Upload, Trash2, RotateCcw, Square
 } from "lucide-react";
@@ -16,6 +16,7 @@ const profile = {
   linkedin: "https://www.linkedin.com/",
   whatsapp: "https://wa.me/918007766305",
   email: "tayyabsayyad2005@gmail.com",
+  phone: "+91 80077 66305",
   interests: ["Generative AI", "Machine Learning", "Data Science", "Full-Stack Development", "RAG & LLM Applications"]
 };
 
@@ -1011,7 +1012,7 @@ function App() {
           <div className="section-label">09 — CONNECT</div>
           <h2>Have an idea?<br/><em>Let's build it.</em></h2>
           <p>AI, data, web development or an interesting experiment — I'm always open to meaningful projects and conversations.</p>
-          <div className="contact-actions"><a className="primary" href={profile.whatsapp} target="_blank" rel="noreferrer"><MessageCircle size={17}/> WhatsApp</a><a className="secondary" href={"mailto:"+profile.email}><Mail size={17}/> Email</a><a className="secondary" href={profile.linkedin} target="_blank" rel="noreferrer"><Linkedin size={17}/> LinkedIn</a></div>
+          <div className="contact-actions"><a className="primary" href={profile.whatsapp} target="_blank" rel="noreferrer"><MessageCircle size={17}/> WhatsApp</a><a className="secondary" href={"mailto:"+profile.email}><Mail size={17}/> Email</a><a className="secondary" href={profile.linkedin} target="_blank" rel="noreferrer"><Linkedin size={17}/> LinkedIn</a></div><div className="contact-phone"><Phone size={15}/><span>Mobile</span><a href={"tel:"+profile.phone.replace(/\s/g,"")}>{profile.phone}</a></div>
           <ContactForm />
         </div>
       </section>
