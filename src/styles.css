@@ -1065,3 +1065,19 @@ body{
   .game-screen:after,.game-screen .panel-kicker:before{animation:none}
   .game-screen button,.game-screen .pca-dot,.game-screen .cluster-point{transition:none}
 }
+
+
+/* Remove the unwanted vertical arcade divider */
+.game-screen .neural-network,
+.game-screen .pca-layout,
+.game-screen .matrix-layout,
+.game-screen .cluster-controls,
+.game-screen .split-options{
+  border-left:0!important;
+}
+.game-screen .neural-network:before,
+.game-screen .neural-network:after,
+.game-screen .pca-layout:before,
+.game-screen .matrix-layout:before{
+  display:none!important;
+}
