@@ -4,7 +4,7 @@ import * as THREE from "three";
 import {
   ArrowUpRight, Bot, Github, Linkedin, Mail, MessageCircle, Send,
   Sparkles, Sun, Moon, BrainCircuit, Database, Atom, Code2,
-  MousePointer2, ExternalLink
+  MousePointer2, ExternalLink, FileText, Upload, Trash2, RotateCcw, Square, Sparkles as SparklesIcon
 } from "lucide-react";
 import "./styles.css";
 
@@ -497,62 +497,232 @@ function ConfusionMatrixGame({setScore,onBack}) {
 }
 
 function Chatbot() {
+  const STORAGE_KEY = "tayyab-ai-conversation-v2";
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [webSearch, setWebSearch] = useState(true);
-  const [messages, setMessages] = useState([{
-    role: "assistant",
-    content: "Hi! I’m Tayyab’s AI assistant. Ask me about Tayyab, his projects, coding, AI/ML, study topics, or current information."
-  }]);
+  const [mode, setMode] = useState("auto");
+  const [documentText, setDocumentText] = useState("");
+  const [documentName, setDocumentName] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [messages, setMessages] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+      if (Array.isArray(saved) && saved.length) return saved;
+    } catch {}
+    return [{
+      role: "assistant",
+      content: "Hi! I’m Tayyab AI. I can help with Tayyab’s portfolio, coding, AI/ML, study topics, research and your uploaded documents."
+    }];
+  });
+  const abortRef = useRef(null);
+  const fileRef = useRef(null);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-40)));
+  }, [messages]);
+
+  const modes = [
+    ["auto","AUTO"],
+    ["study","STUDY"],
+    ["coding","CODING"],
+    ["research","RESEARCH"],
+    ["portfolio","TAYYAB"],
+    ["document","DOCS"]
+  ];
 
   const prompts = [
     "Who is Tayyab?",
-    "What AI projects has he built?",
-    "Explain RAG simply",
-    "Write a Python Fibonacci program"
+    "Explain RAG step by step",
+    "Debug this Python code",
+    "Analyze my document"
   ];
+
+  async function extractFile(file) {
+    if (!file) return;
+    setUploading(true);
+    try {
+      const name = file.name.toLowerCase();
+      let text = "";
+      if (name.endsWith(".txt") || name.endsWith(".md") || name.endsWith(".csv") || name.endsWith(".json")) {
+        text = await file.text();
+      } else if (name.endsWith(".pdf")) {
+        const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+        pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/legacy/build/pdf.worker.mjs", import.meta.url).toString();
+        const data = new Uint8Array(await file.arrayBuffer());
+        const pdf = await pdfjs.getDocument({ data }).promise;
+        const pages = [];
+        for (let i = 1; i <= Math.min(pdf.numPages, 30); i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          pages.push("PAGE " + i + "\n" + content.items.map(x => x.str).join(" "));
+        }
+        text = pages.join("\n\n");
+      } else if (name.endsWith(".docx")) {
+        const mammoth = await import("mammoth/mammoth.browser");
+        const result = await mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() });
+        text = result.value;
+      } else {
+        throw new Error("Supported files: PDF, DOCX, TXT, MD, CSV and JSON.");
+      }
+      text = text.replace(/\s+\n/g,"\n").trim().slice(0,120000);
+      if (!text) throw new Error("No readable text was found in that file.");
+      setDocumentText(text);
+      setDocumentName(file.name);
+      setMode("document");
+    } catch (e) {
+      setMessages(m => [...m, { role:"assistant", content:"Document upload failed: " + (e.message || "Could not read the file.") }]);
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  }
+
+  function clearChat() {
+    abortRef.current?.abort();
+    setBusy(false);
+    setMessages([{
+      role: "assistant",
+      content: "New conversation ready. I’m Tayyab AI — ask me anything."
+    }]);
+  }
 
   async function send(text = input) {
     const q = text.trim();
     if (!q || busy) return;
-    const history = messages.slice(-8).map(m => ({ role: m.role, content: m.content }));
-    setMessages(m => [...m, { role: "user", content: q }]);
+    const history = messages.slice(-12).map(m => ({ role:m.role, content:m.content }));
+    setMessages(m => [...m, { role:"user", content:q }]);
     setInput("");
     setBusy(true);
+    abortRef.current = new AbortController();
+
+    let assistantIndex = null;
     try {
       const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: q, history, useWebSearch: webSearch })
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        signal:abortRef.current.signal,
+        body:JSON.stringify({
+          message:q,
+          history,
+          useWebSearch:webSearch,
+          mode,
+          documentText: mode === "document" ? documentText : "",
+          documentName
+        })
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.answer || "Request failed");
-      setMessages(m => [...m, { role: "assistant", content: data.answer || "I couldn't answer that.", sources: data.sources || [] }]);
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.answer || "AI request failed");
+      }
+
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error("Streaming is not supported by this browser.");
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let answer = "";
+      assistantIndex = messages.length + 1;
+      setMessages(m => [...m, { role:"assistant", content:"", sources:[] }]);
+
+      const pushEvent = payload => {
+        if (payload.type === "text") {
+          answer += payload.text || "";
+          setMessages(m => m.map((item,i) => i === assistantIndex ? {...item, content:answer} : item));
+        }
+        if (payload.type === "sources") {
+          setMessages(m => m.map((item,i) => i === assistantIndex ? {...item, sources:payload.sources || []} : item));
+        }
+        if (payload.type === "error") throw new Error(payload.message || "AI stream failed");
+      };
+
+      while (true) {
+        const {value,done} = await reader.read();
+        buffer += decoder.decode(value || new Uint8Array(), {stream:!done});
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+        for (const line of lines) {
+          if (!line.startsWith("data:")) continue;
+          const raw = line.slice(5).trim();
+          if (!raw || raw === "[DONE]") continue;
+          pushEvent(JSON.parse(raw));
+        }
+        if (done) break;
+      }
+      if (buffer.startsWith("data:")) {
+        const raw=buffer.slice(5).trim();
+        if(raw) pushEvent(JSON.parse(raw));
+      }
+      if (!answer) throw new Error("The AI returned an empty response.");
     } catch (e) {
-      setMessages(m => [...m, { role: "assistant", content: e.message || "The AI service is unavailable." }]);
+      if (e.name !== "AbortError") {
+        setMessages(m => {
+          const cleaned = assistantIndex === null ? m : m.filter((_,i)=>i!==assistantIndex);
+          return [...cleaned, {role:"assistant",content:e.message || "The AI service is unavailable."}];
+        });
+      }
     } finally {
       setBusy(false);
+      abortRef.current = null;
     }
   }
 
+  function regenerate() {
+    if (busy) return;
+    const lastUser = [...messages].reverse().find(m => m.role === "user");
+    if (!lastUser) return;
+    setMessages(m => {
+      const i = m.map(x=>x.role).lastIndexOf("assistant");
+      return i >= 0 ? m.filter((_,idx)=>idx!==i) : m;
+    });
+    setTimeout(() => send(lastUser.content), 0);
+  }
+
   return <>
-    <button className="chat-fab" onClick={() => setOpen(v => !v)}><Bot size={18}/><span>Ask my AI</span><i/></button>
+    <button className="chat-fab" onClick={() => setOpen(v => !v)}>
+      <Bot size={18}/><span>Ask Tayyab AI</span><i/>
+    </button>
     {open && <section className="chat-panel">
       <div className="chat-head">
-        <div><b><Sparkles size={14}/> TAYYAB AI</b><small>Ask the portfolio anything</small></div>
-        <div className="chat-head-actions"><button className={webSearch ? "search-toggle active" : "search-toggle"} onClick={() => setWebSearch(v => !v)}>{webSearch ? "WEB ON" : "WEB OFF"}</button><button onClick={() => setOpen(false)}>×</button></div>
+        <div>
+          <b><Sparkles size={14}/> TAYYAB AI <span className="ai-live-dot"/></b>
+          <small>Personal AI • RAG • Web • Coding • Study</small>
+        </div>
+        <div className="chat-head-actions">
+          <button onClick={clearChat} title="New chat"><Trash2 size={13}/></button>
+          <button className={webSearch ? "search-toggle active" : "search-toggle"} onClick={() => setWebSearch(v => !v)}>{webSearch ? "WEB ON" : "WEB OFF"}</button>
+          <button onClick={() => setOpen(false)}>×</button>
+        </div>
       </div>
+
+      <div className="ai-modebar">
+        {modes.map(([value,label]) => <button key={value} className={mode===value?"active":""} onClick={()=>setMode(value)}>{label}</button>)}
+      </div>
+
+      <div className="ai-toolbar">
+        <button onClick={()=>fileRef.current?.click()} disabled={uploading}><Upload size={12}/> {uploading ? "READING…" : "UPLOAD DOCUMENT"}</button>
+        {documentName && <span><FileText size={12}/> {documentName}</span>}
+        {documentName && <button onClick={()=>{setDocumentText("");setDocumentName("");setMode("auto")}} title="Remove document">×</button>}
+        <input ref={fileRef} type="file" accept=".pdf,.docx,.txt,.md,.csv,.json" hidden onChange={e=>extractFile(e.target.files?.[0])}/>
+      </div>
+
       <div className="quick-prompts">{prompts.map(p => <button key={p} onClick={() => send(p)}>{p}</button>)}</div>
+
       <div className="chat-body">
-        {messages.map((m,i) => <div key={i} className={"chat-message " + m.role}><div className={"bubble " + m.role}>{m.content}</div>{m.sources?.length > 0 && <div className="sources"><span>Sources</span>{m.sources.map((s,j)=><a key={s.url+j} href={s.url} target="_blank" rel="noreferrer">{j+1}. {s.title}</a>)}</div>}</div>)}
-        {busy && <div className="bubble assistant typing">Thinking<span>•••</span></div>}
+        {messages.map((m,i) => <div key={i} className={"chat-message " + m.role}>
+          <div className={"bubble " + m.role}>{m.content || (busy && i===messages.length-1 ? "Thinking…" : "")}</div>
+          {m.sources?.length > 0 && <div className="sources"><span>SOURCES</span>{m.sources.map((s,j)=><a key={s.url+j} href={s.url} target="_blank" rel="noreferrer">{j+1}. {s.title}</a>)}</div>}
+          {m.role==="assistant" && i===messages.length-1 && !busy && m.content && <div className="message-actions"><button onClick={()=>navigator.clipboard?.writeText(m.content)}>COPY</button><button onClick={regenerate}><RotateCcw size={11}/> REGENERATE</button></div>}
+        </div>)}
       </div>
-      <div className="chat-input"><input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && send()} placeholder="Ask anything…"/><button onClick={() => send()} disabled={busy}><Send size={16}/></button></div>
+
+      <div className="chat-input">
+        <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && send()} placeholder={mode==="document" && documentName ? "Ask about your document…" : "Ask Tayyab AI anything…"}/>
+        <button onClick={() => busy ? abortRef.current?.abort() : send()}>{busy ? <Square size={15}/> : <Send size={16}/>}</button>
+      </div>
     </section>}
   </>;
 }
-
 function App() {
   usePointerGlow();
   const [dark, setDark] = useState(() => localStorage.getItem("theme") !== "light");
