@@ -13,7 +13,7 @@ const profile = {
   role: "MSc AI & Data Science • AI Application Builder",
   tagline: "Building intelligent applications at the intersection of AI, data, and modern technology.",
   github: "https://github.com/tshamshuddinsayyad",
-  linkedin: "https://www.linkedin.com/",
+  linkedin: "https://www.linkedin.com/in/tayyab-sayyad-a04079309/",
   whatsapp: "https://wa.me/918007766305",
   email: "tayyabsayyad2005@gmail.com",
   phone: "+91 80077 66305",
