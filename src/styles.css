@@ -1844,3 +1844,21 @@ main > .hero + .section.intro [class*="vertical-line"]{
 .navlinks::-webkit-scrollbar{display:none}
 @media(max-width:1100px){.navlinks{gap:16px}.nav{width:min(1180px,calc(100% - 24px))}}
 @media(max-width:900px){.navlinks{display:none}}
+
+
+/* SECTION LABEL ALIGNMENT — keep every section marker on one clean baseline */
+.section-label{
+  display:block;
+  width:100%;
+  margin:0 0 22px;
+  padding:0;
+  text-align:left;
+  line-height:1.2;
+  white-space:nowrap;
+}
+.section-label + .section-heading{
+  margin-top:0;
+}
+.section-heading{
+  align-items:center;
+}
