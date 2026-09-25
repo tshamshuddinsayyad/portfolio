@@ -256,7 +256,7 @@ function LiveModelLab() {
 
       {!game && (
         <div className="game-select">
-          <div className="select-title"><span>CHOOSE YOUR MISSION</span><small>03 CONCEPTS / 03 GAMES</small></div>
+          <div className="select-title"><span>CHOOSE YOUR MISSION</span><small>07 CONCEPTS / 07 GAMES</small></div>
           <div className="game-cards">
             <button onClick={() => startGame("detective")}>
               <span className="game-icon">⌁</span><small>01 / SUPERVISED LEARNING</small>
@@ -276,6 +276,10 @@ function LiveModelLab() {
               <p>Retrieve the right document before the LLM answers a university question.</p>
               <b>RETRIEVE →</b>
             </button>
+            <button onClick={() => startGame("knn")}><span className="game-icon">●</span><small>04 / CLASSIFICATION</small><strong>K-NEAREST<br/><em>NEIGHBOR</em></strong><p>Move a point and let nearby examples vote on its class.</p><b>CLASSIFY →</b></button>
+            <button onClick={() => startGame("sql")}><span className="game-icon">▤</span><small>05 / DATA ANALYTICS</small><strong>SQL<br/><em>DETECTIVE</em></strong><p>Pick the query that correctly answers a data question.</p><b>QUERY →</b></button>
+            <button onClick={() => startGame("neural")}><span className="game-icon">⌘</span><small>06 / NEURAL NETWORKS</small><strong>NEURAL<br/><em>BUILDER</em></strong><p>Activate hidden neurons and run a tiny forward pass.</p><b>BUILD →</b></button>
+            <button onClick={() => startGame("pca")}><span className="game-icon">↗</span><small>07 / DATA SCIENCE</small><strong>PCA<br/><em>COMPRESSOR</em></strong><p>Rotate a projection to preserve the most variance.</p><b>REDUCE →</b></button>
           </div>
           <div className="concept-strip"><span>FEATURES</span> → <span>MODEL</span> → <span>LOSS</span> → <span>RETRIEVAL</span> → <span>ANSWER</span></div>
         </div>
@@ -284,6 +288,8 @@ function LiveModelLab() {
       {game === "detective" && <DataDetective setScore={setScore} score={score} onBack={() => setGame(null)} />}
       {game === "gradient" && <GradientRace setScore={setScore} score={score} onBack={() => setGame(null)} />}
       {game === "rag" && <RagRescue setScore={setScore} score={score} onBack={() => setGame(null)} />}
+      {game === "knn" && <KNNGame setScore={setScore} onBack={() => setGame(null)} />}
+      {game === "sql" && <SQLGame setScore={setScore} onBack={() => setGame(null)} />}
 
       <div className="playground-footer"><span>DATA → LEARN → PREDICT → EXPLAIN</span><b>AI LAB ONLINE</b></div>
     </div>
@@ -376,6 +382,22 @@ function RagRescue({ setScore, onBack }) {
   </div>;
 }
 
+function KNNGame({setScore,onBack}) {
+  const pts=[{x:20,y:28,c:"A"},{x:31,y:44,c:"A"},{x:38,y:23,c:"A"},{x:67,y:68,c:"B"},{x:77,y:54,c:"B"},{x:84,y:73,c:"B"}];
+  const [p,setP]=useState({x:52,y:48}),[k,setK]=useState(3),[done,setDone]=useState(false);
+  const near=[...pts].sort((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y)).slice(0,k);
+  const a=near.filter(x=>x.c==="A").length,b=near.filter(x=>x.c==="B").length,pred=a>=b?"A":"B";
+  return <div className="game-screen concept-game"><GameTop label="MISSION 04 / K-NEAREST NEIGHBOR" onBack={onBack}/>
+    <div className="game-center-head"><span className="panel-kicker">CLASSIFICATION</span><h4>Move the point, then let its <em>neighbors vote.</em></h4></div>
+    <div className="knn-board">{pts.map((x,i)=><span key={i} className={"knn-point "+x.c} style={{left:x.x+"%",top:x.y+"%"}}>{x.c}</span>)}{near.map((x,i)=><i key={i} className="knn-ring" style={{left:x.x+"%",top:x.y+"%"}}/>)}<button className="knn-cursor" style={{left:p.x+"%",top:p.y+"%"}} onClick={()=>setP({x:25+Math.random()*55,y:22+Math.random()*55})}>?</button></div>
+    <div className="knn-controls"><label>K <select value={k} onChange={e=>{setK(+e.target.value);setDone(false)}}><option>1</option><option>3</option><option>5</option></select></label><span>VOTES A:{a} / B:{b}</span><button className="again-btn" onClick={()=>{if(!done){setDone(true);setScore(v=>v+130)}}}>{done?"PREDICTED CLASS "+pred+" ✓":"CLASSIFY →"}</button></div>
+    <div className="lesson-note"><b>WHAT YOU LEARN:</b> KNN predicts using the labels of the closest <em>training examples</em>.</div></div>;
+}
+function SQLGame({setScore,onBack}) {
+  const qs=[["Find students with Mid_Sem ≥ 70.",["SELECT * FROM students WHERE Mid_Sem >= 70;","SELECT students WHERE Mid_Sem > 70;","GET * FROM students FILTER Mid_Sem >= 70;"]],["Count students per department.",["SELECT department, COUNT(*) FROM students GROUP BY department;","SELECT COUNT(department) FROM students;","SELECT department FROM students COUNT(*);"]],["Top 3 by End_Sem.",["SELECT * FROM students ORDER BY End_Sem DESC LIMIT 3;","SELECT TOP 3 students SORT End_Sem;","SELECT * FROM students WHERE End_Sem TOP 3;"]]];
+  const [q,setQ]=useState(0),[pick,setPick]=useState(null); const item=qs[q];
+  return <div className="game-screen concept-game"><GameTop label={"MISSION 05 / SQL DETECTIVE / QUERY "+(q+1)} onBack={onBack}/><div className="sql-head"><span className="panel-kicker">DATABASE CHALLENGE</span><h4>{item[0]}</h4></div><div className="sql-table"><div className="sql-row header"><span>id</span><span>department</span><span>Mid_Sem</span><span>End_Sem</span></div>{[[1,"AI",82,88],[2,"CS",64,74],[3,"AI",91,93],[4,"DS",69,67]].map(r=><div className="sql-row" key={r[0]}>{r.map((v,j)=><span key={j}>{v}</span>)}</div>)}</div><div className="sql-options">{item[1].map((x,i)=><button key={x} className={pick===i?"sql-picked":""} onClick={()=>{if(pick===null){setPick(i);if(i===0)setScore(v=>v+140)}}}><b>{String.fromCharCode(65+i)}</b><code>{x}</code></button>)}</div>{pick!==null&&<div className={"sql-feedback "+(pick===0?"correct":"wrong")}><b>{pick===0?"✓ QUERY CORRECT":"× TRY AGAIN"}</b><span>WHERE filters rows; GROUP BY groups rows; ORDER BY + LIMIT controls ranking.</span><button className="again-btn" onClick={()=>{setQ((q+1)%3);setPick(null)}}>NEXT QUERY →</button></div>}<div className="lesson-note"><b>WHAT YOU LEARN:</b> SQL converts questions into precise <em>filter, group and sort</em> operations.</div></div>;
+}
 function Chatbot() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
