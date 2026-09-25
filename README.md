@@ -1,13 +1,14 @@
 # Tayyab Sayyad — AI / ML Portfolio
 
-A responsive React + Vite portfolio with a Three.js galaxy, AI/ML focus sections, interactive project cards, dark/light mode and a LangChain + OpenAI portfolio assistant.
+A responsive React + Vite portfolio with a Three.js galaxy, AI/ML focus sections, interactive project cards, dark/light mode and a portfolio-aware AI assistant.
 
 ## Stack
+
 - React + Vite
 - Three.js
-- LangChain JS
-- OpenAI embeddings + chat model
-- Vercel serverless function
+- Gemini API
+- Server-side Vercel function
+- PDF/DOCX document extraction
 - Responsive CSS
 
 ## Run locally
@@ -15,26 +16,35 @@ A responsive React + Vite portfolio with a Three.js galaxy, AI/ML focus sections
 ```bash
 npm install
 cp .env.example .env
-# Edit .env and add your OpenAI API key
+# Add your Gemini API key to .env
 npm run dev
 ```
 
-## AI assistant configuration
+## AI assistant
 
-The API key is server-side only. Never put it in React code or commit a real key to GitHub.
+The AI assistant is server-side only. **Never put a real Gemini API key in React code or commit it to GitHub.**
 
-For Vercel:
-1. Open the project.
-2. Go to **Project Settings → Environment Variables**.
-3. Add `OPENAI_API_KEY`.
-4. Optionally add `OPENAI_MODEL` (defaults to `gpt-5.6-luna`).
-5. Redeploy after saving the variable.
+Vercel environment variables:
 
-The current OpenAI model catalog documents GPT-5.6 Luna as a cost-sensitive model. 
+- `GEMINI_API_KEY` — required
+- `GEMINI_MODEL` — optional; defaults to `gemini-3.8-flash`
+- `GEMINI_FALLBACK_MODEL` — optional; defaults to `gemini-3.5-flash-lite`
 
-## Important personal links
+The assistant now uses:
 
-The WhatsApp, email and LinkedIn values in `src/main.jsx` are placeholders until the real details are supplied. Replace them before publishing.
+- Gemini 3.8 Flash with medium/high reasoning depending on the task
+- Automatic routing for general, study, coding, research, portfolio and document modes
+- Google Search grounding only when enabled and useful for current/research questions
+- Streaming responses over SSE
+- Conversation history with bounded context
+- Portfolio context only in portfolio mode, avoiding irrelevant context pollution
+- PDF, DOCX, TXT, MD, CSV and JSON document extraction
+- Fallback model handling for common Gemini availability/rate-limit failures
+- Browser speech input and optional browser speech output
+
+## Important
+
+If answers are still failing after deployment, check the Vercel function logs and confirm that `GEMINI_API_KEY` exists in the Production environment. Do not paste the key into chat or GitHub.
 
 ## GitHub
 
