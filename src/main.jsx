@@ -4,7 +4,7 @@ import * as THREE from "three";
 import {
   ArrowUpRight, Bot, Github, Linkedin, Mail, MessageCircle, Send,
   Sparkles, Sun, Moon, BrainCircuit, Database, Atom, Code2,
-  MousePointer2, ExternalLink, FileText, Upload, Trash2, RotateCcw, Square, Sparkles as SparklesIcon
+  MousePointer2, ExternalLink, FileText, Upload, Trash2, RotateCcw, Square
 } from "lucide-react";
 import "./styles.css";
 
@@ -601,7 +601,7 @@ function Chatbot() {
     try {
       const res = await fetch("/api/chat", {
         method:"POST",
-        headers:{"Content-Type":"application/json"},
+        headers:{"Content-Type":"application/json","Accept":"text/event-stream"},
         signal:abortRef.current.signal,
         body:JSON.stringify({
           message:q,
