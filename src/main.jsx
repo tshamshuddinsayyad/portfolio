@@ -233,122 +233,149 @@ function AILab() {
 
 function LiveModelLab() {
   const [game, setGame] = useState(null);
-  const [round, setRound] = useState(0);
-  const [message, setMessage] = useState("");
-  const [guess, setGuess] = useState(null);
-  const [secret, setSecret] = useState(() => Math.floor(Math.random() * 10) + 1);
   const [score, setScore] = useState(0);
-  const [busy, setBusy] = useState(false);
+  const [round, setRound] = useState(0);
 
   function startGame(type) {
     setGame(type);
     setRound(r => r + 1);
-    setMessage("");
-    setGuess(null);
-    setBusy(false);
-    setSecret(Math.floor(Math.random() * 10) + 1);
-  }
-
-  function predictNumber(n) {
-    if (busy) return;
-    setGuess(n);
-    setBusy(true);
-    const correct = n === secret;
-    if (correct) setScore(s => s + 100);
-    window.setTimeout(() => {
-      setMessage(correct ? "AI PREDICTION HIT" : "MODEL OUTSMARTED");
-      setBusy(false);
-    }, 700);
-  }
-
-  function foolAI() {
-    setBusy(true);
-    setMessage("");
-    window.setTimeout(() => {
-      setMessage("MODEL ANALYZED YOUR INPUT");
-      setBusy(false);
-    }, 800);
   }
 
   return (
-    <div className="ai-playground">
+    <div className="ai-playground learning-playground">
       <div className="playground-grid" />
       <div className="playground-scan" />
       <div className="playground-head">
         <div>
-          <span className="play-kicker"><i /> AI INTERACTION ZONE</span>
-          <h3>AI <em>PLAYGROUND</em></h3>
-          <p>Don't just read about AI. <b>Play with it.</b> Run a tiny experiment inside the portfolio.</p>
+          <span className="play-kicker"><i /> AI & DATA SCIENCE ARCADE</span>
+          <h3>Learn AI. <em>Play AI.</em></h3>
+          <p>Three hands-on missions that teach real AI & Data Science concepts while you play.</p>
         </div>
-        <div className="play-score"><span>SCORE</span><b>{score.toString().padStart(4,"0")}</b></div>
+        <div className="play-score"><span>LEARNING SCORE</span><b>{score.toString().padStart(4,"0")}</b></div>
       </div>
 
       {!game && (
         <div className="game-select">
-          <div className="select-title"><span>SELECT AN EXPERIMENT</span><small>03 MODULES ONLINE</small></div>
+          <div className="select-title"><span>CHOOSE YOUR MISSION</span><small>03 CONCEPTS / 03 GAMES</small></div>
           <div className="game-cards">
-            <button onClick={() => startGame("mind")}>
-              <span className="game-icon">◉</span><small>01 / PREDICT</small><strong>READ MY<br/><em>MIND</em></strong><p>Think of a number. Let the model try to find it.</p><b>START →</b>
+            <button onClick={() => startGame("detective")}>
+              <span className="game-icon">⌁</span><small>01 / SUPERVISED LEARNING</small>
+              <strong>DATA<br/><em>DETECTIVE</em></strong>
+              <p>Inspect features and teach a classifier to separate spam from real messages.</p>
+              <b>LEARN →</b>
             </button>
-            <button onClick={() => startGame("fool")}>
-              <span className="game-icon">◇</span><small>02 / CHALLENGE</small><strong>FOOL THE<br/><em>AI</em></strong><p>Give the model a challenge and see its confidence react.</p><b>START →</b>
+            <button onClick={() => startGame("gradient")}>
+              <span className="game-icon">∇</span><small>02 / MACHINE LEARNING</small>
+              <strong>GRADIENT<br/><em>RACE</em></strong>
+              <p>Control the learning rate and train a model toward the lowest loss.</p>
+              <b>TRAIN →</b>
             </button>
-            <button onClick={() => startGame("build")}>
-              <span className="game-icon">✦</span><small>03 / BUILDER</small><strong>BUILD<br/><em>AI</em></strong><p>Assemble a tiny intelligence pipeline from data to output.</p><b>START →</b>
+            <button onClick={() => startGame("rag")}>
+              <span className="game-icon">◈</span><small>03 / LLM + RAG</small>
+              <strong>RAG<br/><em>RESCUE</em></strong>
+              <p>Retrieve the right document before the LLM answers a university question.</p>
+              <b>RETRIEVE →</b>
             </button>
           </div>
+          <div className="concept-strip"><span>FEATURES</span> → <span>MODEL</span> → <span>LOSS</span> → <span>RETRIEVAL</span> → <span>ANSWER</span></div>
         </div>
       )}
 
-      {game === "mind" && (
-        <div className="game-screen mind-game">
-          <div className="game-topline"><span>EXPERIMENT 01 / NEURAL GUESS</span><button onClick={() => setGame(null)}>← ALL EXPERIMENTS</button></div>
-          <div className="mind-stage">
-            <div className={"mind-core " + (busy ? "thinking" : "")}><BrainCircuit size={34}/><span>{busy ? "ANALYZING" : message || "THINK 1–10"}</span></div>
-            <div className="mind-orbit o1"/><div className="mind-orbit o2"/>
-            {[1,2,3,4,5,6].map(n => <i key={n} className={"mind-node mn"+n}/>)}
-          </div>
-          <div className="number-row">{[1,2,3,4,5,6,7,8,9,10].map(n => <button key={n} className={guess===n ? "chosen" : ""} onClick={() => predictNumber(n)}>{n}</button>)}</div>
-          <p className="game-instruction">{message || "Choose the number you think the AI is thinking about."}</p>
-          {message && <button className="again-btn" onClick={() => startGame("mind")}>PLAY AGAIN →</button>}
-        </div>
-      )}
+      {game === "detective" && <DataDetective setScore={setScore} score={score} onBack={() => setGame(null)} />}
+      {game === "gradient" && <GradientRace setScore={setScore} score={score} onBack={() => setGame(null)} />}
+      {game === "rag" && <RagRescue setScore={setScore} score={score} onBack={() => setGame(null)} />}
 
-      {game === "fool" && (
-        <div className="game-screen fool-game">
-          <div className="game-topline"><span>EXPERIMENT 02 / MODEL STRESS TEST</span><button onClick={() => setGame(null)}>← ALL EXPERIMENTS</button></div>
-          <div className="fool-center">
-            <div className="ai-face"><span>AI</span><i/><i/><i/></div>
-            <div className="confidence-ring"><strong>{busy ? "..." : "93%"}</strong><span>CONFIDENCE</span></div>
-            <p>Try to fool the model.</p>
-            <textarea placeholder="Type anything that might confuse the AI…" />
-            <button className="again-btn" onClick={foolAI}>{busy ? "ANALYZING…" : "CHALLENGE MODEL →"}</button>
-            {message && <small>{message}</small>}
-          </div>
-        </div>
-      )}
-
-      {game === "build" && (
-        <div className="game-screen build-game">
-          <div className="game-topline"><span>EXPERIMENT 03 / MODEL BUILDER</span><button onClick={() => setGame(null)}>← ALL EXPERIMENTS</button></div>
-          <div className="pipeline">
-            <div className="pipe-node active"><span>01</span><b>DATA</b></div>
-            <div className="pipe-arrow">→</div>
-            <div className="pipe-node"><span>02</span><b>PROCESS</b></div>
-            <div className="pipe-arrow">→</div>
-            <div className="pipe-node"><span>03</span><b>MODEL</b></div>
-            <div className="pipe-arrow">→</div>
-            <div className="pipe-node"><span>04</span><b>OUTPUT</b></div>
-          </div>
-          <div className="build-core"><div><BrainCircuit size={34}/><span>INTELLIGENCE ONLINE</span></div></div>
-          <button className="again-btn" onClick={() => startGame("build")}>REBUILD MODEL →</button>
-        </div>
-      )}
-
-      <div className="playground-footer"><span>HUMAN INPUT → AI PROCESSING → INTERACTIVE OUTPUT</span><b>LAB ONLINE</b></div>
+      <div className="playground-footer"><span>DATA → LEARN → PREDICT → EXPLAIN</span><b>AI LAB ONLINE</b></div>
     </div>
   );
 }
+
+function GameTop({ label, onBack }) {
+  return <div className="game-topline"><span>{label}</span><button onClick={onBack}>← ALL MISSIONS</button></div>;
+}
+
+function DataDetective({ setScore, score, onBack }) {
+  const cases = [
+    { text: "WIN a FREE iPhone now!!! Click this link", features: ["many_caps","link","urgency"], answer: "SPAM", why: "Spam often uses urgency, promotional language and suspicious links." },
+    { text: "Reminder: your Database Systems lecture starts at 10 AM.", features: ["normal_tone","no_link","specific_info"], answer: "REAL", why: "Normal language and specific context are useful features for a classifier." },
+    { text: "Congratulations!!! You have been selected for a CASH prize.", features: ["many_caps","urgency","reward"], answer: "SPAM", why: "Reward language plus urgency are strong spam indicators." }
+  ];
+  const [index, setIndex] = useState(0);
+  const [choice, setChoice] = useState(null);
+  const item = cases[index];
+
+  function classify(answer) {
+    if (choice) return;
+    setChoice(answer);
+    if (answer === item.answer) setScore(s => s + 100);
+  }
+  function next() {
+    if (index === cases.length - 1) { setIndex(0); setChoice(null); return; }
+    setIndex(i => i + 1); setChoice(null);
+  }
+
+  return <div className="game-screen concept-game">
+    <GameTop label={"MISSION 01 / DATA DETECTIVE / CASE " + (index + 1) + " OF " + cases.length} onBack={onBack}/>
+    <div className="detective-layout">
+      <div className="sample-message"><small>UNKNOWN MESSAGE</small><div className="message-icon">✉</div><p>“{item.text}”</p><div className="feature-list">{item.features.map(f => <span key={f}>FEATURE: {f.replace("_"," ")}</span>)}</div></div>
+      <div className="classifier-panel">
+        <span className="panel-kicker">TRAIN YOUR CLASSIFIER</span>
+        <h4>What should the model predict?</h4>
+        <div className="class-buttons"><button className={choice==="SPAM"?"picked":""} onClick={() => classify("SPAM")}>SPAM <small>1</small></button><button className={choice==="REAL"?"picked":""} onClick={() => classify("REAL")}>REAL <small>0</small></button></div>
+        <div className={"feedback " + (choice ? (choice===item.answer?"correct":"wrong") : "")}>
+          {choice ? <><b>{choice===item.answer ? "✓ CORRECT CLASSIFICATION" : "× WRONG PREDICTION"}</b><span>{item.why}</span></> : <span>Look at the features. A machine-learning model learns patterns from labelled examples.</span>}
+        </div>
+        {choice && <button className="again-btn" onClick={next}>{index === cases.length - 1 ? "RETRAIN DATASET →" : "NEXT CASE →"}</button>}
+      </div>
+    </div>
+    <div className="lesson-note"><b>WHAT YOU LEARN:</b> Classification uses <em>features</em> as inputs and labelled examples to learn a prediction rule.</div>
+  </div>;
+}
+
+function GradientRace({ setScore, onBack }) {
+  const [rate, setRate] = useState(0.25);
+  const [step, setStep] = useState(0);
+  const loss = Math.max(0.08, Math.min(1.0, Math.pow(1 - rate * 0.72, step)));
+  const position = 7 + (1 - loss) * 86;
+  const good = rate >= 0.15 && rate <= 0.45;
+
+  function train() {
+    if (step >= 8) return;
+    setStep(s => s + 1);
+    if (step === 7 && good) setScore(s => s + 150);
+  }
+  function reset() { setStep(0); }
+
+  return <div className="game-screen concept-game">
+    <GameTop label="MISSION 02 / GRADIENT DESCENT RACE" onBack={onBack}/>
+    <div className="gradient-head"><div><span className="panel-kicker">OPTIMIZE THE MODEL</span><h4>Find the learning rate that reaches <em>low loss.</em></h4><p>Too small = slow learning. Too large = unstable learning.</p></div><div className="loss-readout"><small>LOSS</small><b>{loss.toFixed(2)}</b></div></div>
+    <div className="descent-track"><div className="track-label start">HIGH LOSS</div><div className="track-label end">LOW LOSS</div><div className="descent-path"><i style={{left:position+"%"}}/><span className="step-marker m1"/><span className="step-marker m2"/><span className="step-marker m3"/><span className="step-marker m4"/><span className="step-marker m5"/></div></div>
+    <div className="rate-control"><div><span>LEARNING RATE</span><b>{rate.toFixed(2)}</b></div><input type="range" min="0.05" max="0.65" step="0.05" value={rate} onChange={e => {setRate(Number(e.target.value));reset();}}/><div className="rate-labels"><small>0.05 / SLOW</small><small>0.65 / CHAOTIC</small></div></div>
+    <div className="train-row"><div className="epoch">EPOCH <b>{step}</b> / 8</div><button className="again-btn" onClick={train}>{step>=8 ? "MODEL TRAINED ✓" : "RUN TRAINING STEP →"}</button>{step>=8 && <span className={good?"train-good":"train-bad"}>{good ? "GOOD CONVERGENCE" : "TRY A DIFFERENT RATE"}</span>}</div>
+    <div className="lesson-note"><b>WHAT YOU LEARN:</b> Gradient descent updates model parameters to reduce a <em>loss function</em>. The learning rate controls how big each update is.</div>
+  </div>;
+}
+
+function RagRescue({ setScore, onBack }) {
+  const questions = [
+    { q:"What is the university's attendance requirement?", docs:["Library Opening Hours","Attendance Policy 2026","Python Lab Schedule"], answer:1, reason:"RAG retrieves the relevant policy before generating the answer." },
+    { q:"When is the Python practical?", docs:["Hostel Rules","Exam Fee Notice","Python Lab Schedule"], answer:2, reason:"The model should ground its answer in the retrieved document, not guess." },
+    { q:"How do I reset my university password?", docs:["Password Reset Guide","Sports Day Notice","DBMS Syllabus"], answer:0, reason:"RAG first finds the document containing the procedure." }
+  ];
+  const [index,setIndex]=useState(0); const [picked,setPicked]=useState(null);
+  const item=questions[index];
+  function choose(i){if(picked!==null)return;setPicked(i);if(i===item.answer)setScore(s=>s+120)}
+  function next(){setIndex((index+1)%questions.length);setPicked(null)}
+  return <div className="game-screen concept-game">
+    <GameTop label={"MISSION 03 / RAG RESCUE / QUERY " + (index+1)} onBack={onBack}/>
+    <div className="rag-query"><span>USER QUERY</span><h4>“{item.q}”</h4></div>
+    <div className="rag-flow"><div className="rag-step"><b>1</b><strong>RETRIEVE</strong><span>Find relevant chunks</span></div><div className="rag-arrow">→</div><div className="rag-step"><b>2</b><strong>AUGMENT</strong><span>Give context to the LLM</span></div><div className="rag-arrow">→</div><div className="rag-step"><b>3</b><strong>GENERATE</strong><span>Answer from evidence</span></div></div>
+    <div className="doc-grid">{item.docs.map((d,i)=><button key={d} className={picked===i?"doc-picked":""} onClick={()=>choose(i)}><span>DOC 0{i+1}</span><strong>{d}</strong><small>{picked===i ? (i===item.answer ? "✓ RELEVANT" : "× NOT RELEVANT") : "SELECT DOCUMENT"}</small></button>)}</div>
+    {picked!==null && <div className={"rag-feedback "+(picked===item.answer?"correct":"wrong")}><b>{picked===item.answer ? "✓ RETRIEVAL SUCCESS" : "× WRONG DOCUMENT"}</b><span>{item.reason}</span><button className="again-btn" onClick={next}>NEXT QUERY →</button></div>}
+    <div className="lesson-note"><b>WHAT YOU LEARN:</b> RAG means <em>Retrieval-Augmented Generation</em>: retrieve trusted context first, then let the LLM generate a grounded answer.</div>
+  </div>;
+}
+
 function Chatbot() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
