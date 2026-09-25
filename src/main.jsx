@@ -910,7 +910,7 @@ function App() {
             <div className="education-item"><span>10TH • 2020–21</span><b>Shri Sainath Highschool</b><small>87%</small></div>
             <div className="education-item"><span>12TH • 2022–23</span><b>Creative Public School</b><small>55.17%</small></div>
             <div className="education-item"><span>BSc CS • 2025–26</span><b>Indira College of Commerce and Science</b><small>CGPA 9.72</small></div>
-            <div className="education-item"><span>MSc AIDS • 2027–28</span><b>Indira College of Commerce and Science</b><small>Expected graduation • Current CGPA not available</small></div>
+            <div className="education-item"><span>MSc AIDS • 2027–28</span><b>Indira College of Commerce and Science</b><small>Currently pursuing • 1st Semester • Expected graduation 2027–28</small></div>
           </div>
         </div></div>
       </section>
