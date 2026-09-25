@@ -27,9 +27,12 @@ const projects = [
 ];
 
 const skillGroups = [
-  { title: "Programming", items: ["Python", "JavaScript", "C", "HTML", "CSS", "SQL"] },
-  { title: "AI & Data", items: ["AI / ML", "LangChain", "RAG", "Data Analytics", "Statistics", "Pandas"] },
-  { title: "Development", items: ["React", "PostgreSQL", "Three.js", "APIs", "Git", "GitHub"] }
+  { title: "Programming", items: ["Python", "JavaScript", "C", "C++", "Java", "HTML", "CSS", "SQL"] },
+  { title: "AI & Data", items: ["Machine Learning", "Deep Learning", "NLP", "Generative AI", "LLMs", "RAG", "Pandas", "Statistics"] },
+  { title: "Frameworks & Web", items: ["React", "Node.js", "Flask / FastAPI", "LangChain", "Three.js", "Vite", "APIs"] },
+  { title: "Databases", items: ["PostgreSQL", "MySQL", "MongoDB", "DBMS", "RDBMS"] },
+  { title: "Cloud & Deploy", items: ["AWS", "Vercel", "GitHub Pages", "Deployment"] },
+  { title: "Tools & Systems", items: ["Git", "GitHub", "VS Code", "Linux", "Docker", "Jupyter", "Google Colab"] }
 ];
 
 function InteractiveField({ dark }) {
@@ -891,7 +894,7 @@ function App() {
 
       <section className="section language-section" id="skills">
         <div className="section-label">05 — TECHNICAL STACK</div>
-        <div className="language-layout"><div><h2>Tools I <em>build with.</em></h2><p>My current toolkit spans programming, AI and data work, databases, and modern web development.</p></div><div className="language-bars">{[["Python","AI • Data Science • Automation","PRIMARY"],["JavaScript","React • Web • Interactive UI","CORE"],["SQL","Databases • Analytics","CORE"],["C","Programming fundamentals","LEARNING"]].map(x=><div className="language-bar" key={x[0]}><div><b>{x[0]}</b><span>{x[1]}</span><i>{x[2]}</i></div><u><span style={{width:x[2]==="PRIMARY"?"92%":x[2]==="CORE"?"78%":"60%"}}/></u></div>)}</div></div>
+        <div className="language-layout"><div><h2>Tools I <em>build with.</em></h2><p>My current toolkit spans programming, AI, data, databases, cloud deployment and modern web development.</p></div><div className="language-bars">{[["Python","AI • Data Science • Automation","PRIMARY"],["JavaScript","React • Web • Interactive UI","CORE"],["SQL","Databases • Analytics","CORE"],["LangChain","RAG • LLM applications","CORE"],["PostgreSQL","Relational data • Projects","CORE"],["Git / GitHub","Version control • Collaboration","CORE"]].map(x=><div className="language-bar" key={x[0]}><div><b>{x[0]}</b><span>{x[1]}</span><i>{x[2]}</i></div><u><span style={{width:x[2]==="PRIMARY"?"92%":"78%"}}/></u></div>)}</div></div>
       </section>
 
       <section className="section learning">
