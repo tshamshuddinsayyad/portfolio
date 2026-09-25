@@ -904,7 +904,15 @@ function App() {
 
       <section className="section education">
         <div className="section-label">07 — EDUCATION</div>
-        <div className="intro-grid"><h2>Academic <em>foundation.</em></h2><div><p>I’m currently pursuing an <b>MSc in Artificial Intelligence & Data Science (MSc AIDS)</b> at <b>Indira University, Pune</b>.</p><div className="mini-stats"><div><b>MSc AIDS</b><span>Current degree</span></div><div><b>INDIRA UNIVERSITY</b><span>Pune, Maharashtra</span></div><div><b>FOCUS</b><span>AI • Data • Development</span></div></div></div></div>
+        <div className="intro-grid"><h2>Academic <em>foundation.</em></h2><div>
+          <p>My academic journey has progressed from computer science fundamentals into Artificial Intelligence & Data Science, with a focus on building practical technology projects.</p>
+          <div className="education-timeline">
+            <div className="education-item"><span>10TH • 2020–21</span><b>Shri Sainath Highschool</b><small>87%</small></div>
+            <div className="education-item"><span>12TH • 2022–23</span><b>Creative Public School</b><small>55.17%</small></div>
+            <div className="education-item"><span>BSc CS • 2025–26</span><b>Indira College of Commerce and Science</b><small>CGPA 9.72</small></div>
+            <div className="education-item"><span>MSc AIDS • 2027–28</span><b>Indira College of Commerce and Science</b><small>Expected graduation • Current CGPA not available</small></div>
+          </div>
+        </div></div>
       </section>
 
       <section className="section contact" id="contact">
