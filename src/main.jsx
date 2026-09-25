@@ -10,12 +10,12 @@ import "./styles.css";
 
 const profile = {
   name: "Tayyab Sayyad",
-  role: "AI / ML • Full Stack Developer",
-  tagline: "I build intelligent digital systems that turn ideas into useful experiences.",
+  role: "MSc AI & Data Science • AI Application Builder",
+  tagline: "Building intelligent applications at the intersection of AI, data, and modern technology.",
   github: "https://github.com/tshamshuddinsayyad",
   linkedin: "https://www.linkedin.com/",
-  whatsapp: "https://wa.me/919999999999",
-  email: "your-email@example.com"
+  whatsapp: "https://wa.me/918007766305",
+  email: "tayyabsayyad2005@gmail.com"
 };
 
 const projects = [
@@ -819,7 +819,7 @@ function App() {
         <div className="hero-copy">
           <div className="eyebrow"><span className="status-dot"/> ARTIFICIAL INTELLIGENCE / DATA SCIENCE</div>
           <h1>I turn <em>data</em><br/>into intelligence.</h1>
-          <p>{profile.tagline} Explore my work, interact with my AI assistant, and see how I turn ideas into working products.</p>
+          <p>{profile.tagline} I’m Tayyab Sayyad, an MSc Artificial Intelligence & Data Science student at Indira University, Pune, focused on Generative AI, Machine Learning, Data Science and full-stack development.</p>
           <div className="hero-actions"><a className="primary" href="#work">Explore my work <ArrowUpRight size={17}/></a><a className="secondary" href="#contact">Let's connect <MessageCircle size={17}/></a></div>
           <div className="scroll-hint"><MousePointer2 size={14}/> Explore the model, data and systems I build</div>
         </div>
@@ -829,8 +829,8 @@ function App() {
       <section className="section intro">
         <div className="section-label">01 — UNDERSTAND</div>
         <div className="intro-grid">
-          <h2>Ideas are easy.<br/><em>Building them is the craft.</em></h2>
-          <div><p>I’m a developer focused on practical AI, data and full-stack systems. I like turning complex ideas into interfaces people can actually use.</p><div className="mini-stats"><div><b>AI / ML</b><span>Intelligent systems</span></div><div><b>DATA</b><span>Analytics & statistics</span></div><div><b>WEB</b><span>Modern products</span></div></div></div>
+          <h2>Building ideas into<br/><em>intelligent systems.</em></h2>
+          <div><p>I’m Tayyab Shamshuddin Sayyad, an MSc Artificial Intelligence & Data Science student at Indira University, Pune. I’m interested in Generative AI, Machine Learning, Data Science and full-stack development, with a focus on learning by building practical applications.</p><div className="mini-stats"><div><b>AI / ML</b><span>Intelligent systems</span></div><div><b>DATA</b><span>Analytics & statistics</span></div><div><b>WEB</b><span>Modern applications</span></div></div></div>
         </div>
       </section>
 
