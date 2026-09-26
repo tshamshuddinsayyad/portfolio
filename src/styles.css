@@ -2148,3 +2148,28 @@ main [class*="timeline-line"]{
 .achievement-card:hover:after{
   opacity:1!important;
 }
+
+/* NAME HIGHLIGHT — subtle first-theme live marker */
+.name-highlight{position:relative;display:inline-flex;align-items:center;gap:7px;color:var(--text);font-weight:800;white-space:nowrap}
+.name-highlight i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 rgba(97,231,255,.65),0 0 13px rgba(97,231,255,.75);animation:namePulse 1.5s ease-out infinite}
+@keyframes namePulse{0%{box-shadow:0 0 0 0 rgba(97,231,255,.65),0 0 10px rgba(97,231,255,.7)}70%{box-shadow:0 0 0 8px rgba(97,231,255,0),0 0 18px rgba(97,231,255,.45)}100%{box-shadow:0 0 0 0 rgba(97,231,255,0),0 0 10px rgba(97,231,255,.7)}}
+[data-theme="light"] .name-highlight i{background:#7654d6;box-shadow:0 0 0 0 rgba(118,84,214,.5),0 0 13px rgba(118,84,214,.55)}
+/* UNIVERSITY CHATBOT — mouse-following edge reflection */
+.flagship-panel,.flagship-features>div{position:relative;overflow:hidden;--glow-x:50%;--glow-y:50%;transition:transform .28s ease,border-color .28s ease,box-shadow .28s ease}
+.flagship-panel:after,.flagship-features>div:after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:
+radial-gradient(85px circle at var(--glow-x) 0%,rgba(97,231,255,.95),transparent 72%),
+radial-gradient(85px circle at 100% var(--glow-y),rgba(139,124,255,.82),transparent 72%),
+radial-gradient(85px circle at var(--glow-x) 100%,rgba(97,231,255,.72),transparent 72%),
+radial-gradient(85px circle at 0% var(--glow-y),rgba(139,124,255,.62),transparent 72%);
+-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .2s ease}
+.flagship-panel:hover:after,.flagship-features>div:hover:after{opacity:1}
+[data-theme="light"] .flagship-panel:after,[data-theme="light"] .flagship-features>div:after{background:
+radial-gradient(85px circle at var(--glow-x) 0%,rgba(118,84,214,.72),transparent 72%),
+radial-gradient(85px circle at 100% var(--glow-y),rgba(161,110,232,.65),transparent 72%),
+radial-gradient(85px circle at var(--glow-x) 100%,rgba(118,84,214,.58),transparent 72%),
+radial-gradient(85px circle at 0% var(--glow-y),rgba(161,110,232,.52),transparent 72%)}
+/* Remove the education timeline rail/nodes completely */
+.education-timeline{padding-left:0!important}
+.education-node{display:none!important}
+@media(max-width:700px){.education-timeline{padding-left:0!important}}
+@media(prefers-reduced-motion:reduce){.name-highlight i{animation:none}}
