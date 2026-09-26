@@ -1010,7 +1010,7 @@ body{
 /* The transition below the hero should be clean: no vertical route/divider and no oversized dead space. */
 main > .hero + .section.intro{
   margin-top:0!important;
-  padding-top:52px!important;
+  padding-top:18px!important;
   border-top:0!important;
 }
 main > .hero + .section.intro:before,
@@ -1038,7 +1038,7 @@ main > .hero + .section.intro [class*="vertical-line"]{
   box-shadow:none!important;
 }
 @media(max-width:760px){
-  main > .hero + .section.intro{padding-top:40px!important}
+  main > .hero + .section.intro{padding-top:14px!important}
 }
 
 
@@ -1769,9 +1769,6 @@ main > .hero + .section.intro [class*="vertical-line"]{
 
 /* EDUCATION — interactive timeline, preserving the first theme */
 .education-timeline{position:relative;display:grid;gap:11px;margin-top:24px;padding-left:28px}
-.education-line{position:absolute;left:8px;top:8px;bottom:8px;width:1px;background:linear-gradient(180deg,transparent,var(--accent2) 12%,var(--accent) 72%,transparent);opacity:.34;overflow:hidden}
-.education-line i{position:absolute;left:0;top:-25%;width:100%;height:28%;background:linear-gradient(180deg,transparent,var(--accent),transparent);box-shadow:0 0 12px var(--accent);animation:educationFlow 3.4s ease-in-out infinite}
-@keyframes educationFlow{0%{transform:translateY(-20%)}100%{transform:translateY(420%)}}
 .education-item{position:relative;padding:18px 19px;border:1px solid var(--line);border-radius:14px;background:var(--panel);display:flex;flex-direction:column;gap:7px;transition:transform .28s ease,border-color .28s ease,box-shadow .28s ease,background .28s ease}
 .education-item>span:not(.education-node){font:8px "DM Mono";letter-spacing:1px;color:var(--accent)}
 .education-item b{font-size:13px;line-height:1.35}
@@ -1805,13 +1802,12 @@ main > .hero + .section.intro [class*="vertical-line"]{
 
 @media(max-width:700px){
   .education-timeline{padding-left:25px}
-  .education-line{left:7px}
   .education-node{left:-25px}
   .certification-grid{grid-template-columns:1fr}
   .learning-note{align-items:flex-start;flex-direction:column;gap:7px}
 }
 @media(prefers-reduced-motion:reduce){
-  .education-line i,.typing-cursor{animation:none}
+  .typing-cursor{animation:none}
 }
 
 /* =========================================================
