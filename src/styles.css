@@ -1916,6 +1916,37 @@ main > .hero + .section.intro [class*="vertical-line"]{
 [data-theme="light"] .contact-message-wrap{background:rgba(255,255,255,.46)}[data-theme="light"] .contact-form input,[data-theme="light"] .contact-form textarea{background:rgba(255,255,255,.72);border-color:rgba(82,61,116,.14)}[data-theme="light"] .contact-form input:focus,[data-theme="light"] .contact-form textarea:focus{border-color:#7654d6;box-shadow:0 0 0 3px rgba(118,84,214,.10)}[data-theme="light"] .contact-form-bottom button{background:#7654d6;border-color:#7654d6;color:#fff}
 @media(max-width:700px){.contact-message-wrap{padding:18px;margin-top:26px}.contact-form{grid-template-columns:1fr}.contact-form textarea,.contact-form-bottom,.contact-form-status{grid-column:1}.contact-form-head{align-items:flex-start;flex-direction:column;gap:6px}.contact-form-bottom{align-items:stretch;flex-direction:column}.contact-form-bottom button{width:100%}}
 
+/* SECTION 09 — required phone fields */
+.contact-intro{
+  max-width:760px;
+  margin-left:auto !important;
+  margin-right:auto !important;
+  text-align:center !important;
+}
+.contact-phone-fields{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:minmax(100px,150px) 1fr;
+  gap:10px;
+}
+.contact-phone-fields input{
+  min-width:0;
+}
+.contact-phone-fields .country-code{
+  text-align:center;
+}
+@media(max-width:700px){
+  .contact-phone-fields{
+    grid-column:1;
+    grid-template-columns:110px 1fr;
+  }
+}
+@media(max-width:420px){
+  .contact-phone-fields{
+    grid-template-columns:1fr;
+  }
+}
+
 /* SECTION 09 — mobile contact number */
 .contact-phone{
   width:fit-content;
