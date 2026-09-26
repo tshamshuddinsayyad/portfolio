@@ -908,7 +908,7 @@ function App() {
           <div className="eyebrow"><span className="status-dot"/> ARTIFICIAL INTELLIGENCE / DATA SCIENCE</div>
           <h1>I turn <em>data</em><br/>into intelligence.</h1>
           <p>{profile.tagline} I’m <span className="name-highlight"><i/>Tayyab Sayyad</span>, an MSc Artificial Intelligence & Data Science student at Indira University, Pune, focused on <InterestTyping/>.</p>
-          <div className="hero-actions"><a className="primary" href="#work">Explore my work <ArrowUpRight size={17}/></a><a className="secondary" href="#contact">Let's connect <MessageCircle size={17}/></a></div>
+          <div className="hero-actions"><a className="primary" href="#work">Explore my work <ArrowUpRight size={17}/></a><a className="secondary" href="#contact">Let's connect <MessageCircle size={17}/></a><a className="secondary resume-download" href="/resume.pdf" download="Tayyab_Sayyad_Resume.pdf"><FileText size={16}/> Download Resume</a></div>
           <div className="scroll-hint"><MousePointer2 size={14}/> Explore the model, data and systems I build</div>
         </div>
         <AILab/>
