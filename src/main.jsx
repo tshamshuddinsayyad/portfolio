@@ -892,7 +892,7 @@ function App() {
     <header className="nav">
       <a className="brand" href="#"><span className="brand-mark">T</span><span>TAYYAB SAYYAD</span></a>
       <div className="navlinks"><a href="#about">About</a><a href="#work">Work</a><a href="#flagship">AI Chatbot</a><a href="#skills">Skills</a><a href="#education">Education</a><a href="#certifications">Certifications</a><a href="#achievements">Achievements</a><a href="#contact">Contact</a></div>
-      <div className="nav-right"><button className="theme-toggle" onClick={() => setDark(v => !v)}>{dark ? <Sun size={15}/> : <Moon size={15}/>}<span>{dark ? "Light" : "Dark"}</span></button><a className="nav-cta" href={profile.github} target="_blank" rel="noreferrer"><Github size={15}/> GitHub</a></div>
+      <div className="nav-right"><button className="theme-toggle" onClick={() => setDark(v => !v)}>{dark ? <Sun size={15}/> : <Moon size={15}/>}<span>{dark ? "Light" : "Dark"}</span></button><a className="nav-resume" href="/resume.pdf" download="Tayyab_Sayyad_Resume.pdf"><FileText size={14}/> Resume</a><a className="nav-cta" href={profile.github} target="_blank" rel="noreferrer"><Github size={15}/> GitHub</a></div>
     </header>
 
     <div className="skills-marquee" aria-label="Tayyab's skills">
@@ -1003,7 +1003,7 @@ function App() {
         <div className="section-heading"><h2>Completed <em>credentials.</em></h2><span>Verified learning milestones</span></div>
         <div className="certification-grid">
           <article className="certification-card"><span className="cert-index">01</span><span className="cert-platform">UDEMY • COMPLETED</span><h3>Mastering Data Structures & Algorithms using C and C++</h3><p>Completed certification covering data structures and algorithmic problem-solving with C and C++.</p><div className="cert-badge">COMPLETED ✓</div></article>
-          <article className="certification-card"><span className="cert-index">02</span><span className="cert-platform">REDMAGIC / INFOSYS • COMPLETED</span><h3>RedMagic / Infosys Certification Course</h3><p>Completed certification course as part of my technical learning journey.</p><div className="cert-badge">COMPLETED ✓</div></article>
+          <article className="certification-card"><span className="cert-index">02</span><span className="cert-platform">MAGIC BUS INDIA FOUNDATION • COMPLETED</span><h3>AI and Life and Employability Skills</h3><p>Completed certification from Magic Bus India Foundation covering AI, life and employability skills.</p><div className="cert-badge">COMPLETED ✓</div></article>
         </div>
         <div className="learning-note"><span>CURRENTLY LEARNING</span><b>Ongoing MSc AI & Data Science + hands-on Generative AI, RAG, Machine Learning and full-stack development.</b></div>
       </section>
