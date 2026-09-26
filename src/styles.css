@@ -2273,3 +2273,14 @@ radial-gradient(85px circle at 0% var(--glow-y),rgba(161,110,232,.52),transparen
 .tree-stage{
   background-image:none!important;
 }
+
+/* FINAL TIMELINE CLEANUP — no vertical connector line anywhere in education */
+.education-timeline::before,.education-timeline::after{content:none!important;display:none!important}
+.education-item::marker{content:none!important}
+.education-item{border-left:1px solid var(--line)!important}
+/* Cursor light + reflected edge remain on education and patent cards */
+.achievement-card,.education-item{--glow-x:50%;--glow-y:50%;isolation:isolate}
+.achievement-card:before,.education-item:before{content:"";position:absolute;inset:-30%;pointer-events:none;background:radial-gradient(circle at var(--glow-x) var(--glow-y),rgba(201,167,255,.16),transparent 30%);opacity:0;transition:opacity .2s ease}
+.achievement-card:after,.education-item:after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:radial-gradient(110px circle at var(--glow-x) 0%,rgba(221,195,255,.95),transparent 72%),radial-gradient(110px circle at 100% var(--glow-y),rgba(135,92,255,.86),transparent 72%),radial-gradient(110px circle at var(--glow-x) 100%,rgba(201,167,255,.74),transparent 72%),radial-gradient(110px circle at 0% var(--glow-y),rgba(165,125,255,.62),transparent 72%);opacity:.72;mix-blend-mode:screen;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.achievement-card:hover:before,.education-item:hover:before{opacity:1}
+.achievement-card:hover,.education-item:hover{transform:translateY(-4px)!important}
