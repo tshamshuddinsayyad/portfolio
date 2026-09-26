@@ -825,7 +825,7 @@ function InterestTyping() {
 }
 
 function ContactForm() {
-  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "", website: "" });
+  const [form, setForm] = useState({ name: "", email: "", countryCode: "+91", mobile: "", subject: "", message: "", website: "" });
   const [status, setStatus] = useState({ type: "", text: "" });
   const [sending, setSending] = useState(false);
 
@@ -847,7 +847,7 @@ function ContactForm() {
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data?.message || "Could not send the message.");
-      setForm({ name: "", email: "", subject: "", message: "", website: "" });
+      setForm({ name: "", email: "", countryCode: "+91", mobile: "", subject: "", message: "", website: "" });
       setStatus({ type: "success", text: "Message sent. I'll get back to you soon." });
     } catch (error) {
       setStatus({ type: "error", text: error.message || "Could not send the message. Please try again." });
@@ -865,11 +865,15 @@ function ContactForm() {
       <form className="contact-form" onSubmit={submit}>
         <input aria-label="Your name" value={form.name} onChange={e => updateField("name", e.target.value)} placeholder="Your name" maxLength={80} required />
         <input aria-label="Your email" type="email" value={form.email} onChange={e => updateField("email", e.target.value)} placeholder="Your email" maxLength={160} required />
+        <div className="contact-phone-fields">
+          <input aria-label="Country code" className="country-code" type="text" value={form.countryCode} onChange={e => updateField("countryCode", e.target.value.replace(/[^+\d]/g, "").replace(/(?!^)\+/g, "").slice(0, 5))} placeholder="+91" maxLength={5} required />
+          <input aria-label="Mobile number" type="tel" inputMode="numeric" autoComplete="tel-national" value={form.mobile} onChange={e => updateField("mobile", e.target.value.replace(/\D/g, "").slice(0, 15))} placeholder="Mobile number" maxLength={15} pattern="[0-9]{7,15}" required />
+        </div>
         <input aria-label="Subject" value={form.subject} onChange={e => updateField("subject", e.target.value)} placeholder="Subject" maxLength={120} required />
         <textarea aria-label="Your message" value={form.message} onChange={e => updateField("message", e.target.value)} placeholder="Write your message..." maxLength={3000} rows={6} required />
         <input className="contact-honeypot" aria-hidden="true" tabIndex="-1" autoComplete="off" value={form.website} onChange={e => updateField("website", e.target.value)} />
         <div className="contact-form-bottom">
-          <small>I'll receive your message on Telegram and can contact you directly.</small>
+          <small>Your country code and mobile number are required so I can contact you directly.</small>
           <button type="submit" disabled={sending}><Send size={15}/> {sending ? "SENDING..." : "SEND MESSAGE"}</button>
         </div>
         {status.text && <div className={"contact-form-status " + status.type} role="status">{status.text}</div>}
@@ -1011,7 +1015,7 @@ function App() {
         <div className="contact-box">
           <div className="section-label">09 — CONNECT</div>
           <h2>Have an idea?<br/><em>Let's build it.</em></h2>
-          <p>AI, data, web development or an interesting experiment — I'm always open to meaningful projects and conversations.</p>
+          <p className="contact-intro">AI, data, web development or an interesting experiment — I'm always open to meaningful projects and conversations.</p>
           <div className="contact-actions"><a className="primary" href={profile.whatsapp} target="_blank" rel="noreferrer"><MessageCircle size={17}/> WhatsApp</a><a className="secondary" href={"mailto:"+profile.email}><Mail size={17}/> Email</a><a className="secondary" href={profile.linkedin} target="_blank" rel="noreferrer"><Linkedin size={17}/> LinkedIn</a></div><div className="contact-phone"><Phone size={15}/><span>Mobile</span><a href={"tel:"+profile.phone.replace(/\s/g,"")}>{profile.phone}</a></div>
           <ContactForm />
         </div>
