@@ -472,9 +472,8 @@ body{
   background-image:
     radial-gradient(circle at 15% 20%,rgba(135,92,255,.10) 0 1px,transparent 1.5px),
     radial-gradient(circle at 85% 75%,rgba(201,167,255,.08) 0 1px,transparent 1.5px),
-    linear-gradient(rgba(201,167,255,.035) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(201,167,255,.035) 1px,transparent 1px)!important;
-  background-size:180px 180px,240px 240px,72px 72px,72px 72px!important;
+    linear-gradient(rgba(201,167,255,.035) 1px,transparent 1px)!important;
+  background-size:180px 180px,240px 240px,72px 72px!important;
   background-position:0 0,80px 120px,0 0,0 0!important;
 }
 
