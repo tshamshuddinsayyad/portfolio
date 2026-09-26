@@ -2173,3 +2173,14 @@ radial-gradient(85px circle at 0% var(--glow-y),rgba(161,110,232,.52),transparen
 .education-node{display:none!important}
 @media(max-width:700px){.education-timeline{padding-left:0!important}}
 @media(prefers-reduced-motion:reduce){.name-highlight i{animation:none}}
+
+/* FINAL VISIBILITY TUNING — name indicator + university chatbot light */
+.name-highlight{position:relative!important;display:inline-flex!important;align-items:center!important;gap:10px!important;color:var(--accent)!important;font-weight:900!important;text-shadow:0 0 18px rgba(201,167,255,.22)}
+.name-highlight i{flex:0 0 10px!important;width:10px!important;height:10px!important;border-radius:50%!important;background:#c9a7ff!important;border:1px solid rgba(255,255,255,.55)!important;box-shadow:0 0 0 0 rgba(201,167,255,.75),0 0 12px 3px rgba(201,167,255,.85)!important;animation:namePulseStrong 1.15s ease-out infinite!important}
+@keyframes namePulseStrong{0%{transform:scale(.72);opacity:.75;box-shadow:0 0 0 0 rgba(201,167,255,.8),0 0 10px 2px rgba(201,167,255,.8)}55%{transform:scale(1.18);opacity:1;box-shadow:0 0 0 7px rgba(201,167,255,.12),0 0 20px 5px rgba(201,167,255,.9)}100%{transform:scale(.72);opacity:.78;box-shadow:0 0 0 14px rgba(201,167,255,0),0 0 10px 2px rgba(201,167,255,.35)}}
+.flagship-panel,.flagship-features>div{position:relative!important;overflow:hidden!important;--glow-x:50%;--glow-y:50%;transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease}
+.flagship-panel:before,.flagship-features>div:before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;opacity:0;transition:opacity .2s ease;background:radial-gradient(190px circle at var(--glow-x) var(--glow-y),rgba(201,167,255,.16),transparent 68%)}
+.flagship-panel:after,.flagship-features>div:after{content:"";position:absolute;inset:-1px;pointer-events:none;z-index:2;opacity:0;transition:opacity .2s ease;background:radial-gradient(95px circle at var(--glow-x) 0%,rgba(221,195,255,.95),transparent 72%),radial-gradient(95px circle at 100% var(--glow-y),rgba(135,92,255,.88),transparent 72%),radial-gradient(95px circle at var(--glow-x) 100%,rgba(201,167,255,.76),transparent 72%),radial-gradient(95px circle at 0% var(--glow-y),rgba(165,125,255,.65),transparent 72%);mix-blend-mode:screen}
+.flagship-panel:hover:before,.flagship-features>div:hover:before,.flagship-panel:hover:after,.flagship-features>div:hover:after{opacity:1}
+.flagship-panel:hover,.flagship-features>div:hover{border-color:rgba(201,167,255,.48)!important;box-shadow:0 18px 55px rgba(35,20,75,.22),0 0 34px rgba(135,92,255,.16),inset 0 0 28px rgba(201,167,255,.05)!important}
+.flagship-panel>* ,.flagship-features>div>*{position:relative;z-index:3}
