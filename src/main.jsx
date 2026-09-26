@@ -4,7 +4,7 @@ import * as THREE from "three";
 import {
   ArrowUpRight, Bot, Github, Linkedin, Mail, MessageCircle, Phone, Send, Mic as MicIcon,
   Sparkles, Sun, Moon, BrainCircuit, Database, Atom, Code2,
-  MousePointer2, ExternalLink, FileText, Upload, Trash2, RotateCcw, Square
+  MousePointer2, ExternalLink, FileText, Upload, Trash2, RotateCcw, Square, Award
 } from "lucide-react";
 import "./styles.css";
 
@@ -894,7 +894,7 @@ function App() {
     <InteractiveField dark={dark}/>
     <header className="nav">
       <a className="brand" href="#"><span className="brand-mark">T</span><span>TAYYAB SAYYAD</span></a>
-      <div className="navlinks"><a href="#about">About</a><a href="#work">Work</a><a href="#flagship">AI Chatbot</a><a href="#skills">Skills</a><a href="#education">Education</a><a href="#certifications">Certifications</a><a href="#contact">Contact</a></div>
+      <div className="navlinks"><a href="#about">About</a><a href="#work">Work</a><a href="#flagship">AI Chatbot</a><a href="#skills">Skills</a><a href="#education">Education</a><a href="#certifications">Certifications</a><a href="#achievements">Achievements</a><a href="#contact">Contact</a></div>
       <div className="nav-right"><button className="theme-toggle" onClick={() => setDark(v => !v)}>{dark ? <Sun size={15}/> : <Moon size={15}/>}<span>{dark ? "Light" : "Dark"}</span></button><a className="nav-cta" href={profile.github} target="_blank" rel="noreferrer"><Github size={15}/> GitHub</a></div>
     </header>
 
@@ -1011,9 +1011,28 @@ function App() {
         <div className="learning-note"><span>CURRENTLY LEARNING</span><b>Ongoing MSc AI & Data Science + hands-on Generative AI, RAG, Machine Learning and full-stack development.</b></div>
       </section>
 
+      <section className="section achievements" id="achievements">
+        <div className="section-label">09 — ACHIEVEMENTS</div>
+        <div className="section-heading"><h2>Innovation & <em>patent.</em></h2><span>Patent filing</span></div>
+        <div className="achievement-grid">
+          <article className="achievement-card">
+            <div className="achievement-icon"><Award size={24}/></div>
+            <span className="achievement-type">PATENT • APPLICANT</span>
+            <h3>NFC Card and Wireless Technology for Wireless Payments</h3>
+            <p>An invention focused on NFC card and wireless technology for wireless payment applications.</p>
+            <div className="achievement-details">
+              <div><span>ROLE</span><b>Applicant</b></div>
+              <div><span>FILED AT</span><b>Indian Patent Office</b></div>
+              <div><span>ALSO FILED AT</span><b>United States Patent and Trademark Office</b></div>
+            </div>
+            <div className="achievement-badge">PATENT FILED</div>
+          </article>
+        </div>
+      </section>
+
       <section className="section contact" id="contact">
         <div className="contact-box">
-          <div className="section-label">09 — CONNECT</div>
+          <div className="section-label">10 — CONNECT</div>
           <h2>Have an idea?<br/><em>Let's build it.</em></h2>
           <p className="contact-intro">AI, data, web development or an interesting experiment — I'm always open to meaningful projects and conversations.</p>
           <div className="contact-actions"><a className="primary" href={profile.whatsapp} target="_blank" rel="noreferrer"><MessageCircle size={17}/> WhatsApp</a><a className="secondary" href={"mailto:"+profile.email}><Mail size={17}/> Email</a><a className="secondary" href={profile.linkedin} target="_blank" rel="noreferrer"><Linkedin size={17}/> LinkedIn</a></div><div className="contact-phone"><Phone size={15}/><span>Mobile</span><a href={"tel:"+profile.phone.replace(/\s/g,"")}>{profile.phone}</a></div>
