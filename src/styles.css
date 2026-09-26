@@ -1780,7 +1780,14 @@ main > .hero + .section.intro [class*="vertical-line"]{
 [data-theme="light"] .education-item:hover{border-color:rgba(118,84,214,.28);box-shadow:0 15px 40px rgba(66,48,100,.08)}
 
 
-/* CERTIFICATIONS — completed only; current learning stays separate */
+/* EDUCATION — same cursor light + edge reflection as patent achievement */
+.education-item{--glow-x:50%;--glow-y:50%;overflow:hidden}
+.education-item:before{content:"";position:absolute;inset:-35%;pointer-events:none;background:radial-gradient(circle at var(--glow-x,50%) var(--glow-y,50%),rgba(201,167,255,.13),transparent 28%);opacity:0;transition:opacity .25s ease}
+.education-item:after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;padding:1px;background:radial-gradient(90px circle at var(--glow-x,50%) 0%,rgba(221,195,255,.95),transparent 72%),radial-gradient(90px circle at 100% var(--glow-y,50%),rgba(135,92,255,.86),transparent 72%),radial-gradient(90px circle at var(--glow-x,50%) 100%,rgba(201,167,255,.74),transparent 72%),radial-gradient(90px circle at 0% var(--glow-y,50%),rgba(165,125,255,.62),transparent 72%);opacity:.72;mix-blend-mode:screen;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.education-item:hover:before{opacity:1}
+.education-item:hover{transform:translateY(-4px) translateX(0);border-color:rgba(201,167,255,.38);box-shadow:0 18px 48px rgba(135,92,255,.12)}
+.education-item>*{position:relative;z-index:1}
+\n/* CERTIFICATIONS — completed only; current learning stays separate */
 .certification-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:35px}
 .certification-card{position:relative;min-height:240px;padding:25px;border:1px solid var(--line);border-radius:18px;background:var(--panel);overflow:hidden;transition:transform .28s ease,border-color .28s ease,box-shadow .28s ease}
 .certification-card:hover{transform:translateY(-5px);border-color:rgba(97,231,255,.30);box-shadow:var(--shadow)}
@@ -2190,3 +2197,7 @@ radial-gradient(85px circle at 0% var(--glow-y),rgba(161,110,232,.52),transparen
 .education-item{--glow-x:50%;--glow-y:50%;overflow:hidden}
 .education-item::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:radial-gradient(70px circle at var(--glow-x,50%) 0%,rgba(97,231,255,.95),transparent 72%),radial-gradient(70px circle at 100% var(--glow-y,50%),rgba(139,124,255,.85),transparent 72%),radial-gradient(70px circle at var(--glow-x,50%) 100%,rgba(97,231,255,.75),transparent 72%),radial-gradient(70px circle at 0% var(--glow-y,50%),rgba(139,124,255,.65),transparent 72%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .2s ease}
 .education-item:hover::after{opacity:1}
+
+/* HARD REMOVE VERTICAL PAGE LINES */
+.education-timeline:before,.education-timeline:after,.education:before,.education:after,.achievements:before,.achievements:after{content:none!important;display:none!important;background:none!important;border:0!important;width:0!important;height:0!important}
+.education-item:where(:not(:first-child)){border-left-color:var(--line)!important}
