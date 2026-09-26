@@ -11,15 +11,19 @@ export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ message: "Method not allowed." });
   const body = req.body || {};
   if (body.website) return res.status(200).json({ ok: true, message: "Message received." });
-  const name = clean(body.name, 80), email = clean(body.email, 160), subject = clean(body.subject, 120), message = clean(body.message, 3000);
-  if (!name || !email || !subject || !message) return res.status(400).json({ message: "Please complete all fields." });
+  const name = clean(body.name, 80), email = clean(body.email, 160), countryCode = clean(body.countryCode, 5), mobile = String(body.mobile || "").replace(/\D/g, "").slice(0, 15), subject = clean(body.subject, 120), message = clean(body.message, 3000);
+  if (!name || !email || !countryCode || !mobile || !subject || !message) return res.status(400).json({ message: "Please complete all fields." });
   if (!validEmail(email)) return res.status(400).json({ message: "Please enter a valid email address." });
+  if (!/^\+\d{1,4}$/.test(countryCode)) return res.status(400).json({ message: "Please enter a valid country code, such as +91." });
+  if (!/^\d{7,15}$/.test(mobile)) return res.status(400).json({ message: "Please enter a valid mobile number using digits only." });
   const botToken = process.env.TELEGRAM_BOT_TOKEN, chatId = process.env.TELEGRAM_CHAT_ID;
   if (!botToken || !chatId) return res.status(503).json({ message: "The contact service is not configured yet." });
   const text = [
     "🔔 <b>NEW PORTFOLIO MESSAGE</b>","",
     "👤 <b>Name:</b> " + escapeHtml(name),
     "📧 <b>Email:</b> " + escapeHtml(email),
+    "🌍 <b>Country Code:</b> " + escapeHtml(countryCode),
+    "📱 <b>Mobile:</b> " + escapeHtml(mobile),
     "📌 <b>Subject:</b> " + escapeHtml(subject),"",
     "💬 <b>Message:</b>",escapeHtml(message),"",
     "🌐 <b>Source:</b> Tayyab Sayyad Portfolio"
