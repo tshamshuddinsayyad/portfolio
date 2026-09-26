@@ -151,8 +151,6 @@ footer{position:relative;z-index:5;max-width:1180px;margin:auto;padding:28px;col
 .model-stage{height:145px;position:relative;display:grid;place-items:center;transform-style:preserve-3d}
 .model-core{width:64px;height:64px;border:1px solid rgba(97,231,255,.5);background:linear-gradient(145deg,rgba(97,231,255,.18),rgba(139,124,255,.08));color:var(--accent);display:grid;place-items:center;transform:translate3d(calc(var(--mx) * 8px),calc(var(--my) * 6px),30px) rotateX(45deg) rotateZ(45deg);box-shadow:14px 18px 35px rgba(0,0,0,.22),inset 0 0 22px rgba(97,231,255,.08);transition:transform .16s ease-out}
 .model-core svg{transform:rotate(-45deg)}
-.core-line{position:absolute;width:1px;height:95px;background:linear-gradient(var(--accent),transparent);opacity:.22;transform-origin:bottom;animation:coreFloat 3.4s ease-in-out infinite}
-.line-a{transform:rotate(35deg)}.line-b{transform:rotate(155deg);animation-delay:.7s}.line-c{transform:rotate(275deg);animation-delay:1.4s}
 .model-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.model-metrics div{min-width:0}.model-metrics span{display:block;font:7px "DM Mono";color:var(--muted)}.model-metrics b{display:block;margin:5px 0;font:600 10px "DM Mono"}.model-metrics u{display:block;height:2px;background:var(--line);text-decoration:none}.model-metrics u i{display:block;height:100%;background:var(--accent)}
 .float-3d{position:absolute;z-index:7;width:76px;height:54px;border:1px solid rgba(97,231,255,.25);border-radius:10px;background:linear-gradient(145deg,rgba(14,28,36,.9),rgba(7,14,20,.66));backdrop-filter:blur(10px);box-shadow:10px 14px 28px rgba(0,0,0,.22),inset 0 0 18px rgba(97,231,255,.04);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-family:"DM Mono";transform-style:preserve-3d;transition:transform .18s ease-out;animation:floatIdle 4.5s ease-in-out infinite}
 [data-theme="light"] .float-3d{background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(232,243,245,.72))}
@@ -2080,4 +2078,44 @@ main [class*="timeline-line"]{
   border:0!important;
   background:none!important;
   box-shadow:none!important;
+}
+
+
+/* FINAL VERTICAL-LINE REMOVAL — first theme */
+.core-line,.line-a,.line-b,.line-c,
+.education-line,.education-line i,
+.section-flow-line,.section-flow-wrap,
+.vertical-line,.vertical-divider,.v-line,.timeline-line{
+  display:none!important;
+  visibility:hidden!important;
+  width:0!important;
+  height:0!important;
+  min-width:0!important;
+  min-height:0!important;
+  border:0!important;
+  background:none!important;
+  box-shadow:none!important;
+}
+
+/* Patent card — animated first-theme edge light */
+.achievement-card{
+  isolation:isolate;
+  animation:patentPulse 4s ease-in-out infinite;
+}
+.achievement-card:after{
+  transition:opacity .2s ease;
+}
+.achievement-card:hover{
+  animation:none;
+  transform:translateY(-5px);
+}
+.achievement-card .achievement-icon{
+  animation:patentIconFloat 3.2s ease-in-out infinite;
+}
+.achievement-card:hover .achievement-icon{
+  animation:none;
+}
+@keyframes patentIconFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-3px)}
 }
