@@ -221,9 +221,6 @@ function AILab() {
         <div className="model-head"><div><small>ACTIVE MODEL</small><b>INTELLIGENCE ENGINE</b></div><span>v2.6</span></div>
         <div className="model-stage">
           <div className="model-core"><BrainCircuit size={28}/></div>
-          <span className="core-line line-a" />
-          <span className="core-line line-b" />
-          <span className="core-line line-c" />
         </div>
         <div className="model-metrics">
           <div><span>ACCURACY</span><b>94.8%</b><u><i style={{width:"94.8%"}}/></u></div>
