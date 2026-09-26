@@ -2211,3 +2211,6 @@ radial-gradient(85px circle at 0% var(--glow-y),rgba(161,110,232,.52),transparen
 .education-item:hover,.achievement-card:hover{transform:translateY(-4px);border-color:rgba(201,167,255,.42);box-shadow:0 18px 48px rgba(135,92,255,.14);}
 .education-item>*,.achievement-card>*{position:relative;z-index:1;}
 [data-theme="light"] .education-item:after,[data-theme="light"] .achievement-card:after{background:radial-gradient(78px circle at var(--glow-x,50%) 0%,rgba(118,84,214,.82),transparent 72%),radial-gradient(78px circle at 100% var(--glow-y,50%),rgba(161,110,232,.72),transparent 72%),radial-gradient(78px circle at var(--glow-x,50%) 100%,rgba(118,84,214,.64),transparent 72%),radial-gradient(78px circle at 0% var(--glow-y,50%),rgba(161,110,232,.56),transparent 72%);}
+
+.resume-download{white-space:nowrap}
+@media(max-width:700px){.hero-actions .resume-download{width:100%}}
