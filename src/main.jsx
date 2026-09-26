@@ -879,9 +879,56 @@ function ContactForm() {
   );
 }
 
+function ResumeViewer({ onClose }) {
+  return (
+    <div className="resume-overlay" role="dialog" aria-modal="true" aria-label="Tayyab Sayyad Resume">
+      <div className="resume-viewer">
+        <div className="resume-viewer-head">
+          <div><FileText size={17}/><b>TAYYAB SAYYAD — RESUME</b></div>
+          <div className="resume-viewer-actions">
+            <button onClick={() => window.print()}><FileText size={14}/> Print / Save PDF</button>
+            <button onClick={onClose} aria-label="Close resume">✕</button>
+          </div>
+        </div>
+        <article className="resume-paper">
+          <header className="resume-header">
+            <h1>TAYYAB SHAMSHUDDIN SAYYAD</h1>
+            <p className="resume-role">AI &amp; Data Science Student | Generative AI • Machine Learning • Data Science • Full-Stack Development</p>
+            <p>Pune, Maharashtra, India • +91 80077 66305 • tayyabsayyad2005@gmail.com</p>
+            <p>linkedin.com/in/tayyab-sayyad-a04079309 • github.com/tshamshuddinsayyad</p>
+          </header>
+          <section><h2>PROFILE</h2><p>MSc Artificial Intelligence &amp; Data Science student focused on building practical intelligent applications. Interested in Generative AI, Machine Learning, RAG, LangChain, Data Science and modern full-stack development, with hands-on work across Python, React, SQL/PostgreSQL, Git/GitHub and Three.js.</p></section>
+          <section><h2>EDUCATION</h2>
+            <div className="resume-row"><b>MSc Artificial Intelligence &amp; Data Science</b><span>2026–28</span><p>Indira College of Commerce and Science, Pune<br/>Currently pursuing • 1st Semester</p></div>
+            <div className="resume-row"><b>BSc Computer Science</b><span>2025–26</span><p>Indira College of Commerce and Science<br/>CGPA: 9.72</p></div>
+            <p><b>12th:</b> Creative Public School — 2022–23 — 55.17% &nbsp; | &nbsp; <b>10th:</b> Shri Sainath Highschool — 2020–21 — 87%</p>
+          </section>
+          <section><h2>PROJECTS</h2>
+            <ul>
+              <li><b>University AI Chatbot</b> — Academic assistant concept using LangChain, document-based RAG, LLM integration and a web interface.</li>
+              <li><b>Tayyab AI Portfolio Assistant</b> — AI assistant integrated into the portfolio with coding, study, research and document-oriented modes.</li>
+              <li><b>AI / Data Science Learning Tools</b> — Interactive tools covering classification, threshold analysis, RAG concepts, clustering and model-oriented explanations.</li>
+            </ul>
+          </section>
+          <section><h2>SKILLS</h2><p><b>Languages:</b> Python, C, JavaScript, SQL<br/><b>AI/ML:</b> Generative AI, Machine Learning, RAG, LangChain, Data Science<br/><b>Web:</b> React, HTML, CSS, Three.js<br/><b>Database:</b> PostgreSQL, DBMS/RDBMS<br/><b>Tools:</b> Git, GitHub, VS Code, Linux/Ubuntu</p></section>
+          <section><h2>CERTIFICATIONS</h2>
+            <ul>
+              <li><b>Mastering Data Structures &amp; Algorithms using C and C++</b> — Udemy — Completed</li>
+              <li><b>AI and Life and Employability Skills</b> — Magic Bus India Foundation — Completed</li>
+            </ul>
+          </section>
+          <section><h2>ACHIEVEMENT / PATENT</h2><p><b>NFC Card and Wireless Technology for Wireless Payments</b> — Applicant. Patent filed at the Indian Patent Office and the United States Patent and Trademark Office.</p></section>
+          <section><h2>INTERESTS</h2><p>Generative AI • AI Agents • Machine Learning • RAG • Data Science • Full-Stack Development • Intelligent Applications</p></section>
+        </article>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   usePointerGlow();
   const [dark, setDark] = useState(() => localStorage.getItem("theme") !== "light");
+  const [showResume, setShowResume] = useState(false);
   useEffect(() => {
     document.documentElement.dataset.theme = dark ? "dark" : "light";
     localStorage.setItem("theme", dark ? "dark" : "light");
@@ -892,7 +939,7 @@ function App() {
     <header className="nav">
       <a className="brand" href="#"><span className="brand-mark">T</span><span>TAYYAB SAYYAD</span></a>
       <div className="navlinks"><a href="#about">About</a><a href="#work">Work</a><a href="#flagship">AI Chatbot</a><a href="#skills">Skills</a><a href="#education">Education</a><a href="#certifications">Certifications</a><a href="#achievements">Achievements</a><a href="#contact">Contact</a></div>
-      <div className="nav-right"><button className="theme-toggle" onClick={() => setDark(v => !v)}>{dark ? <Sun size={15}/> : <Moon size={15}/>}<span>{dark ? "Light" : "Dark"}</span></button><a className="nav-resume" href="/resume.pdf" download="Tayyab_Sayyad_Resume.pdf"><FileText size={14}/> Resume</a><a className="nav-cta" href={profile.github} target="_blank" rel="noreferrer"><Github size={15}/> GitHub</a></div>
+      <div className="nav-right"><button className="theme-toggle" onClick={() => setDark(v => !v)}>{dark ? <Sun size={15}/> : <Moon size={15}/>}<span>{dark ? "Light" : "Dark"}</span></button><button className="nav-resume" onClick={() => setShowResume(true)}><FileText size={14}/> Resume</button><a className="nav-cta" href={profile.github} target="_blank" rel="noreferrer"><Github size={15}/> GitHub</a></div>
     </header>
 
     <div className="skills-marquee" aria-label="Tayyab's skills">
@@ -908,7 +955,7 @@ function App() {
           <div className="eyebrow"><span className="status-dot"/> ARTIFICIAL INTELLIGENCE / DATA SCIENCE</div>
           <h1>I turn <em>data</em><br/>into intelligence.</h1>
           <p>{profile.tagline} I’m <span className="name-highlight"><i/>Tayyab Sayyad</span>, an MSc Artificial Intelligence & Data Science student at Indira University, Pune, focused on <InterestTyping/>.</p>
-          <div className="hero-actions"><a className="primary" href="#work">Explore my work <ArrowUpRight size={17}/></a><a className="secondary" href="#contact">Let's connect <MessageCircle size={17}/></a><a className="secondary resume-download" href="/resume.pdf" download="Tayyab_Sayyad_Resume.pdf"><FileText size={16}/> Download Resume</a></div>
+          <div className="hero-actions"><a className="primary" href="#work">Explore my work <ArrowUpRight size={17}/></a><a className="secondary" href="#contact">Let's connect <MessageCircle size={17}/></a><button className="secondary resume-download" onClick={() => setShowResume(true)}><FileText size={16}/> View Full Resume</button></div>
           <div className="scroll-hint"><MousePointer2 size={14}/> Explore the model, data and systems I build</div>
         </div>
         <AILab/>
@@ -1039,7 +1086,7 @@ function App() {
     </main>
 
     <footer><span>© {new Date().getFullYear()} {profile.name}</span><span>DATA → MODELS → INTELLIGENCE</span></footer>
-    <Chatbot/>
+    {showResume && <ResumeViewer onClose={() => setShowResume(false)}/>}\n    <Chatbot/>
   </div>;
 }
 
