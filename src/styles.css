@@ -2214,3 +2214,10 @@ radial-gradient(85px circle at 0% var(--glow-y),rgba(161,110,232,.52),transparen
 
 .resume-download{white-space:nowrap}
 @media(max-width:700px){.hero-actions .resume-download{width:100%}}
+
+/* Top navigation resume button */
+.nav-resume{display:flex;align-items:center;gap:6px;height:36px;padding:0 11px;border:1px solid rgba(201,167,255,.30);border-radius:9px;background:rgba(135,92,255,.10);color:var(--text);font:700 9px "DM Mono";text-decoration:none;transition:.25s}
+.nav-resume:hover{color:#fff;border-color:rgba(201,167,255,.62);background:rgba(135,92,255,.20);box-shadow:0 0 22px rgba(135,92,255,.18);transform:translateY(-1px)}
+[data-theme="light"] .nav-resume{color:#4d3b6d;border-color:rgba(118,84,214,.25);background:rgba(118,84,214,.07)}
+[data-theme="light"] .nav-resume:hover{color:#fff;background:#7654d6;border-color:#7654d6}
+@media(max-width:980px){.nav-resume{display:none}}
