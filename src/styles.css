@@ -2277,7 +2277,7 @@ radial-gradient(85px circle at 0% var(--glow-y),rgba(161,110,232,.52),transparen
 /* FINAL TIMELINE CLEANUP — no vertical connector line anywhere in education */
 .education-timeline::before,.education-timeline::after{content:none!important;display:none!important}
 .education-item::marker{content:none!important}
-.education-item{border-left:1px solid var(--line)!important}
+.education-item{border-left:0!important}
 /* Cursor light + reflected edge remain on education and patent cards */
 .achievement-card,.education-item{--glow-x:50%;--glow-y:50%;isolation:isolate}
 .achievement-card:before,.education-item:before{content:"";position:absolute;inset:-30%;pointer-events:none;background:radial-gradient(circle at var(--glow-x) var(--glow-y),rgba(201,167,255,.16),transparent 30%);opacity:0;transition:opacity .2s ease}
