@@ -2119,3 +2119,32 @@ main [class*="timeline-line"]{
   0%,100%{transform:translateY(0)}
   50%{transform:translateY(-3px)}
 }
+
+
+/* FINAL CLEANUP — remove unwanted standalone vertical strokes */
+.lesson-note{
+  border-left:0!important;
+}
+.tree-branches{
+  border-left:0!important;
+  border-right:0!important;
+}
+.education-timeline{
+  border-left:0!important;
+  border-right:0!important;
+}
+.education-node{
+  display:none!important;
+}
+.achievement-card{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  cursor:default;
+}
+.achievement-card:after{
+  opacity:.95!important;
+}
+.achievement-card:hover:after{
+  opacity:1!important;
+}
