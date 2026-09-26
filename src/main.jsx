@@ -171,7 +171,7 @@ function InteractiveField({ dark }) {
 function usePointerGlow() {
   useEffect(() => {
     const onMove = e => {
-      const target = e.target.closest?.(".project-card, .skill-group, .learning-cards article, .contact-box, .language-bar, .mini-stats > div, .education-item, .certification-card, .learning-note, .achievement-card, .game-cards button, .game-screen, .ai-lab, .model-card");
+      const target = e.target.closest?.(".project-card, .skill-group, .learning-cards article, .contact-box, .language-bar, .mini-stats > div, .education-item, .certification-card, .learning-note, .achievement-card, .game-cards button, .game-screen, .ai-lab, .model-card, .flagship-panel, .flagship-features > div");
       if (!target) return;
       const rect = target.getBoundingClientRect();
       target.style.setProperty("--glow-x", ((e.clientX - rect.left) / rect.width * 100).toFixed(1) + "%");
